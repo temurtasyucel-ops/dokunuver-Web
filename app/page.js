@@ -525,18 +525,7 @@ export default function Home() {
   </div>
 </footer>
 
-<style jsx global>{`
-  @media (max-width: 600px) {
-    .hero-section {
-      padding-top: 50px !important;
-      padding-bottom: 50px !important;
-    }
 
-    .hero-nfc {
-      margin-top: 40px !important;
-    }
-  }
-`}</style>
 
     </main>
   );
