@@ -59,14 +59,15 @@ export default function Home() {
       </header>
 
       {/* HERO */}
-      <section
-        style={{
-          maxWidth: "1180px",
-          margin: "0 auto",
-          padding: "90px 24px 110px",
-          textAlign: "center",
-        }}
-      >
+<section
+  className="hero-section"
+  style={{
+    maxWidth: "1180px",
+    margin: "0 auto",
+    padding: "90px 24px 110px",
+    textAlign: "center",
+  }}
+>
         <div
           style={{
             display: "inline-block",
@@ -522,6 +523,16 @@ export default function Home() {
     </div>
   </div>
 </footer>
+
+<style jsx global>{`
+  @media (max-width: 600px) {
+    .hero-section {
+      padding-top: 50px !important;
+      padding-bottom: 65px !important;
+    }
+  }
+`}</style>
+
     </main>
   );
 }
