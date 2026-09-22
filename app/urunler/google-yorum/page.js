@@ -91,24 +91,24 @@ export default function GoogleYorumPage() {
             GOOGLE YORUM NFC
           </div>
 
-          <div
-            style={{
-              width: "86px",
-              height: "86px",
-              margin: "0 auto 28px",
-              borderRadius: "24px",
-              background: "#ffffff",
-              border: "1px solid #eaecf0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "38px",
-              color: "#087cf0",
-              boxShadow: "0 12px 35px rgba(16,24,40,0.08)",
-            }}
-          >
-            ★
-          </div>
+<div
+  style={{
+    maxWidth: "430px",
+    margin: "0 auto 38px",
+  }}
+>
+  <img
+    src="/images/google-yorum-nfc.png"
+    alt="DOKUNUVER Google Yorum NFC kartı"
+    style={{
+      display: "block",
+      width: "100%",
+      height: "auto",
+      borderRadius: "24px",
+      boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
+    }}
+  />
+</div>
 
           <h1
             style={{
