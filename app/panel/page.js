@@ -10,31 +10,44 @@ export default function AdminPanel() {
   useEffect(() => {
     loadCards();
   }, []);
+async function loadCards() {
+  try {
+    const token = localStorage.getItem("dokunuver_access_token");
 
-  async function loadCards() {
-    try {
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-      const response = await fetch(
-        `${url}/rest/v1/iban_cards?select=*&order=id.desc`,
-        {
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-      setCards(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
     }
-  }
 
+    const response = await fetch("/api/iban-cards", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("dokunuver_access_token");
+      localStorage.removeItem("dokunuver_refresh_token");
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Kartlar getirilemedi.");
+    }
+
+    setCards(Array.isArray(data.cards) ? data.cards : []);
+  } catch (error) {
+    console.error("Kartlar yüklenirken hata oluştu:", error);
+    setCards([]);
+  } finally {
+    setLoading(false);
+  }
+}
   return (
     <main style={styles.page}>
       <div style={styles.container}>
