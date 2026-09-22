@@ -439,6 +439,58 @@ export default function Home() {
     </div>
   </div>
 </section>
+        {/* FOOTER */}
+<footer
+  style={{
+    background: "#ffffff",
+    borderTop: "1px solid #eaecf0",
+    padding: "32px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "20px",
+      flexWrap: "wrap",
+    }}
+  >
+    <div>
+      <div
+        style={{
+          fontSize: "18px",
+          fontWeight: "900",
+          color: "#101828",
+        }}
+      >
+        DOKUNUVER
+      </div>
+
+      <div
+        style={{
+          marginTop: "4px",
+          fontSize: "12px",
+          fontWeight: "700",
+          color: "#087cf0",
+        }}
+      >
+        Dokun. Bağlan.
+      </div>
+    </div>
+
+    <div
+      style={{
+        fontSize: "13px",
+        color: "#667085",
+      }}
+    >
+      © 2026 DOKUNUVER. Tüm hakları saklıdır.
+    </div>
+  </div>
+</footer>
     </main>
   );
 }
