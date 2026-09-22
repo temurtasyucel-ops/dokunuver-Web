@@ -86,7 +86,63 @@ async function verifyAdmin(request) {
     };
   }
 }
+export async function GET(request) {
+  try {
+    const auth = await verifyAdmin(request);
 
+    if (!auth.ok) {
+      return NextResponse.json(
+        { error: auth.error },
+        { status: auth.status }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    if (!supabaseUrl || !secretKey) {
+      return NextResponse.json(
+        { error: "Sunucu yapılandırması eksik." },
+        { status: 500 }
+      );
+    }
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/iban_cards?select=*&order=id.desc`,
+      {
+        method: "GET",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Supabase GET error:", data);
+
+      return NextResponse.json(
+        { error: "Kartlar getirilemedi." },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      cards: data,
+    });
+  } catch (error) {
+    console.error("GET /api/iban-cards error:", error);
+
+    return NextResponse.json(
+      { error: "Sunucuda beklenmeyen bir hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
 export async function POST(request) {
   try {
     const auth = await verifyAdmin(request);
