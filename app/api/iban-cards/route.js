@@ -353,3 +353,83 @@ export async function PATCH(request) {
     );
   }
 }
+export async function PUT(request) {
+  try {
+    const auth = await verifyAdmin(request);
+
+    if (!auth.ok) {
+      return NextResponse.json(
+        { error: auth.error },
+        { status: auth.status }
+      );
+    }
+
+    const body = await request.json();
+
+    const code = body.code?.trim();
+    const active = body.active;
+
+    if (!code || typeof active !== "boolean") {
+      return NextResponse.json(
+        { error: "Kart kodu veya durum bilgisi geçersiz." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    if (!supabaseUrl || !secretKey) {
+      return NextResponse.json(
+        { error: "Sunucu yapılandırması eksik." },
+        { status: 500 }
+      );
+    }
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(code)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          active,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Supabase status update error:", data);
+
+      return NextResponse.json(
+        { error: "Kart durumu değiştirilemedi." },
+        { status: response.status }
+      );
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json(
+        { error: "Kart bulunamadı." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      card: data[0],
+    });
+  } catch (error) {
+    console.error("PUT /api/iban-cards error:", error);
+
+    return NextResponse.json(
+      { error: "Sunucuda beklenmeyen bir hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
