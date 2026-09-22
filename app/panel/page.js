@@ -8,6 +8,9 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+const cardsPerPage = 20;
   
   useEffect(() => {
     loadCards();
@@ -123,6 +126,12 @@ async function toggleCardStatus(card) {
     card.bank_name?.toLocaleLowerCase("tr-TR").includes(searchText)
   );
 });
+  const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+
+const startIndex = (currentPage - 1) * cardsPerPage;
+const endIndex = startIndex + cardsPerPage;
+
+const paginatedCards = filteredCards.slice(startIndex, endIndex);
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -197,7 +206,10 @@ async function toggleCardStatus(card) {
 >
   <button
     type="button"
-    onClick={() => setFilter("all")}
+    onClick={() => {
+  setFilter("all");
+  setCurrentPage(1);
+}}
     style={{
       ...styles.filterButton,
       ...(filter === "all" ? styles.filterButtonActive : {}),
@@ -208,7 +220,10 @@ async function toggleCardStatus(card) {
 
   <button
     type="button"
-    onClick={() => setFilter("active")}
+    onClick={() => {
+  setFilter("active");
+  setCurrentPage(1);
+}}
     style={{
       ...styles.filterButton,
       ...(filter === "active" ? styles.filterButtonActive : {}),
@@ -219,7 +234,10 @@ async function toggleCardStatus(card) {
 
   <button
     type="button"
-    onClick={() => setFilter("passive")}
+    onClick={() => {
+  setFilter("passive");
+  setCurrentPage(1);
+}}
     style={{
       ...styles.filterButton,
       ...(filter === "passive" ? styles.filterButtonActive : {}),
@@ -233,7 +251,10 @@ async function toggleCardStatus(card) {
   <input
     type="text"
     value={search}
-    onChange={(e) => setSearch(e.target.value)}
+    onChange={(e) => {
+  setSearch(e.target.value);
+  setCurrentPage(1);
+}}
     placeholder="İşletme, kart kodu, hesap sahibi veya banka ara..."
     style={styles.searchInput}
   />
@@ -249,7 +270,7 @@ async function toggleCardStatus(card) {
             </div>
           ) : (
             <div style={styles.cardList}>
-              {filteredCards.map((card) => (
+              {paginatedCards.map((card) => (
                 <div key={card.id} style={styles.customerCard}>
                   <div style={styles.customerTop}>
                     <div>
@@ -330,6 +351,58 @@ async function toggleCardStatus(card) {
               ))}
             </div>
           )}
+            {totalPages > 1 && (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "8px",
+      marginTop: "24px",
+      flexWrap: "wrap",
+    }}
+  >
+    <button
+      type="button"
+      onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
+      disabled={currentPage === 1}
+      style={styles.paginationButton}
+    >
+      Önceki
+    </button>
+
+    {Array.from({ length: totalPages }, (_, index) => {
+      const page = index + 1;
+
+      return (
+        <button
+          key={page}
+          type="button"
+          onClick={() => setCurrentPage(page)}
+          style={{
+            ...styles.paginationButton,
+            ...(currentPage === page
+              ? styles.paginationButtonActive
+              : {}),
+          }}
+        >
+          {page}
+        </button>
+      );
+    })}
+
+    <button
+      type="button"
+      onClick={() =>
+        setCurrentPage((page) => Math.min(page + 1, totalPages))
+      }
+      disabled={currentPage === totalPages}
+      style={styles.paginationButton}
+    >
+      Sonraki
+    </button>
+  </div>
+)}
         </section>
 
         <footer style={styles.footer}>
@@ -640,5 +713,22 @@ activateButton: {
   color: "#101828",
   fontSize: "14px",
   outline: "none",
+},
+  paginationButton: {
+  minWidth: "42px",
+  padding: "10px 13px",
+  border: "1px solid #d0d5dd",
+  borderRadius: "10px",
+  background: "#ffffff",
+  color: "#344054",
+  fontSize: "13px",
+  fontWeight: "700",
+  cursor: "pointer",
+},
+
+paginationButtonActive: {
+  background: "#087cf0",
+  color: "#ffffff",
+  border: "1px solid #087cf0",
 },
 };
