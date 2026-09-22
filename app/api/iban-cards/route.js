@@ -109,3 +109,97 @@ export async function POST(request) {
     );
   }
 }
+
+export async function PATCH(request) {
+  try {
+    const body = await request.json();
+
+    const code = body.code?.trim();
+    const businessName = body.business_name?.trim();
+    const bankName = body.bank_name?.trim();
+    const accountHolder = body.account_holder?.trim();
+    const iban = body.iban?.replace(/\s/g, "").toUpperCase();
+    const active = body.active !== false;
+
+    if (!code) {
+      return NextResponse.json(
+        { error: "Kart kodu bulunamadı." },
+        { status: 400 }
+      );
+    }
+
+    if (!businessName || !bankName || !accountHolder || !iban) {
+      return NextResponse.json(
+        { error: "Lütfen tüm alanları doldurun." },
+        { status: 400 }
+      );
+    }
+
+    if (!iban.startsWith("TR") || iban.length !== 26) {
+      return NextResponse.json(
+        { error: "Geçerli bir Türkiye IBAN'ı girin." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    if (!supabaseUrl || !secretKey) {
+      return NextResponse.json(
+        { error: "Sunucu yapılandırması eksik." },
+        { status: 500 }
+      );
+    }
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(code)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          business_name: businessName,
+          bank_name: bankName,
+          account_holder: accountHolder,
+          iban,
+          active,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Supabase PATCH error:", data);
+
+      return NextResponse.json(
+        { error: "Kart güncellenemedi." },
+        { status: response.status }
+      );
+    }
+
+    if (!data || data.length === 0) {
+      return NextResponse.json(
+        { error: "Güncellenecek kart bulunamadı." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      card: data[0],
+    });
+  } catch (error) {
+    console.error("PATCH /api/iban-cards error:", error);
+
+    return NextResponse.json(
+      { error: "Sunucuda beklenmeyen bir hata oluştu." },
+      { status: 500 }
+    );
+  }
+}
