@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import LogoutButton from "./LogoutButton";
 
 export default function AdminPanel() {
   const [cards, setCards] = useState([]);
@@ -43,7 +44,7 @@ export default function AdminPanel() {
             <div style={styles.slogan}>Dokun. Bağlan.</div>
           </div>
 
-          <div style={styles.adminBadge}>Yönetim Paneli</div>
+          <LogoutButton />
         </header>
 
         <section style={styles.hero}>
