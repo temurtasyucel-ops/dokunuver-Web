@@ -3,102 +3,186 @@ export default function Home() {
     <main
       style={{
         minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#f7f9fc",
+        background: "#f8fafc",
         fontFamily: "Arial, sans-serif",
-        padding: "24px",
+        color: "#101828",
       }}
     >
-      <div
+      {/* HEADER */}
+      <header
         style={{
-          width: "100%",
-          maxWidth: "520px",
+          maxWidth: "1180px",
+          margin: "0 auto",
+          padding: "22px 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontSize: "24px",
+              fontWeight: "900",
+              letterSpacing: "-0.7px",
+            }}
+          >
+            DOKUNUVER
+          </div>
+
+          <div
+            style={{
+              fontSize: "12px",
+              color: "#087cf0",
+              fontWeight: "700",
+              marginTop: "2px",
+            }}
+          >
+            Dokun. Bağlan.
+          </div>
+        </div>
+
+        <a
+          href="#urunler"
+          style={{
+            textDecoration: "none",
+            background: "#101828",
+            color: "#ffffff",
+            padding: "11px 18px",
+            borderRadius: "12px",
+            fontSize: "14px",
+            fontWeight: "700",
+          }}
+        >
+          Ürünleri İncele
+        </a>
+      </header>
+
+      {/* HERO */}
+      <section
+        style={{
+          maxWidth: "1180px",
+          margin: "0 auto",
+          padding: "90px 24px 110px",
           textAlign: "center",
-          background: "#ffffff",
-          padding: "48px 28px",
-          borderRadius: "28px",
-          boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
         }}
       >
         <div
           style={{
-            width: "72px",
-            height: "72px",
-            margin: "0 auto 22px",
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #087cf0, #6c4cff)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: "34px",
+            display: "inline-block",
+            padding: "8px 14px",
+            borderRadius: "999px",
+            background: "#eaf4ff",
+            color: "#087cf0",
+            fontSize: "13px",
+            fontWeight: "800",
+            marginBottom: "24px",
           }}
         >
-          ◉
+          NFC ÇÖZÜMLERİ
         </div>
 
         <h1
           style={{
-            fontSize: "38px",
-            margin: "0",
-            color: "#101828",
-            letterSpacing: "-1px",
+            maxWidth: "850px",
+            margin: "0 auto",
+            fontSize: "clamp(42px, 7vw, 76px)",
+            lineHeight: "1.03",
+            letterSpacing: "-3px",
           }}
         >
-          DOKUNUVER
+          Tek dokunuşla
+          <br />
+          dijital dünyaya bağlan.
         </h1>
 
         <p
           style={{
-            fontSize: "20px",
-            fontWeight: "600",
-            color: "#087cf0",
-            marginTop: "8px",
-          }}
-        >
-          Dokun. Bağlan.
-        </p>
-
-        <p
-          style={{
-            fontSize: "17px",
-            lineHeight: "1.6",
+            maxWidth: "650px",
+            margin: "28px auto 0",
             color: "#667085",
-            margin: "28px 0",
+            fontSize: "18px",
+            lineHeight: "1.7",
           }}
         >
-          NFC teknolojisiyle işletmenizi dijital dünyaya
-          tek dokunuşla bağlayın.
+          DOKUNUVER NFC ürünleriyle müşterilerinizi Google yorumlarına,
+          sosyal medya hesaplarınıza, ödeme bilgilerinize ve dijital
+          içeriklerinize saniyeler içinde yönlendirin.
         </p>
 
-        <a
-          href="/i/demo"
+        <div
           style={{
-            display: "block",
-            background: "#087cf0",
-            color: "#ffffff",
-            padding: "16px 22px",
-            borderRadius: "14px",
-            textDecoration: "none",
-            fontWeight: "700",
-            fontSize: "16px",
+            marginTop: "36px",
+            display: "flex",
+            justifyContent: "center",
+            gap: "12px",
+            flexWrap: "wrap",
           }}
         >
-          IBAN Kartını Test Et
-        </a>
+          <a
+            href="#urunler"
+            style={{
+              textDecoration: "none",
+              background: "#087cf0",
+              color: "#ffffff",
+              padding: "15px 24px",
+              borderRadius: "13px",
+              fontWeight: "800",
+              fontSize: "15px",
+            }}
+          >
+            NFC Ürünlerini Keşfet
+          </a>
 
-        <p
+          <a
+            href="#nasil-calisir"
+            style={{
+              textDecoration: "none",
+              background: "#ffffff",
+              color: "#344054",
+              padding: "15px 24px",
+              borderRadius: "13px",
+              border: "1px solid #d0d5dd",
+              fontWeight: "800",
+              fontSize: "15px",
+            }}
+          >
+            Nasıl Çalışır?
+          </a>
+        </div>
+
+        <div
           style={{
-            marginTop: "35px",
-            fontSize: "12px",
-            color: "#98a2b3",
+            margin: "70px auto 0",
+            width: "150px",
+            height: "150px",
+            borderRadius: "50%",
+            background:
+              "linear-gradient(135deg, #087cf0 0%, #6941c6 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 25px 60px rgba(8,124,240,0.25)",
           }}
         >
-          DOKUNUVER NFC Platform
-        </p>
-      </div>
+          <div
+            style={{
+              width: "90px",
+              height: "90px",
+              borderRadius: "50%",
+              border: "3px solid rgba(255,255,255,0.9)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#ffffff",
+              fontSize: "36px",
+              fontWeight: "700",
+            }}
+          >
+            N
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
