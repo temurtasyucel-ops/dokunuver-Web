@@ -7,4 +7,9 @@
   .hero-nfc {
     margin-top: 40px !important;
   }
+
+  .products-section {
+    padding-top: 65px !important;
+    padding-bottom: 65px !important;
+  }
 }
