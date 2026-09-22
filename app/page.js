@@ -533,14 +533,15 @@ export default function Home() {
 }
 function ProductCard({ icon, title, description }) {
   return (
-    <div
-      style={{
-        padding: "28px",
-        border: "1px solid #eaecf0",
-        borderRadius: "20px",
-        background: "#ffffff",
-      }}
-    >
+  <div
+  className="product-card"
+  style={{
+    padding: "28px",
+    border: "1px solid #eaecf0",
+    borderRadius: "20px",
+    background: "#ffffff",
+  }}
+>
       <div
         style={{
           width: "48px",
