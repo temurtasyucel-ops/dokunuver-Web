@@ -355,6 +355,90 @@ export default function Home() {
     </div>
   </div>
 </section>
+          {/* İLETİŞİM / SİPARİŞ */}
+<section
+  style={{
+    background: "#ffffff",
+    padding: "100px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+      background: "#101828",
+      borderRadius: "28px",
+      padding: "70px 32px",
+      textAlign: "center",
+      color: "#ffffff",
+    }}
+  >
+    <div
+      style={{
+        color: "#53b1fd",
+        fontSize: "13px",
+        fontWeight: "800",
+        marginBottom: "14px",
+      }}
+    >
+      DOKUNUVER
+    </div>
+
+    <h2
+      style={{
+        maxWidth: "700px",
+        margin: "0 auto",
+        fontSize: "clamp(32px, 5vw, 50px)",
+        lineHeight: "1.1",
+        letterSpacing: "-1.5px",
+      }}
+    >
+      İşletmenizi tek dokunuşla bağlayın.
+    </h2>
+
+    <p
+      style={{
+        maxWidth: "600px",
+        margin: "20px auto 32px",
+        color: "#98a2b3",
+        fontSize: "17px",
+        lineHeight: "1.7",
+      }}
+    >
+      İşletmenize uygun DOKUNUVER NFC çözümünü belirlemek,
+      ürünler hakkında bilgi almak veya sipariş vermek için
+      bizimle iletişime geçin.
+    </p>
+
+    <a
+      href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20NFC%20%C3%BCr%C3%BCnleriniz%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        display: "inline-block",
+        textDecoration: "none",
+        background: "#25D366",
+        color: "#ffffff",
+        padding: "16px 26px",
+        borderRadius: "13px",
+        fontSize: "15px",
+        fontWeight: "800",
+      }}
+    >
+      WhatsApp'tan İletişime Geç
+    </a>
+
+    <div
+      style={{
+        marginTop: "18px",
+        color: "#667085",
+        fontSize: "13px",
+      }}
+    >
+      0507 573 83 49
+    </div>
+  </div>
+</section>
     </main>
   );
 }
