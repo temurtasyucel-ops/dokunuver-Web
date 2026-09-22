@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "DOKUNUVER | Dokun. Bağlan.",
   description: "NFC ile işletmenizi dijital dünyaya bağlayın.",
