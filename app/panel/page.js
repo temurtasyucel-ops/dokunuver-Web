@@ -61,9 +61,13 @@ export default function AdminPanel() {
             </p>
           </div>
 
-          <button style={styles.newButton}>
-            + Yeni IBAN Kartı
-          </button>
+          <button
+  type="button"
+  onClick={() => window.location.href = "/panel/new"}
+  style={styles.newButton}
+>
+  + Yeni IBAN Kartı
+</button>
         </section>
 
         <section style={styles.stats}>
