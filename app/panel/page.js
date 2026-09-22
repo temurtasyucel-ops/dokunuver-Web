@@ -49,6 +49,64 @@ async function loadCards() {
     setLoading(false);
   }
 }
+async function toggleCardStatus(card) {
+  const action = card.active ? "pasife almak" : "aktif etmek";
+
+  const confirmed = window.confirm(
+    `${card.business_name} kartını ${action} istediğinize emin misiniz?`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("dokunuver_access_token");
+
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    const response = await fetch("/api/iban-cards", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code: card.code,
+        active: !card.active,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("dokunuver_access_token");
+      localStorage.removeItem("dokunuver_refresh_token");
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Kart durumu değiştirilemedi."
+      );
+    }
+
+    setCards((currentCards) =>
+      currentCards.map((item) =>
+        item.code === card.code
+          ? { ...item, active: !card.active }
+          : item
+      )
+    );
+  } catch (error) {
+    alert(error.message);
+  }
+}
+  
   const filteredCards = cards.filter((card) => {
   if (filter === "active") return card.active;
   if (filter === "passive") return !card.active;
@@ -234,6 +292,18 @@ async function loadCards() {
   >
     Düzenle
   </a>
+      <button
+  type="button"
+  onClick={() => toggleCardStatus(card)}
+  style={{
+    ...styles.statusButton,
+    ...(card.active
+      ? styles.deactivateButton
+      : styles.activateButton),
+  }}
+>
+  {card.active ? "Pasife Al" : "Aktif Et"}
+</button>
 </div>
                 </div>
               ))}
@@ -519,5 +589,24 @@ filterButtonActive: {
   background: "#087cf0",
   color: "#ffffff",
   border: "1px solid #087cf0",
+},
+  statusButton: {
+  borderRadius: "10px",
+  padding: "11px 16px",
+  fontSize: "13px",
+  fontWeight: "800",
+  cursor: "pointer",
+},
+
+deactivateButton: {
+  background: "#ffffff",
+  color: "#b42318",
+  border: "1px solid #fda29b",
+},
+
+activateButton: {
+  background: "#ecfdf3",
+  color: "#027a48",
+  border: "1px solid #abefc6",
 },
 };
