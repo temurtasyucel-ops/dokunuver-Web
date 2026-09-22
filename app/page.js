@@ -246,11 +246,19 @@ export default function Home() {
         gap: "18px",
       }}
     >
-      <ProductCard
-        icon="★"
-        title="Google Yorum"
-        description="Müşterilerinizi Google yorum sayfanıza tek dokunuşla yönlendirin."
-      />
+      <a
+  href="/urunler/google-yorum"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="★"
+    title="Google Yorum"
+    description="Müşterilerinizi Google yorum sayfanıza tek dokunuşla yönlendirin."
+  />
+</a>
 
       <ProductCard
         icon="◎"
