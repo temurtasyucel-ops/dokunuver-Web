@@ -153,10 +153,11 @@ export default function Home() {
         </div>
 
         <div
-          style={{
-            margin: "70px auto 0",
-            width: "150px",
-            height: "150px",
+  className="hero-nfc"
+  style={{
+    margin: "70px auto 0",
+    width: "150px",
+    height: "150px",
             borderRadius: "50%",
             background:
               "linear-gradient(135deg, #087cf0 0%, #6941c6 100%)",
@@ -528,7 +529,11 @@ export default function Home() {
   @media (max-width: 600px) {
     .hero-section {
       padding-top: 50px !important;
-      padding-bottom: 65px !important;
+      padding-bottom: 50px !important;
+    }
+
+    .hero-nfc {
+      margin-top: 40px !important;
     }
   }
 `}</style>
