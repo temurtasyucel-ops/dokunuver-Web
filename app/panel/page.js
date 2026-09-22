@@ -6,7 +6,8 @@ import LogoutButton from "./LogoutButton";
 export default function AdminPanel() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [filter, setFilter] = useState("all");
+  
   useEffect(() => {
     loadCards();
   }, []);
@@ -48,6 +49,11 @@ async function loadCards() {
     setLoading(false);
   }
 }
+  const filteredCards = cards.filter((card) => {
+  if (filter === "active") return card.active;
+  if (filter === "passive") return !card.active;
+  return true;
+});
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -112,6 +118,47 @@ async function loadCards() {
               </p>
             </div>
           </div>
+<div
+  style={{
+    display: "flex",
+    gap: "10px",
+    marginBottom: "22px",
+    flexWrap: "wrap",
+  }}
+>
+  <button
+    type="button"
+    onClick={() => setFilter("all")}
+    style={{
+      ...styles.filterButton,
+      ...(filter === "all" ? styles.filterButtonActive : {}),
+    }}
+  >
+    Tümü ({cards.length})
+  </button>
+
+  <button
+    type="button"
+    onClick={() => setFilter("active")}
+    style={{
+      ...styles.filterButton,
+      ...(filter === "active" ? styles.filterButtonActive : {}),
+    }}
+  >
+    Aktif ({cards.filter((card) => card.active).length})
+  </button>
+
+  <button
+    type="button"
+    onClick={() => setFilter("passive")}
+    style={{
+      ...styles.filterButton,
+      ...(filter === "passive" ? styles.filterButtonActive : {}),
+    }}
+  >
+    Pasif ({cards.filter((card) => !card.active).length})
+  </button>
+</div>
 
           {loading ? (
             <div style={styles.empty}>
@@ -123,7 +170,7 @@ async function loadCards() {
             </div>
           ) : (
             <div style={styles.cardList}>
-              {cards.map((card) => (
+              {filteredCards.map((card) => (
                 <div key={card.id} style={styles.customerCard}>
                   <div style={styles.customerTop}>
                     <div>
@@ -457,4 +504,20 @@ editButton: {
     fontSize: "12px",
     marginTop: "30px",
   },
+  filterButton: {
+  border: "1px solid #d0d5dd",
+  background: "#ffffff",
+  color: "#475467",
+  borderRadius: "10px",
+  padding: "10px 16px",
+  fontSize: "13px",
+  fontWeight: "700",
+  cursor: "pointer",
+},
+
+filterButtonActive: {
+  background: "#087cf0",
+  color: "#ffffff",
+  border: "1px solid #087cf0",
+},
 };
