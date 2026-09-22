@@ -31,14 +31,23 @@ export default function NewIbanCardPage() {
     setSaving(true);
     setMessage("");
 
-    try {
-      const response = await fetch("/api/iban-cards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+   try {
+  const token = localStorage.getItem("dokunuver_access_token");
+
+  if (!token) {
+    throw new Error(
+      "Oturum bulunamadı. Lütfen tekrar giriş yapın."
+    );
+  }
+
+  const response = await fetch("/api/iban-cards", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(form),
+  });
 
       const data = await response.json();
 
