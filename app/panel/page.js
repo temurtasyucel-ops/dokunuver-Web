@@ -290,6 +290,7 @@ const styles = {
     borderRadius: "12px",
     fontWeight: "800",
     fontSize: "14px",
+    cursor: "pointer",
   },
 
   stats: {
