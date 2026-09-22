@@ -274,11 +274,19 @@ export default function Home() {
   />
 </a>
 
-      <ProductCard
-        icon="✆"
-        title="WhatsApp"
-        description="Müşterilerinizin sizinle WhatsApp üzerinden hızlıca iletişime geçmesini sağlayın."
-      />
+      <a
+  href="/urunler/whatsapp"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="✆"
+    title="WhatsApp"
+    description="Müşterilerinizin sizinle WhatsApp üzerinden hızlıca iletişime geçmesini sağlayın."
+  />
+</a>
 
       <ProductCard
         icon="₺"
