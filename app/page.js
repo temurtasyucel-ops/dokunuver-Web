@@ -428,15 +428,6 @@ export default function Home() {
       WhatsApp'tan İletişime Geç
     </a>
 
-    <div
-      style={{
-        marginTop: "18px",
-        color: "#667085",
-        fontSize: "13px",
-      }}
-    >
-      0507 573 83 49
-    </div>
   </div>
 </section>
         {/* FOOTER */}
