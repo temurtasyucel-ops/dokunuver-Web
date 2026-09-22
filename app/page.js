@@ -288,11 +288,19 @@ export default function Home() {
   />
 </a>
 
-      <ProductCard
-        icon="₺"
-        title="IBAN"
-        description="Ödeme bilgilerinizi yazma hatası olmadan kolayca paylaşın."
-      />
+     <a
+  href="/urunler/iban"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="₺"
+    title="IBAN"
+    description="Ödeme bilgilerinizi yazma hatası olmadan kolayca paylaşın."
+  />
+</a>
 
       <ProductCard
         icon="⌂"
