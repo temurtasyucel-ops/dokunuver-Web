@@ -183,6 +183,151 @@ export default function Home() {
           </div>
         </div>
       </section>
+              {/* ÜRÜNLER */}
+<section
+  id="urunler"
+  style={{
+    background: "#ffffff",
+    padding: "100px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "650px",
+        marginBottom: "50px",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "800",
+          marginBottom: "12px",
+        }}
+      >
+        DOKUNUVER ÜRÜNLERİ
+      </div>
+
+      <h2
+        style={{
+          margin: "0",
+          fontSize: "clamp(32px, 5vw, 48px)",
+          letterSpacing: "-1.5px",
+        }}
+      >
+        Bir dokunuş,
+        <br />
+        birçok çözüm.
+      </h2>
+
+      <p
+        style={{
+          marginTop: "18px",
+          color: "#667085",
+          fontSize: "17px",
+          lineHeight: "1.7",
+        }}
+      >
+        İşletmenizin ihtiyaç duyduğu dijital bağlantıları NFC teknolojisiyle
+        müşterilerinize hızlı ve kolay şekilde ulaştırın.
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: "18px",
+      }}
+    >
+      <ProductCard
+        icon="★"
+        title="Google Yorum"
+        description="Müşterilerinizi Google yorum sayfanıza tek dokunuşla yönlendirin."
+      />
+
+      <ProductCard
+        icon="◎"
+        title="Instagram"
+        description="Instagram profilinizi müşterilerinizle saniyeler içinde paylaşın."
+      />
+
+      <ProductCard
+        icon="✆"
+        title="WhatsApp"
+        description="Müşterilerinizin sizinle WhatsApp üzerinden hızlıca iletişime geçmesini sağlayın."
+      />
+
+      <ProductCard
+        icon="₺"
+        title="IBAN"
+        description="Ödeme bilgilerinizi yazma hatası olmadan kolayca paylaşın."
+      />
+
+      <ProductCard
+        icon="⌂"
+        title="İlan"
+        description="Araç veya gayrimenkul ilanınızı NFC ile doğrudan müşterilerinize açın."
+      />
+    </div>
+  </div>
+</section>
     </main>
+  );
+}
+function ProductCard({ icon, title, description }) {
+  return (
+    <div
+      style={{
+        padding: "28px",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+        background: "#ffffff",
+      }}
+    >
+      <div
+        style={{
+          width: "48px",
+          height: "48px",
+          borderRadius: "14px",
+          background: "#eaf4ff",
+          color: "#087cf0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "22px",
+          fontWeight: "800",
+          marginBottom: "22px",
+        }}
+      >
+        {icon}
+      </div>
+
+      <h3
+        style={{
+          margin: "0 0 10px",
+          fontSize: "19px",
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        style={{
+          margin: "0",
+          color: "#667085",
+          lineHeight: "1.6",
+          fontSize: "14px",
+        }}
+      >
+        {description}
+      </p>
+    </div>
   );
 }
