@@ -181,6 +181,123 @@ export default function GoogleYorumPage() {
           </div>
         </div>
       </section>
+                {/* AVANTAJLAR */}
+<section
+  style={{
+    background: "#ffffff",
+    padding: "90px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "650px",
+        marginBottom: "48px",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "800",
+          marginBottom: "12px",
+        }}
+      >
+        NEDEN DOKUNUVER?
+      </div>
+
+      <h2
+        style={{
+          margin: "0",
+          fontSize: "clamp(32px, 5vw, 48px)",
+          letterSpacing: "-1.5px",
+        }}
+      >
+        Yorum sürecini kolaylaştırın.
+      </h2>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "18px",
+      }}
+    >
+      <FeatureCard
+        number="01"
+        title="Tek Dokunuş"
+        description="Müşteriniz telefonunu NFC ürününe yaklaştırarak bağlantıya ulaşır."
+      />
+
+      <FeatureCard
+        number="02"
+        title="Uygulama Gerektirmez"
+        description="NFC destekli uyumlu telefonlarda ek bir uygulama indirmeye gerek yoktur."
+      />
+
+      <FeatureCard
+        number="03"
+        title="Doğrudan Google"
+        description="Müşterinizi işletmeniz için belirlediğiniz Google yorum bağlantısına yönlendirin."
+      />
+
+      <FeatureCard
+        number="04"
+        title="Tekrar Kullanılabilir"
+        description="DOKUNUVER ürünü işletmenizde sürekli kullanıma uygun bir NFC çözümüdür."
+      />
+    </div>
+  </div>
+</section>
     </main>
+  );
+}
+function FeatureCard({ number, title, description }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+        padding: "28px",
+        background: "#ffffff",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "900",
+          marginBottom: "24px",
+        }}
+      >
+        {number}
+      </div>
+
+      <h3
+        style={{
+          margin: "0 0 10px",
+          fontSize: "19px",
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        style={{
+          margin: "0",
+          color: "#667085",
+          fontSize: "14px",
+          lineHeight: "1.7",
+        }}
+      >
+        {description}
+      </p>
+    </div>
   );
 }
