@@ -260,11 +260,19 @@ export default function Home() {
   />
 </a>
 
-      <ProductCard
-        icon="◎"
-        title="Instagram"
-        description="Instagram profilinizi müşterilerinizle saniyeler içinde paylaşın."
-      />
+      <a
+  href="/urunler/instagram"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="◎"
+    title="Instagram"
+    description="Instagram profilinizi müşterilerinizle saniyeler içinde paylaşın."
+  />
+</a>
 
       <ProductCard
         icon="✆"
