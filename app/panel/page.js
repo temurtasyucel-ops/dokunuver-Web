@@ -146,14 +146,30 @@ export default function AdminPanel() {
                     />
                   </div>
 
-                  <a
-                    href={`/i/${card.code}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={styles.openButton}
-                  >
-                    Kartı Görüntüle
-                  </a>
+<div
+  style={{
+    display: "flex",
+    gap: "16px",
+    alignItems: "center",
+    marginTop: "20px",
+  }}
+>
+  <a
+    href={`/i/${card.code}`}
+    target="_blank"
+    rel="noreferrer"
+    style={styles.openButton}
+  >
+    Kartı Görüntüle
+  </a>
+
+  <a
+    href={`/panel/edit/${card.code}`}
+    style={styles.editButton}
+  >
+    Düzenle
+  </a>
+</div>
                 </div>
               ))}
             </div>
@@ -397,6 +413,17 @@ const styles = {
     fontWeight: "800",
   },
 
+editButton: {
+  display: "inline-block",
+  color: "#ffffff",
+  background: "#101828",
+  padding: "10px 16px",
+  borderRadius: "10px",
+  textDecoration: "none",
+  fontSize: "13px",
+  fontWeight: "800",
+},
+  
   empty: {
     padding: "40px 20px",
     textAlign: "center",
