@@ -7,6 +7,7 @@ export default function AdminPanel() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
   
   useEffect(() => {
     loadCards();
@@ -108,9 +109,19 @@ async function toggleCardStatus(card) {
 }
   
   const filteredCards = cards.filter((card) => {
-  if (filter === "active") return card.active;
-  if (filter === "passive") return !card.active;
-  return true;
+  if (filter === "active" && !card.active) return false;
+  if (filter === "passive" && card.active) return false;
+
+  const searchText = search.trim().toLocaleLowerCase("tr-TR");
+
+  if (!searchText) return true;
+
+  return (
+    card.business_name?.toLocaleLowerCase("tr-TR").includes(searchText) ||
+    card.code?.toLocaleLowerCase("tr-TR").includes(searchText) ||
+    card.account_holder?.toLocaleLowerCase("tr-TR").includes(searchText) ||
+    card.bank_name?.toLocaleLowerCase("tr-TR").includes(searchText)
+  );
 });
   return (
     <main style={styles.page}>
@@ -216,6 +227,16 @@ async function toggleCardStatus(card) {
   >
     Pasif ({cards.filter((card) => !card.active).length})
   </button>
+</div>
+      
+<div style={{ marginBottom: "22px" }}>
+  <input
+    type="text"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    placeholder="İşletme, kart kodu, hesap sahibi veya banka ara..."
+    style={styles.searchInput}
+  />
 </div>
 
           {loading ? (
@@ -608,5 +629,16 @@ activateButton: {
   background: "#ecfdf3",
   color: "#027a48",
   border: "1px solid #abefc6",
+},
+  searchInput: {
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "14px 16px",
+  border: "1px solid #d0d5dd",
+  borderRadius: "12px",
+  background: "#ffffff",
+  color: "#101828",
+  fontSize: "14px",
+  outline: "none",
 },
 };
