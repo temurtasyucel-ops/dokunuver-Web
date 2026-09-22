@@ -188,6 +188,7 @@ export default function Home() {
               {/* ÜRÜNLER */}
 <section
   id="urunler"
+  className="products-section"
   style={{
     background: "#ffffff",
     padding: "100px 24px",
