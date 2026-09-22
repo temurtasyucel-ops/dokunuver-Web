@@ -302,11 +302,19 @@ export default function Home() {
   />
 </a>
 
-      <ProductCard
-        icon="⌂"
-        title="İlan"
-        description="Araç veya gayrimenkul ilanınızı NFC ile doğrudan müşterilerinize açın."
-      />
+      <a
+  href="/urunler/ilan"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="⌂"
+    title="İlan"
+    description="Araç veya gayrimenkul ilanınızı NFC ile doğrudan müşterilerinize açın."
+  />
+</a>
     </div>
   </div>
 </section>
