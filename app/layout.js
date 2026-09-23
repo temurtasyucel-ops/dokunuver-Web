@@ -40,9 +40,27 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "DOKUNUVER",
+    url: "https://dokunuver.com.tr",
+    description:
+      "Google Yorum, Instagram, WhatsApp, IBAN ve ilanlar için NFC çözümleri.",
+  };
+
   return (
     <html lang="tr">
-      <body style={{ margin: 0 }}>{children}</body>
+      <body style={{ margin: 0 }}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+
+        {children}
+      </body>
     </html>
   );
 }
