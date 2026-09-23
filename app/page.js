@@ -518,6 +518,18 @@ export default function Home() {
       </div>
     </div>
 
+    <a
+      href="/iletisim"
+      style={{
+        fontSize: "14px",
+        fontWeight: "600",
+        color: "#475467",
+        textDecoration: "none",
+      }}
+    >
+      İletişim
+    </a>
+          
     <div
       style={{
         fontSize: "13px",
