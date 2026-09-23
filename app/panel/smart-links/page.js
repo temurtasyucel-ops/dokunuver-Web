@@ -236,7 +236,24 @@ return (
           Henüz Smart Link bulunmuyor.
         </div>
       )}
-
+{!loading &&
+  !error &&
+  links.length > 0 &&
+  filteredLinks.length === 0 && (
+    <div
+      style={{
+        padding: "32px",
+        background: "#f8fafc",
+        border: "1px solid #eaecf0",
+        borderRadius: "18px",
+        color: "#667085",
+        textAlign: "center",
+        fontSize: "15px",
+      }}
+    >
+      Aramanızla veya seçtiğiniz filtreyle eşleşen Smart Link bulunamadı.
+    </div>
+  )}
       {!loading && !error && filteredLinks.length > 0 && (
         <div
           style={{
