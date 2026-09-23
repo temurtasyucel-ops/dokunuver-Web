@@ -199,6 +199,22 @@ export default function SmartLinksPage() {
                 <div>
                   <strong>Hedef:</strong> {link.target_url}
                 </div>
+                    <a
+  href={`/panel/smart-links/edit/${link.code}`}
+  style={{
+    display: "inline-block",
+    marginTop: "18px",
+    padding: "10px 16px",
+    background: "#087cf0",
+    color: "#ffffff",
+    textDecoration: "none",
+    borderRadius: "10px",
+    fontSize: "14px",
+    fontWeight: "800",
+  }}
+>
+  Düzenle
+</a>
               </div>
             </div>
           ))}
