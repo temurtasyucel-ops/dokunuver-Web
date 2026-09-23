@@ -324,6 +324,7 @@ export default function Home() {
 
 {/* NEDEN DOKUNUVER */}
 <section
+  className="benefits-section"
   style={{
     background: "#ffffff",
     padding: "90px 24px",
@@ -757,8 +758,9 @@ function StepCard({ number, title, description }) {
 function BenefitCard({ number, title, description }) {
   return (
     <div
-      style={{
-        padding: "28px",
+  className="benefit-card"
+  style={{
+    padding: "28px",
         background: "#f8fafc",
         border: "1px solid #eaecf0",
         borderRadius: "20px",
