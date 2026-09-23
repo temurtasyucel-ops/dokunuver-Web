@@ -85,7 +85,7 @@ export default function DuoPage() {
   style={{
     display: "block",
     width: "100%",
-    maxWidth: "420px",
+    maxWidth: "560px",
     height: "auto",
     margin: "0 auto 40px",
     borderRadius: "24px",
