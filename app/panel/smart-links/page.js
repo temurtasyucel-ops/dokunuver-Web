@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import QRCodeButton from "./QRCodeButton";
 
 export default function SmartLinksPage() {
   const [links, setLinks] = useState([]);
@@ -283,6 +284,8 @@ export default function SmartLinksPage() {
                   >
                     {link.active ? "Pasife Al" : "Aktif Et"}
                   </button>
+
+                    <QRCodeButton code={link.code} />
                 </div>
               </div>
             </div>
