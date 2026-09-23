@@ -1,5 +1,3 @@
-import { redirect, notFound } from "next/navigation";
-
 export default async function SmartLinkPage({ params }) {
   const { code } = await params;
 
@@ -19,15 +17,44 @@ export default async function SmartLinkPage({ params }) {
     }
   );
 
-  if (!response.ok) {
-    notFound();
-  }
+  const responseText = await response.text();
 
-  const data = await response.json();
+  return (
+    <main style={{ padding: "40px", fontFamily: "Arial" }}>
+      <h1>DOKUNUVER Smart Link Test</h1>
 
-  if (!data || data.length === 0 || !data[0].target_url) {
-    notFound();
-  }
+      <p>
+        <strong>Kod:</strong> {code}
+      </p>
 
-  redirect(data[0].target_url);
+      <p>
+        <strong>Supabase URL var mı:</strong>{" "}
+        {supabaseUrl ? "EVET" : "HAYIR"}
+      </p>
+
+      <p>
+        <strong>Secret Key var mı:</strong>{" "}
+        {secretKey ? "EVET" : "HAYIR"}
+      </p>
+
+      <p>
+        <strong>HTTP Status:</strong> {response.status}
+      </p>
+
+      <p>
+        <strong>Supabase cevabı:</strong>
+      </p>
+
+      <pre
+        style={{
+          whiteSpace: "pre-wrap",
+          background: "#f2f4f7",
+          padding: "20px",
+          borderRadius: "12px",
+        }}
+      >
+        {responseText}
+      </pre>
+    </main>
+  );
 }
