@@ -321,6 +321,98 @@ export default function Home() {
     </div>
   </div>
 </section>
+
+{/* NEDEN DOKUNUVER */}
+<section
+  style={{
+    background: "#ffffff",
+    padding: "90px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "650px",
+        marginBottom: "48px",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "900",
+          letterSpacing: "1px",
+          marginBottom: "14px",
+        }}
+      >
+        NEDEN DOKUNUVER?
+      </div>
+
+      <h2
+        style={{
+          margin: "0 0 16px",
+          fontSize: "clamp(32px, 5vw, 48px)",
+          lineHeight: "1.1",
+          letterSpacing: "-1.5px",
+        }}
+      >
+        Dijital bağlantıları
+        <br />
+        daha kolay hale getirin.
+      </h2>
+
+      <p
+        style={{
+          margin: 0,
+          color: "#667085",
+          fontSize: "17px",
+          lineHeight: "1.7",
+        }}
+      >
+        DOKUNUVER NFC çözümleriyle müşterileriniz ihtiyaç duydukları
+        bağlantılara hızlı ve kolay şekilde ulaşır.
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: "18px",
+      }}
+    >
+      <BenefitCard
+        number="01"
+        title="Tek Dokunuş"
+        description="Telefonu NFC ürününe yaklaştırmak bağlantıyı açmak için yeterlidir."
+      />
+
+      <BenefitCard
+        number="02"
+        title="Uygulama Gerektirmez"
+        description="Müşterileriniz ekstra bir uygulama indirmeden bağlantınıza ulaşabilir."
+      />
+
+      <BenefitCard
+        number="03"
+        title="İşletmenize Özel"
+        description="NFC ürününüz işletmenizin kullanmak istediği dijital bağlantıya göre hazırlanır."
+      />
+
+      <BenefitCard
+        number="04"
+        title="Kolay Kullanım"
+        description="Google, Instagram, WhatsApp, IBAN ve ilan bağlantılarını paylaşmayı kolaylaştırır."
+      />
+    </div>
+  </div>
+</section>
+
           {/* NASIL ÇALIŞIR */}
 <section
   id="nasil-calisir"
@@ -652,6 +744,57 @@ function StepCard({ number, title, description }) {
       <p
         style={{
           margin: "0",
+          color: "#667085",
+          fontSize: "14px",
+          lineHeight: "1.7",
+        }}
+      >
+        {description}
+      </p>
+    </div>
+  );
+}
+function BenefitCard({ number, title, description }) {
+  return (
+    <div
+      style={{
+        padding: "28px",
+        background: "#f8fafc",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "42px",
+          height: "42px",
+          borderRadius: "12px",
+          background: "#eaf4ff",
+          color: "#087cf0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "13px",
+          fontWeight: "900",
+          marginBottom: "22px",
+        }}
+      >
+        {number}
+      </div>
+
+      <h3
+        style={{
+          margin: "0 0 10px",
+          fontSize: "19px",
+          color: "#101828",
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        style={{
+          margin: 0,
           color: "#667085",
           fontSize: "14px",
           lineHeight: "1.7",
