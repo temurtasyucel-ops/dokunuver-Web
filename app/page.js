@@ -324,6 +324,7 @@ export default function Home() {
           {/* NASIL ÇALIŞIR */}
 <section
   id="nasil-calisir"
+  className="how-section"
   style={{
     background: "#f8fafc",
     padding: "100px 24px",
