@@ -71,3 +71,135 @@ export async function GET(request) {
     );
   }
 }
+function generateCode(length = 6) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let code = "";
+
+  for (let i = 0; i < length; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return code;
+}
+
+export async function POST(request) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+
+    if (!isAdmin) {
+      return Response.json(
+        { error: "Yetkisiz erişim." },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+
+    const businessName = body.business_name?.trim();
+    const productType = body.product_type?.trim();
+    const targetUrl = body.target_url?.trim();
+
+    if (!businessName || !productType || !targetUrl) {
+      return Response.json(
+        { error: "Tüm alanları doldurun." },
+        { status: 400 }
+      );
+    }
+
+    const allowedProductTypes = [
+      "google",
+      "instagram",
+      "whatsapp",
+      "ilan",
+      "konum",
+      "diger",
+    ];
+
+    if (!allowedProductTypes.includes(productType)) {
+      return Response.json(
+        { error: "Geçersiz ürün tipi." },
+        { status: 400 }
+      );
+    }
+
+    let parsedUrl;
+
+    try {
+      parsedUrl = new URL(targetUrl);
+    } catch {
+      return Response.json(
+        { error: "Geçerli bir hedef bağlantı girin." },
+        { status: 400 }
+      );
+    }
+
+    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+      return Response.json(
+        { error: "Hedef bağlantı http veya https olmalıdır." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const code = generateCode();
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/smart_links`,
+        {
+          method: "POST",
+          headers: {
+            apikey: secretKey,
+            Authorization: `Bearer ${secretKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            code,
+            product_type: productType,
+            business_name: businessName,
+            target_url: parsedUrl.toString(),
+            active: true,
+          }),
+          cache: "no-store",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        return Response.json(data[0], { status: 201 });
+      }
+
+      const errorText = await response.text();
+
+      // 23505 = PostgreSQL unique violation.
+      // Çok düşük ihtimalle aynı kod üretilirse tekrar dener.
+      if (errorText.includes("23505")) {
+        continue;
+      }
+
+      console.error("Smart Link POST Supabase error:", errorText);
+
+      return Response.json(
+        { error: "Smart Link oluşturulamadı." },
+        { status: 500 }
+      );
+    }
+
+    return Response.json(
+      { error: "Benzersiz Smart Link kodu oluşturulamadı." },
+      { status: 500 }
+    );
+  } catch (error) {
+    console.error("Smart Link POST error:", error);
+
+    return Response.json(
+      { error: "Sunucu hatası." },
+      { status: 500 }
+    );
+  }
+}
