@@ -16,4 +16,7 @@
   .product-card {
     padding: 22px !important;
   }
+  .step-card {
+  padding: 24px !important;
+}
 }
