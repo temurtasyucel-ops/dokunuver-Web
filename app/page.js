@@ -398,19 +398,19 @@ export default function Home() {
       />
     </div>
   </div>
-</section>
-          {/* İLETİŞİM / SİPARİŞ */}
 <section
+  className="contact-section"
   style={{
     background: "#ffffff",
     padding: "100px 24px",
   }}
 >
   <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-      background: "#101828",
+  className="contact-box"
+  style={{
+    maxWidth: "1180px",
+    margin: "0 auto",
+    background: "#101828",
       borderRadius: "28px",
       padding: "70px 32px",
       textAlign: "center",
