@@ -585,13 +585,14 @@ function ProductCard({ icon, title, description }) {
 function StepCard({ number, title, description }) {
   return (
     <div
-      style={{
-        background: "#ffffff",
-        border: "1px solid #eaecf0",
-        borderRadius: "20px",
-        padding: "32px",
-      }}
-    >
+  className="step-card"
+  style={{
+    background: "#ffffff",
+    border: "1px solid #eaecf0",
+    borderRadius: "20px",
+    padding: "32px",
+  }}
+>
       <div
         style={{
           color: "#087cf0",
