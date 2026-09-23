@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "WhatsApp NFC",
+  description:
+    "DOKUNUVER WhatsApp NFC ile müşterileriniz telefonlarını karta yaklaştırarak WhatsApp üzerinden işletmenizle kolayca iletişime geçebilir.",
+};
+
 export default function WhatsAppPage() {
   return (
     <main
