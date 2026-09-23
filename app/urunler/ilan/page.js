@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "İlan NFC",
+  description:
+    "DOKUNUVER İlan NFC ile araç veya gayrimenkul ilanınızı tek dokunuşla paylaşın. Müşterileriniz telefonlarını karta yaklaştırarak ilanınıza kolayca ulaşabilir.",
+};
+
 export default function IlanPage() {
   return (
     <main
