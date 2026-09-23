@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Instagram NFC",
+  description:
+    "DOKUNUVER Instagram NFC ile müşterileriniz telefonlarını karta yaklaştırarak Instagram profilinize kolayca ulaşabilir.",
+};
+
 export default function InstagramPage() {
   return (
     <main
