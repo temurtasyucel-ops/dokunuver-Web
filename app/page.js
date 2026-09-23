@@ -242,13 +242,14 @@ export default function Home() {
       </p>
     </div>
 
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "18px",
-      }}
-    >
+ <div
+  className="products-grid"
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+    gap: "18px",
+  }}
+>
       <a
   href="/urunler/google-yorum"
   style={{
@@ -318,6 +319,21 @@ export default function Home() {
     description="Araç veya gayrimenkul ilanınızı NFC ile doğrudan müşterilerinize açın."
   />
 </a>
+
+<a
+  href="/urunler/duo"
+  style={{
+    textDecoration: "none",
+    color: "inherit",
+  }}
+>
+  <ProductCard
+    icon="⇄"
+    title="Duo NFC"
+    description="İki farklı dijital bağlantıyı tek DOKUNUVER ürününde bir araya getirin."
+  />
+</a>
+      
     </div>
   </div>
 </section>
