@@ -52,26 +52,10 @@ const [filter, setFilter] = useState("all");
 
       const token = localStorage.getItem("dokunuver_access_token");
 
-      if (!token) {
-        setError("Oturum bulunamadı.");
-        const filteredLinks = links.filter((link) => {
-  const searchText = search.toLowerCase().trim();
-
-  const matchesSearch =
-    !searchText ||
-    (link.business_name || "").toLowerCase().includes(searchText) ||
-    (link.code || "").toLowerCase().includes(searchText) ||
-    (link.product_type || "").toLowerCase().includes(searchText);
-
-  const matchesFilter =
-    filter === "all" ||
-    (filter === "active" && link.active) ||
-    (filter === "passive" && !link.active);
-
-  return matchesSearch && matchesFilter;
-});
-        return;
-      }
+     if (!token) {
+  setError("Oturum bulunamadı.");
+  return;
+}
 
       const response = await fetch("/api/smart-links", {
         method: "PUT",
@@ -100,12 +84,29 @@ const [filter, setFilter] = useState("all");
             : item
         )
       );
-    } catch (err) {
-      setError(err.message);
-    }
+      } catch (err) {
+    setError(err.message);
   }
+}
 
-  return (
+const filteredLinks = links.filter((link) => {
+  const searchText = search.toLowerCase().trim();
+
+  const matchesSearch =
+    !searchText ||
+    (link.business_name || "").toLowerCase().includes(searchText) ||
+    (link.code || "").toLowerCase().includes(searchText) ||
+    (link.product_type || "").toLowerCase().includes(searchText);
+
+  const matchesFilter =
+    filter === "all" ||
+    (filter === "active" && link.active) ||
+    (filter === "passive" && !link.active);
+
+  return matchesSearch && matchesFilter;
+});
+
+return (
     <main
       style={{
         maxWidth: "1180px",
