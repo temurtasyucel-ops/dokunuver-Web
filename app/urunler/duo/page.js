@@ -79,23 +79,18 @@ export default function DuoPage() {
             DUO NFC
           </div>
 
-          <div
-            style={{
-              width: "150px",
-              height: "150px",
-              margin: "0 auto 36px",
-              borderRadius: "36px",
-              background: "#eaf4ff",
-              color: "#087cf0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "64px",
-              fontWeight: "500",
-            }}
-          >
-            ⇄
-          </div>
+<img
+  src="/images/duo-nfc.png"
+  alt="DOKUNUVER Duo NFC"
+  style={{
+    display: "block",
+    width: "100%",
+    maxWidth: "420px",
+    height: "auto",
+    margin: "0 auto 40px",
+    borderRadius: "24px",
+  }}
+/>
 
           <h1
             style={{
