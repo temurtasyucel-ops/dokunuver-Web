@@ -39,7 +39,12 @@
     padding-bottom: 60px !important;
   }
 
+  .benefits-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
   .benefit-card {
-    padding: 22px !important;
+    padding: 18px !important;
   }
 }
