@@ -47,4 +47,13 @@
   .benefit-card {
     padding: 18px !important;
   }
+    .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .products-grid .product-card {
+    height: 100%;
+    box-sizing: border-box;
+  }
 }
