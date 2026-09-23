@@ -322,6 +322,154 @@ export default function Home() {
   </div>
 </section>
 
+{/* DUO NFC */}
+<section
+  style={{
+    background: "#f8fafc",
+    padding: "80px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "650px",
+        marginBottom: "40px",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "900",
+          letterSpacing: "1px",
+          marginBottom: "14px",
+        }}
+      >
+        DUO NFC
+      </div>
+
+      <h2
+        style={{
+          margin: "0 0 16px",
+          fontSize: "clamp(32px, 5vw, 48px)",
+          lineHeight: "1.1",
+          letterSpacing: "-1.5px",
+        }}
+      >
+        İki bağlantı.
+        <br />
+        Tek ürün.
+      </h2>
+
+      <p
+        style={{
+          margin: 0,
+          color: "#667085",
+          fontSize: "17px",
+          lineHeight: "1.7",
+        }}
+      >
+        İki farklı dijital bağlantıyı tek DOKUNUVER ürününde bir araya getirin.
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        gap: "18px",
+      }}
+    >
+      <div
+        style={{
+          background: "#ffffff",
+          border: "1px solid #eaecf0",
+          borderRadius: "20px",
+          padding: "28px",
+        }}
+      >
+        <div
+          style={{
+            color: "#087cf0",
+            fontSize: "13px",
+            fontWeight: "900",
+            marginBottom: "20px",
+          }}
+        >
+          DUO 01
+        </div>
+
+        <h3
+          style={{
+            margin: "0 0 10px",
+            fontSize: "22px",
+          }}
+        >
+          Google + Instagram
+        </h3>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#667085",
+            fontSize: "14px",
+            lineHeight: "1.7",
+          }}
+        >
+          Google yorum sayfanızı ve Instagram profilinizi tek üründe
+          müşterilerinizle buluşturun.
+        </p>
+      </div>
+
+      <div
+        style={{
+          background: "#ffffff",
+          border: "1px solid #eaecf0",
+          borderRadius: "20px",
+          padding: "28px",
+        }}
+      >
+        <div
+          style={{
+            color: "#087cf0",
+            fontSize: "13px",
+            fontWeight: "900",
+            marginBottom: "20px",
+          }}
+        >
+          DUO 02
+        </div>
+
+        <h3
+          style={{
+            margin: "0 0 10px",
+            fontSize: "22px",
+          }}
+        >
+          IBAN + WhatsApp
+        </h3>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#667085",
+            fontSize: "14px",
+            lineHeight: "1.7",
+          }}
+        >
+          IBAN bilgilerinizi ve WhatsApp iletişim bağlantınızı tek üründe
+          müşterilerinize sunun.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {/* NEDEN DOKUNUVER */}
 <section
   className="benefits-section"
