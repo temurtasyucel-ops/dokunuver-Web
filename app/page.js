@@ -380,13 +380,14 @@ export default function Home() {
       </p>
     </div>
 
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-        gap: "18px",
-      }}
-    >
+   <div
+  className="benefits-grid"
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: "18px",
+  }}
+>
       <BenefitCard
         number="01"
         title="Tek Dokunuş"
