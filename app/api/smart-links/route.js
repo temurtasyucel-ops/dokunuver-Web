@@ -315,3 +315,77 @@ export async function PATCH(request) {
     );
   }
 }
+export async function PUT(request) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+
+    if (!isAdmin) {
+      return Response.json(
+        { error: "Yetkisiz erişim." },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+
+    const code = body.code?.trim().toUpperCase();
+    const active = body.active;
+
+    if (!code || typeof active !== "boolean") {
+      return Response.json(
+        { error: "Geçersiz istek." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(code)}`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          active,
+          updated_at: new Date().toISOString(),
+        }),
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      console.error("Smart Link status update error:", errorText);
+
+      return Response.json(
+        { error: "Smart Link durumu değiştirilemedi." },
+        { status: 500 }
+      );
+    }
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      return Response.json(
+        { error: "Smart Link bulunamadı." },
+        { status: 404 }
+      );
+    }
+
+    return Response.json(data[0]);
+  } catch (error) {
+    console.error("Smart Link PUT error:", error);
+
+    return Response.json(
+      { error: "Sunucu hatası." },
+      { status: 500 }
+    );
+  }
+}
