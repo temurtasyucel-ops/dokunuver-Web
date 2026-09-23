@@ -16,18 +16,22 @@
   .product-card {
     padding: 22px !important;
   }
-  .step-card {
-  padding: 24px !important;
-.how-section {
-  padding-top: 65px !important;
-  padding-bottom: 65px !important;
-}
-  }
-.contact-section {
-  padding-top: 65px !important;
-  padding-bottom: 65px !important;
-}
 
-.contact-box {
-  padding: 50px 24px !important;
+  .step-card {
+    padding: 24px !important;
+  }
+
+  .how-section {
+    padding-top: 65px !important;
+    padding-bottom: 65px !important;
+  }
+
+  .contact-section {
+    padding-top: 65px !important;
+    padding-bottom: 65px !important;
+  }
+
+  .contact-box {
+    padding: 50px 24px !important;
+  }
 }
