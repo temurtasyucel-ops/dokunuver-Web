@@ -34,4 +34,12 @@
   .contact-box {
     padding: 50px 24px !important;
   }
+    .benefits-section {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .benefit-card {
+    padding: 22px !important;
+  }
 }
