@@ -1,0 +1,241 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function NewSmartLinkPage() {
+  const router = useRouter();
+
+  const [businessName, setBusinessName] = useState("");
+  const [productType, setProductType] = useState("google");
+  const [targetUrl, setTargetUrl] = useState("");
+
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+      setSaving(true);
+      setError("");
+
+      const token = localStorage.getItem("dokunuver_access_token");
+
+      if (!token) {
+        setError("Oturum bulunamadı.");
+        return;
+      }
+
+      const response = await fetch("/api/smart-links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          business_name: businessName.trim(),
+          product_type: productType,
+          target_url: targetUrl.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Smart Link oluşturulamadı.");
+      }
+
+      router.push("/panel/smart-links");
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <main
+      style={{
+        maxWidth: "760px",
+        margin: "0 auto",
+        padding: "50px 24px 80px",
+        fontFamily: "Arial, sans-serif",
+        color: "#101828",
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => router.push("/panel/smart-links")}
+        style={{
+          border: "none",
+          background: "transparent",
+          padding: 0,
+          marginBottom: "28px",
+          color: "#087cf0",
+          fontSize: "14px",
+          fontWeight: "700",
+          cursor: "pointer",
+        }}
+      >
+        ← Smart Links'e Dön
+      </button>
+
+      <div style={{ marginBottom: "36px" }}>
+        <div
+          style={{
+            color: "#087cf0",
+            fontSize: "13px",
+            fontWeight: "900",
+            letterSpacing: "1px",
+            marginBottom: "12px",
+          }}
+        >
+          DOKUNUVER PANEL
+        </div>
+
+        <h1
+          style={{
+            margin: "0 0 12px",
+            fontSize: "clamp(30px, 5vw, 44px)",
+          }}
+        >
+          Yeni Smart Link
+        </h1>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#667085",
+            lineHeight: "1.6",
+          }}
+        >
+          NFC ve QR kodunda kullanılacak dinamik yönlendirmeyi oluşturun.
+        </p>
+      </div>
+
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          background: "#ffffff",
+          border: "1px solid #eaecf0",
+          borderRadius: "20px",
+          padding: "28px",
+        }}
+      >
+        <label style={labelStyle}>
+          İşletme / Müşteri Adı
+
+          <input
+            type="text"
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+            placeholder="Örn: Pinkrose Cafe"
+            required
+            style={inputStyle}
+          />
+        </label>
+
+        <label style={labelStyle}>
+          Ürün Tipi
+
+          <select
+            value={productType}
+            onChange={(e) => setProductType(e.target.value)}
+            style={inputStyle}
+          >
+            <option value="google">Google Yorum</option>
+            <option value="instagram">Instagram</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="ilan">İlan</option>
+            <option value="konum">Google Maps / Konum</option>
+            <option value="diger">Diğer</option>
+          </select>
+        </label>
+
+        <label style={labelStyle}>
+          Hedef Bağlantı
+
+          <input
+            type="url"
+            value={targetUrl}
+            onChange={(e) => setTargetUrl(e.target.value)}
+            placeholder="https://..."
+            required
+            style={inputStyle}
+          />
+        </label>
+
+        <div
+          style={{
+            marginTop: "-6px",
+            marginBottom: "24px",
+            color: "#667085",
+            fontSize: "13px",
+            lineHeight: "1.6",
+          }}
+        >
+          Bu bağlantıyı daha sonra değiştirebileceğiz. NFC ve QR kodunun
+          DOKUNUVER bağlantısı değişmeyecek.
+        </div>
+
+        {error && (
+          <div
+            style={{
+              marginBottom: "20px",
+              padding: "14px",
+              background: "#fff1f0",
+              border: "1px solid #fecdca",
+              borderRadius: "10px",
+              color: "#b42318",
+              fontSize: "14px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={saving}
+          style={{
+            width: "100%",
+            border: "none",
+            borderRadius: "12px",
+            padding: "15px 20px",
+            background: saving ? "#98a2b3" : "#087cf0",
+            color: "#ffffff",
+            fontSize: "15px",
+            fontWeight: "800",
+            cursor: saving ? "not-allowed" : "pointer",
+          }}
+        >
+          {saving ? "Oluşturuluyor..." : "Smart Link Oluştur"}
+        </button>
+      </form>
+    </main>
+  );
+}
+
+const labelStyle = {
+  display: "block",
+  marginBottom: "22px",
+  fontSize: "14px",
+  fontWeight: "700",
+  color: "#344054",
+};
+
+const inputStyle = {
+  display: "block",
+  width: "100%",
+  boxSizing: "border-box",
+  marginTop: "8px",
+  padding: "13px 14px",
+  border: "1px solid #d0d5dd",
+  borderRadius: "10px",
+  background: "#ffffff",
+  color: "#101828",
+  fontSize: "15px",
+  outline: "none",
+};
