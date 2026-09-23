@@ -518,17 +518,38 @@ export default function Home() {
       </div>
     </div>
 
-    <a
-      href="/iletisim"
-      style={{
-        fontSize: "14px",
-        fontWeight: "600",
-        color: "#475467",
-        textDecoration: "none",
-      }}
-    >
-      İletişim
-    </a>
+    <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
+    flexWrap: "wrap",
+  }}
+>
+  <a
+    href="/iletisim"
+    style={{
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#475467",
+      textDecoration: "none",
+    }}
+  >
+    İletişim
+  </a>
+
+  <a
+    href="/gizlilik"
+    style={{
+      fontSize: "14px",
+      fontWeight: "600",
+      color: "#475467",
+      textDecoration: "none",
+    }}
+  >
+    Gizlilik
+  </a>
+</div>
           
     <div
       style={{
