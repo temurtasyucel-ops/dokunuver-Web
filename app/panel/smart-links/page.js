@@ -20,6 +20,48 @@ export default function SmartLinksPage() {
 
       if (!token) {
         setError("Oturum bulunamadı.");
+        async function toggleStatus(link) {
+  try {
+    setError("");
+
+    const token = localStorage.getItem("dokunuver_access_token");
+
+    if (!token) {
+      setError("Oturum bulunamadı.");
+      return;
+    }
+
+    const response = await fetch("/api/smart-links", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code: link.code,
+        active: !link.active,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Smart Link durumu değiştirilemedi."
+      );
+    }
+
+    setLinks((currentLinks) =>
+      currentLinks.map((item) =>
+        item.code === link.code
+          ? { ...item, active: data.active }
+          : item
+      )
+    );
+  } catch (err) {
+    setError(err.message);
+  }
+}
         return;
       }
 
@@ -199,22 +241,47 @@ export default function SmartLinksPage() {
                 <div>
                   <strong>Hedef:</strong> {link.target_url}
                 </div>
-                    <a
-  href={`/panel/smart-links/edit/${link.code}`}
+                    <div
   style={{
-    display: "inline-block",
+    display: "flex",
+    gap: "10px",
+    flexWrap: "wrap",
     marginTop: "18px",
-    padding: "10px 16px",
-    background: "#087cf0",
-    color: "#ffffff",
-    textDecoration: "none",
-    borderRadius: "10px",
-    fontSize: "14px",
-    fontWeight: "800",
   }}
 >
-  Düzenle
-</a>
+  <a
+    href={`/panel/smart-links/edit/${link.code}`}
+    style={{
+      display: "inline-block",
+      padding: "10px 16px",
+      background: "#087cf0",
+      color: "#ffffff",
+      textDecoration: "none",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    Düzenle
+  </a>
+
+  <button
+    type="button"
+    onClick={() => toggleStatus(link)}
+    style={{
+      border: "1px solid #d0d5dd",
+      padding: "10px 16px",
+      background: "#ffffff",
+      color: link.active ? "#b42318" : "#027a48",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+      cursor: "pointer",
+    }}
+  >
+    {link.active ? "Pasife Al" : "Aktif Et"}
+  </button>
+</div>
               </div>
             </div>
           ))}
