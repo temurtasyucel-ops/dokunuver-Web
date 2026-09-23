@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "IBAN NFC",
+  description:
+    "DOKUNUVER IBAN NFC ile banka, hesap sahibi ve IBAN bilgilerinizi kolayca paylaşın. Müşterileriniz IBAN'ınızı tek dokunuşla görüntüleyip kopyalayabilir.",
+};
+
 export default function IbanPage() {
   return (
     <main
