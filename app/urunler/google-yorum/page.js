@@ -1,3 +1,9 @@
+export const metadata = {
+  title: "Google Yorum NFC",
+  description:
+    "DOKUNUVER Google Yorum NFC ile müşterileriniz telefonlarını karta yaklaştırarak Google yorum sayfanıza kolayca ulaşabilir.",
+};
+
 export default function GoogleYorumPage() {
   return (
     <main
