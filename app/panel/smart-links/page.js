@@ -128,6 +128,22 @@ export default function SmartLinksPage() {
         >
           NFC ve QR ürünlerinin dinamik yönlendirme bağlantılarını yönetin.
         </p>
+            <a
+  href="/panel/smart-links/new"
+  style={{
+    display: "inline-block",
+    marginTop: "22px",
+    padding: "12px 18px",
+    background: "#087cf0",
+    color: "#ffffff",
+    textDecoration: "none",
+    borderRadius: "10px",
+    fontSize: "14px",
+    fontWeight: "800",
+  }}
+>
+  + Yeni Smart Link
+</a>
       </div>
 
       {loading && <p>Yükleniyor...</p>}
