@@ -320,7 +320,7 @@ export default function Home() {
   />
 </a>
 
-<<a
+<a
   href="/urunler/duo"
   style={{
     textDecoration: "none",
