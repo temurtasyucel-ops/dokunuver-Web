@@ -467,7 +467,7 @@ return (
                       fontWeight: "800",
                     }}
                   >
-                    Düzenle
+                    {link.status === "stock" ? "Müşteriye Ata" : "Düzenle"}
                   </a>
 
                   <button
