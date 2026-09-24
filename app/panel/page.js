@@ -158,7 +158,7 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
             </p>
           </div>
 
-          <<div
+          <div
   style={{
     display: "flex",
     gap: "10px",
