@@ -13,6 +13,7 @@ export default function EditSmartLinkPage() {
   const [targetUrl, setTargetUrl] = useState("");
   const [status, setStatus] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [instagramUsername, setInstagramUsername] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -261,8 +262,7 @@ export default function EditSmartLinkPage() {
               <option value="diger">Diğer</option>
             </select>
           </label>
-
-         {productType === "whatsapp" ? (
+{productType === "whatsapp" ? (
   <label style={labelStyle}>
     WhatsApp Telefon Numarası
 
@@ -271,6 +271,19 @@ export default function EditSmartLinkPage() {
       value={whatsappNumber}
       onChange={(e) => setWhatsappNumber(e.target.value)}
       placeholder="05XX XXX XX XX"
+      required
+      style={inputStyle}
+    />
+  </label>
+) : productType === "instagram" ? (
+  <label style={labelStyle}>
+    Instagram Kullanıcı Adı
+
+    <input
+      type="text"
+      value={instagramUsername}
+      onChange={(e) => setInstagramUsername(e.target.value)}
+      placeholder="@kullaniciadi"
       required
       style={inputStyle}
     />
