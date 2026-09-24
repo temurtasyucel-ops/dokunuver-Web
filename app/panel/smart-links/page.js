@@ -221,7 +221,50 @@ return (
   <BulkQRCodeButton links={links} />
 </div>
       </div>
+<div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    marginTop: "20px",
+    marginBottom: "20px",
+  }}
+>
+  <div className="stock-summary-card">
+    <strong>Toplam Stok</strong>
+    <span>{stockCounts.total}</span>
+  </div>
 
+  <div className="stock-summary-card">
+    <strong>Google</strong>
+    <span>{stockCounts.google}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Instagram</strong>
+    <span>{stockCounts.instagram}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>WhatsApp</strong>
+    <span>{stockCounts.whatsapp}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>İlan</strong>
+    <span>{stockCounts.ilan}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Konum</strong>
+    <span>{stockCounts.konum}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Diğer</strong>
+    <span>{stockCounts.diger}</span>
+  </div>
+</div>
 <div
   style={{
     display: "flex",
