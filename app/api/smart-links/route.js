@@ -390,3 +390,78 @@ export async function PUT(request) {
     );
   }
 }
+export async function DELETE(request) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+
+    if (!isAdmin) {
+      return Response.json(
+        { error: "Yetkisiz erişim." },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const code = body.code?.trim().toUpperCase();
+
+    if (!code) {
+      return Response.json(
+        { error: "Geçersiz istek." },
+        { status: 400 }
+      );
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const secretKey = process.env.SUPABASE_SECRET_KEY;
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+        code
+      )}&status=eq.stock`,
+      {
+        method: "PATCH",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          status: "cancelled",
+          active: false,
+          updated_at: new Date().toISOString(),
+        }),
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      console.error("Smart Link cancel error:", errorText);
+
+      return Response.json(
+        { error: "Stok kartı iptal edilemedi." },
+        { status: 500 }
+      );
+    }
+
+    const data = await response.json();
+
+    if (!data || data.length === 0) {
+      return Response.json(
+        { error: "İptal edilebilir stok kartı bulunamadı." },
+        { status: 404 }
+      );
+    }
+
+    return Response.json(data[0]);
+  } catch (error) {
+    console.error("Smart Link DELETE error:", error);
+
+    return Response.json(
+      { error: "Sunucu hatası." },
+      { status: 500 }
+    );
+  }
+}
