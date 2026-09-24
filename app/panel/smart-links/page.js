@@ -470,22 +470,24 @@ return (
                     {link.status === "stock" ? "Müşteriye Ata" : "Düzenle"}
                   </a>
 
-                  <button
-                    type="button"
-                    onClick={() => toggleStatus(link)}
-                    style={{
-                      border: "1px solid #d0d5dd",
-                      padding: "10px 16px",
-                      background: "#ffffff",
-                      color: link.active ? "#b42318" : "#027a48",
-                      borderRadius: "10px",
-                      fontSize: "14px",
-                      fontWeight: "800",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {link.active ? "Pasife Al" : "Aktif Et"}
-                  </button>
+                  {link.status !== "stock" && (
+  <button
+    type="button"
+    onClick={() => toggleStatus(link)}
+    style={{
+      border: "1px solid #d0d5dd",
+      padding: "10px 16px",
+      background: "#ffffff",
+      color: link.active ? "#b42318" : "#027a48",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+      cursor: "pointer",
+    }}
+  >
+    {link.active ? "Pasife Al" : "Aktif Et"}
+  </button>
+)}
 
                     <button
   type="button"
