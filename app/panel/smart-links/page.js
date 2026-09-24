@@ -503,89 +503,93 @@ return (
                   <strong>Hedef:</strong> {link.target_url}
                 </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    flexWrap: "wrap",
-                    marginTop: "18px",
-                  }}
-                >
-                  <a
-                    href={`/panel/smart-links/edit/${link.code}`}
-                    style={{
-                      display: "inline-block",
-                      padding: "10px 16px",
-                      background: "#087cf0",
-                      color: "#ffffff",
-                      textDecoration: "none",
-                      borderRadius: "10px",
-                      fontSize: "14px",
-                      fontWeight: "800",
-                    }}
-                  >
-                    {link.status === "stock" ? "Müşteriye Ata" : "Düzenle"}
-                  </a>
-{link.status === "stock" && (
-  <button
-    type="button"
-    onClick={() => cancelStock(link)}
+                {link.status !== "cancelled" && (
+  <div
     style={{
-      border: "1px solid #fecdca",
-      padding: "10px 16px",
-      background: "#fff1f0",
-      color: "#b42318",
-      borderRadius: "10px",
-      fontSize: "14px",
-      fontWeight: "800",
-      cursor: "pointer",
+      display: "flex",
+      gap: "10px",
+      flexWrap: "wrap",
+      marginTop: "18px",
     }}
   >
-    İptal Et
-  </button>
-)}
-                  {link.status !== "stock" && (
-  <button
-    type="button"
-    onClick={() => toggleStatus(link)}
-    style={{
-      border: "1px solid #d0d5dd",
-      padding: "10px 16px",
-      background: "#ffffff",
-      color: link.active ? "#b42318" : "#027a48",
-      borderRadius: "10px",
-      fontSize: "14px",
-      fontWeight: "800",
-      cursor: "pointer",
-    }}
-  >
-    {link.active ? "Pasife Al" : "Aktif Et"}
-  </button>
-)}
+    <a
+      href={`/panel/smart-links/edit/${link.code}`}
+      style={{
+        display: "inline-block",
+        padding: "10px 16px",
+        background: "#087cf0",
+        color: "#ffffff",
+        textDecoration: "none",
+        borderRadius: "10px",
+        fontSize: "14px",
+        fontWeight: "800",
+      }}
+    >
+      {link.status === "stock" ? "Müşteriye Ata" : "Düzenle"}
+    </a>
 
-                    <button
-  type="button"
-  onClick={() => {
-    const nfcLink = `https://dokunuver.com.tr/x/${link.code}`;
-    navigator.clipboard.writeText(nfcLink);
-    alert("NFC linki kopyalandı.");
-  }}
-  style={{
-    border: "1px solid #d0d5dd",
-    padding: "10px 16px",
-    background: "#ffffff",
-    color: "#344054",
-    borderRadius: "10px",
-    fontSize: "14px",
-    fontWeight: "800",
-    cursor: "pointer",
-  }}
->
-  NFC Linkini Kopyala
-</button>
+    {link.status === "stock" && (
+      <button
+        type="button"
+        onClick={() => cancelStock(link)}
+        style={{
+          border: "1px solid #fecdca",
+          padding: "10px 16px",
+          background: "#fff1f0",
+          color: "#b42318",
+          borderRadius: "10px",
+          fontSize: "14px",
+          fontWeight: "800",
+          cursor: "pointer",
+        }}
+      >
+        İptal Et
+      </button>
+    )}
 
-    
-                    <QRCodeButton code={link.code} />
+    {link.status === "assigned" && (
+      <button
+        type="button"
+        onClick={() => toggleStatus(link)}
+        style={{
+          border: "1px solid #d0d5dd",
+          padding: "10px 16px",
+          background: "#ffffff",
+          color: link.active ? "#b42318" : "#027a48",
+          borderRadius: "10px",
+          fontSize: "14px",
+          fontWeight: "800",
+          cursor: "pointer",
+        }}
+      >
+        {link.active ? "Pasife Al" : "Aktif Et"}
+      </button>
+    )}
+
+    <button
+      type="button"
+      onClick={() => {
+        const nfcLink = `https://dokunuver.com.tr/x/${link.code}`;
+        navigator.clipboard.writeText(nfcLink);
+        alert("NFC linki kopyalandı.");
+      }}
+      style={{
+        border: "1px solid #d0d5dd",
+        padding: "10px 16px",
+        background: "#ffffff",
+        color: "#344054",
+        borderRadius: "10px",
+        fontSize: "14px",
+        fontWeight: "800",
+        cursor: "pointer",
+      }}
+    >
+      NFC Linkini Kopyala
+    </button>
+
+    <QRCodeButton code={link.code} />
+  </div>
+)}
                 </div>
               </div>
             </div>
