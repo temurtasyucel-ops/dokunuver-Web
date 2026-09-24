@@ -89,7 +89,31 @@ const [filter, setFilter] = useState("all");
     setError(err.message);
   }
 }
+const stockLinks = links.filter(
+  (link) => link.status === "stock"
+);
 
+const stockCounts = {
+  total: stockLinks.length,
+  google: stockLinks.filter(
+    (link) => link.product_type === "google"
+  ).length,
+  instagram: stockLinks.filter(
+    (link) => link.product_type === "instagram"
+  ).length,
+  whatsapp: stockLinks.filter(
+    (link) => link.product_type === "whatsapp"
+  ).length,
+  ilan: stockLinks.filter(
+    (link) => link.product_type === "ilan"
+  ).length,
+  konum: stockLinks.filter(
+    (link) => link.product_type === "konum"
+  ).length,
+  diger: stockLinks.filter(
+    (link) => link.product_type === "diger"
+  ).length,
+};
 const filteredLinks = links.filter((link) => {
   const searchText = search.toLowerCase().trim();
 
