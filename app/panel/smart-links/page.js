@@ -147,22 +147,46 @@ return (
         >
           NFC ve QR ürünlerinin dinamik yönlendirme bağlantılarını yönetin.
         </p>
-            <a
-  href="/panel/smart-links/new"
+            <div
   style={{
-    display: "inline-block",
+    display: "flex",
+    gap: "10px",
+    flexWrap: "wrap",
     marginTop: "22px",
-    padding: "12px 18px",
-    background: "#087cf0",
-    color: "#ffffff",
-    textDecoration: "none",
-    borderRadius: "10px",
-    fontSize: "14px",
-    fontWeight: "800",
   }}
 >
-  + Yeni Smart Link
-</a>
+  <a
+    href="/panel/smart-links/new"
+    style={{
+      display: "inline-block",
+      padding: "12px 18px",
+      background: "#087cf0",
+      color: "#ffffff",
+      textDecoration: "none",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    + Yeni Smart Link
+  </a>
+
+  <a
+    href="/panel/smart-links/bulk"
+    style={{
+      display: "inline-block",
+      padding: "12px 18px",
+      background: "#101828",
+      color: "#ffffff",
+      textDecoration: "none",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    + Toplu Stok Oluştur
+  </a>
+</div>
       </div>
 
 <div
