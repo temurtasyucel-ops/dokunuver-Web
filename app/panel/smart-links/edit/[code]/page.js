@@ -169,7 +169,7 @@ export default function EditSmartLinkPage() {
             fontSize: "clamp(30px, 5vw, 44px)",
           }}
         >
-          {link?.status === "stock"
+          {status === "stock"
   ? "Stok Kartını Müşteriye Ata"
   : "Smart Link Düzenle"}
         </h1>
