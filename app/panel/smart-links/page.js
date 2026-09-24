@@ -213,6 +213,19 @@ return (
           DOKUNUVER PANEL
         </div>
 
+            <a
+  href="/panel"
+  style={{
+    display: "inline-block",
+    marginBottom: "24px",
+    color: "#087cf0",
+    textDecoration: "none",
+    fontSize: "14px",
+    fontWeight: "700",
+  }}
+>
+  ← IBAN Kart Yönetimi
+</a>
         <h1
           style={{
             margin: "0 0 12px",
