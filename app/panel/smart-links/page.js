@@ -471,6 +471,8 @@ return (
                 >
                   {link.status === "stock"
   ? "STOK"
+  : link.status === "cancelled"
+  ? "İPTAL"
   : link.active
   ? "AKTİF"
   : "PASİF"}
