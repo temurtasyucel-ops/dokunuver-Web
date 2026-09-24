@@ -276,11 +276,12 @@ export async function PATCH(request) {
           Prefer: "return=representation",
         },
         body: JSON.stringify({
-          business_name: businessName,
-          product_type: productType,
-          target_url: parsedUrl.toString(),
-          updated_at: new Date().toISOString(),
-        }),
+  business_name: businessName,
+  product_type: productType,
+  target_url: parsedUrl.toString(),
+  status: "assigned",
+  updated_at: new Date().toISOString(),
+}),
         cache: "no-store",
       }
     );
