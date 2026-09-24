@@ -380,6 +380,29 @@ return (
                     {link.active ? "Pasife Al" : "Aktif Et"}
                   </button>
 
+                    <button
+  type="button"
+  onClick={() => {
+    const nfcLink = `https://dokunuver.com.tr/x/${link.code}`;
+    navigator.clipboard.writeText(nfcLink);
+    alert("NFC linki kopyalandı.");
+  }}
+  style={{
+    border: "1px solid #d0d5dd",
+    padding: "10px 16px",
+    background: "#ffffff",
+    color: "#344054",
+    borderRadius: "10px",
+    fontSize: "14px",
+    fontWeight: "800",
+    cursor: "pointer",
+  }}
+>
+  NFC Linkini Kopyala
+</button>
+
+<QRCodeButton code={link.code} />
+    
                     <QRCodeButton code={link.code} />
                 </div>
               </div>
