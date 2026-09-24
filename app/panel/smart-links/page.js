@@ -587,10 +587,9 @@ return (
       NFC Linkini Kopyala
     </button>
 
-    <QRCodeButton code={link.code} />
+<QRCodeButton code={link.code} />
   </div>
 )}
-                </div>
               </div>
             </div>
           ))}
