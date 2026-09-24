@@ -177,19 +177,19 @@ const filteredLinks = links.filter((link) => {
     (link.code || "").toLowerCase().includes(searchText) ||
     (link.product_type || "").toLowerCase().includes(searchText);
 
-  const matchesFilter =
+ const matchesFilter =
   filter === "all" ||
   (filter === "stock" && link.status === "stock") ||
+  (filter === "cancelled" && link.status === "cancelled") ||
   (filter === "active" &&
-    link.status !== "stock" &&
+    link.status === "assigned" &&
     link.active) ||
   (filter === "passive" &&
-    link.status !== "stock" &&
+    link.status === "assigned" &&
     !link.active);
 
-  return matchesSearch && matchesFilter;
+return matchesSearch && matchesFilter;
 });
-
 return (
     <main
       style={{
