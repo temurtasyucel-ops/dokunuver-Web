@@ -311,7 +311,9 @@ return (
                       marginBottom: "6px",
                     }}
                   >
-                    {link.business_name || "İsimsiz Kart"}
+                    {link.status === "stock"
+  ? "Stok Kartı"
+  : link.business_name || "İsimsiz Kart"}
                   </div>
 
                   <div
@@ -335,7 +337,11 @@ return (
                     height: "fit-content",
                   }}
                 >
-                  {link.active ? "AKTİF" : "PASİF"}
+                  {link.status === "stock"
+  ? "STOK"
+  : link.active
+  ? "AKTİF"
+  : "PASİF"}
                 </div>
               </div>
 
