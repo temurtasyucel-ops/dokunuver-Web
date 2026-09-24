@@ -4,27 +4,41 @@ import { useState } from "react";
 import QRCode from "qrcode";
 import JSZip from "jszip";
 
+const productNames = {
+  google: "Google",
+  instagram: "Instagram",
+  whatsapp: "WhatsApp",
+  ilan: "İlan",
+  konum: "Konum",
+  diger: "Diğer",
+};
+
 export default function BulkQRCodeButton({ links }) {
-  const [loading, setLoading] = useState(false);
+  const [loadingType, setLoadingType] = useState("");
   const [error, setError] = useState("");
 
-  async function downloadBulkQR() {
+  const stockLinks = links.filter(
+    (link) => link.status === "stock"
+  );
+
+  const stockGroups = Object.keys(productNames)
+    .map((type) => ({
+      type,
+      name: productNames[type],
+      links: stockLinks.filter(
+        (link) => link.product_type === type
+      ),
+    }))
+    .filter((group) => group.links.length > 0);
+
+  async function downloadBulkQR(group) {
     try {
-      setLoading(true);
+      setLoadingType(group.type);
       setError("");
-
-      const stockLinks = links.filter(
-        (link) => link.status === "stock"
-      );
-
-      if (stockLinks.length === 0) {
-        setError("İndirilecek stok QR kodu bulunamadı.");
-        return;
-      }
 
       const zip = new JSZip();
 
-      for (const link of stockLinks) {
+      for (const link of group.links) {
         const smartLink =
           `https://dokunuver.com.tr/x/${link.code}`;
 
@@ -51,7 +65,8 @@ export default function BulkQRCodeButton({ links }) {
 
       const a = document.createElement("a");
       a.href = downloadUrl;
-      a.download = "DOKUNUVER-STOK-QR.zip";
+      a.download =
+        `DOKUNUVER-${group.type.toUpperCase()}-STOK-QR.zip`;
 
       document.body.appendChild(a);
       a.click();
@@ -62,44 +77,49 @@ export default function BulkQRCodeButton({ links }) {
       console.error("Toplu QR oluşturma hatası:", err);
       setError("Toplu QR dosyası oluşturulamadı.");
     } finally {
-      setLoading(false);
+      setLoadingType("");
     }
   }
 
-  const stockCount = links.filter(
-    (link) => link.status === "stock"
-  ).length;
+  if (stockGroups.length === 0) {
+    return null;
+  }
 
   return (
     <div>
-      <button
-        type="button"
-        onClick={downloadBulkQR}
-        disabled={loading || stockCount === 0}
+      <div
         style={{
-          border: "1px solid #d0d5dd",
-          padding: "12px 18px",
-          background:
-            loading || stockCount === 0
-              ? "#f2f4f7"
-              : "#ffffff",
-          color:
-            stockCount === 0
-              ? "#98a2b3"
-              : "#344054",
-          borderRadius: "10px",
-          fontSize: "14px",
-          fontWeight: "800",
-          cursor:
-            loading || stockCount === 0
-              ? "not-allowed"
-              : "pointer",
+          display: "flex",
+          gap: "10px",
+          flexWrap: "wrap",
         }}
       >
-        {loading
-          ? "QR'lar Hazırlanıyor..."
-          : `Stok QR'larını Toplu İndir (${stockCount})`}
-      </button>
+        {stockGroups.map((group) => (
+          <button
+            key={group.type}
+            type="button"
+            onClick={() => downloadBulkQR(group)}
+            disabled={Boolean(loadingType)}
+            style={{
+              border: "1px solid #d0d5dd",
+              padding: "12px 18px",
+              background: "#ffffff",
+              color: "#344054",
+              borderRadius: "10px",
+              fontSize: "14px",
+              fontWeight: "800",
+              cursor: loadingType
+                ? "not-allowed"
+                : "pointer",
+              opacity: loadingType ? 0.6 : 1,
+            }}
+          >
+            {loadingType === group.type
+              ? "QR'lar Hazırlanıyor..."
+              : `${group.name} QR'larını İndir (${group.links.length})`}
+          </button>
+        ))}
+      </div>
 
       {error && (
         <div
