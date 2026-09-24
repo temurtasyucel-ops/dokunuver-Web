@@ -14,6 +14,7 @@ export default function EditSmartLinkPage() {
   const [status, setStatus] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [instagramUsername, setInstagramUsername] = useState("");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -299,6 +300,19 @@ if (productType === "instagram") {
       value={instagramUsername}
       onChange={(e) => setInstagramUsername(e.target.value)}
       placeholder="@kullaniciadi"
+      required
+      style={inputStyle}
+    />
+  </label>
+) : productType === "google" ? (
+  <label style={labelStyle}>
+    Google Maps İşletme Bağlantısı
+
+    <input
+      type="url"
+      value={googleMapsUrl}
+      onChange={(e) => setGoogleMapsUrl(e.target.value)}
+      placeholder="https://maps.app.goo.gl/..."
       required
       style={inputStyle}
     />
