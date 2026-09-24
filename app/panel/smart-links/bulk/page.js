@@ -29,7 +29,7 @@ export default function BulkSmartLinksPage() {
     setMessage("");
 
     try {
-      const token = localStorage.getItem("supabase_access_token");
+      const token = localStorage.getItem("dokunuver_access_token");
 
       if (!token) {
         setMessage("Oturum bulunamadı. Lütfen tekrar giriş yapın.");
