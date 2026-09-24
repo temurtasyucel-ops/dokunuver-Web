@@ -12,6 +12,7 @@ export default function EditSmartLinkPage() {
   const [productType, setProductType] = useState("google");
   const [targetUrl, setTargetUrl] = useState("");
   const [status, setStatus] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -240,18 +241,33 @@ export default function EditSmartLinkPage() {
             </select>
           </label>
 
-          <label style={labelStyle}>
-            Hedef Bağlantı
+         {productType === "whatsapp" ? (
+  <label style={labelStyle}>
+    WhatsApp Telefon Numarası
 
-            <input
-              type="url"
-              value={targetUrl}
-              onChange={(e) => setTargetUrl(e.target.value)}
-              placeholder="https://..."
-              required
-              style={inputStyle}
-            />
-          </label>
+    <input
+      type="tel"
+      value={whatsappNumber}
+      onChange={(e) => setWhatsappNumber(e.target.value)}
+      placeholder="05XX XXX XX XX"
+      required
+      style={inputStyle}
+    />
+  </label>
+) : (
+  <label style={labelStyle}>
+    Hedef Bağlantı
+
+    <input
+      type="url"
+      value={targetUrl}
+      onChange={(e) => setTargetUrl(e.target.value)}
+      placeholder="https://..."
+      required
+      style={inputStyle}
+    />
+  </label>
+)}
 
           <div
             style={{
