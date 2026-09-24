@@ -158,13 +158,32 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
             </p>
           </div>
 
-          <button
-  type="button"
-  onClick={() => window.location.href = "/panel/new"}
-  style={styles.newButton}
+          <<div
+  style={{
+    display: "flex",
+    gap: "10px",
+    flexWrap: "wrap",
+  }}
 >
-  + Yeni IBAN Kartı
-</button>
+  <button
+    type="button"
+    onClick={() => window.location.href = "/panel/new"}
+    style={styles.newButton}
+  >
+    + Yeni IBAN Kartı
+  </button>
+
+  <button
+    type="button"
+    onClick={() => window.location.href = "/panel/smart-links"}
+    style={{
+      ...styles.newButton,
+      background: "#101828",
+    }}
+  >
+    Smart Links Yönetimi →
+  </button>
+</div>
         </section>
 
         <section style={styles.stats}>
