@@ -315,6 +315,19 @@ if (productType === "instagram") {
       required
       style={inputStyle}
     />
+    </label>
+) : productType === "ilan" ? (
+  <label style={labelStyle}>
+    İlan Bağlantısı
+
+    <input
+      type="url"
+      value={targetUrl}
+      onChange={(e) => setTargetUrl(e.target.value)}
+      placeholder="https://..."
+      required
+      style={inputStyle}
+    />
   </label>
 ) : (
   <label style={labelStyle}>
