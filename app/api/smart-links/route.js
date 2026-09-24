@@ -158,12 +158,12 @@ export async function POST(request) {
             Prefer: "return=representation",
           },
           body: JSON.stringify({
-            code,
-            product_type: productType,
-            business_name: businessName,
-            target_url: parsedUrl.toString(),
-            active: true,
-          }),
+  business_name: businessName,
+  product_type: productType,
+  target_url: parsedUrl.toString(),
+  status: "assigned",
+  updated_at: new Date().toISOString(),
+}),
           cache: "no-store",
         }
       );
