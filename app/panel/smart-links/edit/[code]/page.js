@@ -101,7 +101,22 @@ export default function EditSmartLinkPage() {
 
       finalTargetUrl = `https://wa.me/${phone}`;
     }
+if (productType === "instagram") {
+  let username = instagramUsername.trim();
 
+  username = username
+    .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+    .replace(/^@/, "")
+    .split(/[/?#]/)[0]
+    .trim();
+
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(username)) {
+    setError("Geçerli bir Instagram kullanıcı adı girin.");
+    return;
+  }
+
+  finalTargetUrl = `https://www.instagram.com/${username}/`;
+}
     const response = await fetch("/api/smart-links", {
       method: "PATCH",
       headers: {
