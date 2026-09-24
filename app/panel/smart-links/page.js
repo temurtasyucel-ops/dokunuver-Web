@@ -90,6 +90,59 @@ const [filter, setFilter] = useState("all");
   }
 }
 const stockLinks = links.filter(
+  async function cancelStock(link) {
+  const confirmed = window.confirm(
+    `${link.code} kodlu stok kartını iptal etmek istediğinize emin misiniz?\n\nBu işlem kartı stoktan çıkaracaktır.`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    setError("");
+
+    const token = localStorage.getItem("dokunuver_access_token");
+
+    if (!token) {
+      setError("Oturum bulunamadı.");
+      return;
+    }
+
+    const response = await fetch("/api/smart-links", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code: link.code,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Stok kartı iptal edilemedi."
+      );
+    }
+
+    setLinks((currentLinks) =>
+      currentLinks.map((item) =>
+        item.code === link.code
+          ? {
+              ...item,
+              status: data.status,
+              active: data.active,
+            }
+          : item
+      )
+    );
+  } catch (err) {
+    setError(err.message);
+  }
+}
   (link) => link.status === "stock"
 );
 
