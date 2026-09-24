@@ -139,10 +139,12 @@ const stockLinks = links.filter(
           : item
       )
     );
-  } catch (err) {
+    } catch (err) {
     setError(err.message);
   }
 }
+
+const stockLinks = links.filter(
   (link) => link.status === "stock"
 );
 
