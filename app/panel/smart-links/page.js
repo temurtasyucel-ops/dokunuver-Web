@@ -361,6 +361,7 @@ return (
 <option value="stock">Stok</option>
 <option value="active">Aktif</option>
 <option value="passive">Pasif</option>
+<option value="cancelled">İptal</option>
   </select>
 </div>
       {loading && <p>Yükleniyor...</p>}
