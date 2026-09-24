@@ -100,9 +100,14 @@ const filteredLinks = links.filter((link) => {
     (link.product_type || "").toLowerCase().includes(searchText);
 
   const matchesFilter =
-    filter === "all" ||
-    (filter === "active" && link.active) ||
-    (filter === "passive" && !link.active);
+  filter === "all" ||
+  (filter === "stock" && link.status === "stock") ||
+  (filter === "active" &&
+    link.status !== "stock" &&
+    link.active) ||
+  (filter === "passive" &&
+    link.status !== "stock" &&
+    !link.active);
 
   return matchesSearch && matchesFilter;
 });
@@ -232,8 +237,9 @@ return (
     }}
   >
     <option value="all">Tümü</option>
-    <option value="active">Aktif</option>
-    <option value="passive">Pasif</option>
+<option value="stock">Stok</option>
+<option value="active">Aktif</option>
+<option value="passive">Pasif</option>
   </select>
 </div>
       {loading && <p>Yükleniyor...</p>}
