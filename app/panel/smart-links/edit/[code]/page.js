@@ -67,47 +67,68 @@ export default function EditSmartLinkPage() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      setSaving(true);
-      setError("");
+  try {
+    setSaving(true);
+    setError("");
 
-      const token = localStorage.getItem("dokunuver_access_token");
+    const token = localStorage.getItem("dokunuver_access_token");
 
-      if (!token) {
-        setError("Oturum bulunamadı.");
+    if (!token) {
+      setError("Oturum bulunamadı.");
+      return;
+    }
+
+    let finalTargetUrl = targetUrl.trim();
+
+    if (productType === "whatsapp") {
+      let phone = whatsappNumber.replace(/\D/g, "");
+
+      if (phone.startsWith("0")) {
+        phone = "90" + phone.substring(1);
+      } else if (phone.length === 10) {
+        phone = "90" + phone;
+      }
+
+      if (!/^90\d{10}$/.test(phone)) {
+        setError(
+          "Geçerli bir Türkiye telefon numarası girin. Örnek: 0532 123 45 67"
+        );
         return;
       }
 
-      const response = await fetch("/api/smart-links", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          code,
-          business_name: businessName.trim(),
-          product_type: productType,
-          target_url: targetUrl.trim(),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Smart Link güncellenemedi.");
-      }
-
-      router.push("/panel/smart-links");
-      router.refresh();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
+      finalTargetUrl = `https://wa.me/${phone}`;
     }
+
+    const response = await fetch("/api/smart-links", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code,
+        business_name: businessName.trim(),
+        product_type: productType,
+        target_url: finalTargetUrl,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Smart Link güncellenemedi.");
+    }
+
+    router.push("/panel/smart-links");
+    router.refresh();
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setSaving(false);
   }
+}
 
   if (loading) {
     return (
