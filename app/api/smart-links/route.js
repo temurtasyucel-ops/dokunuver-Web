@@ -112,7 +112,6 @@ export async function POST(request) {
       "instagram",
       "whatsapp",
       "ilan",
-      "konum",
       "diger",
     ];
 
