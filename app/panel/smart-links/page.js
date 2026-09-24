@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
+import BulkQRCodeButton from "./BulkQRCodeButton";
 
 export default function SmartLinksPage() {
   const [links, setLinks] = useState([]);
@@ -186,6 +187,9 @@ return (
   >
     + Toplu Stok Oluştur
   </a>
+</div>
+      <div style={{ marginTop: "12px" }}>
+  <BulkQRCodeButton links={links} />
 </div>
       </div>
 
