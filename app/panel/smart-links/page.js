@@ -523,7 +523,24 @@ return (
                   >
                     {link.status === "stock" ? "Müşteriye Ata" : "Düzenle"}
                   </a>
-
+{link.status === "stock" && (
+  <button
+    type="button"
+    onClick={() => cancelStock(link)}
+    style={{
+      border: "1px solid #fecdca",
+      padding: "10px 16px",
+      background: "#fff1f0",
+      color: "#b42318",
+      borderRadius: "10px",
+      fontSize: "14px",
+      fontWeight: "800",
+      cursor: "pointer",
+    }}
+  >
+    İptal Et
+  </button>
+)}
                   {link.status !== "stock" && (
   <button
     type="button"
