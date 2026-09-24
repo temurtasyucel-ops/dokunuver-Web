@@ -46,51 +46,50 @@ const [filter, setFilter] = useState("all");
       setLoading(false);
     }
   }
+async function toggleStatus(link) {
+  try {
+    setError("");
 
-  async function toggleStatus(link) {
-    try {
-      setError("");
+    const token = localStorage.getItem("dokunuver_access_token");
 
-      const token = localStorage.getItem("dokunuver_access_token");
+    if (!token) {
+      setError("Oturum bulunamadı.");
+      return;
+    }
 
-     if (!token) {
-  setError("Oturum bulunamadı.");
-  return;
-}
+    const response = await fetch("/api/smart-links", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code: link.code,
+        active: !link.active,
+      }),
+    });
 
-      const response = await fetch("/api/smart-links", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          code: link.code,
-          active: !link.active,
-        }),
-      });
+    const data = await response.json();
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || "Smart Link durumu değiştirilemedi."
-        );
-      }
-
-      setLinks((currentLinks) =>
-        currentLinks.map((item) =>
-          item.code === link.code
-            ? { ...item, active: data.active }
-            : item
-        )
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Smart Link durumu değiştirilemedi."
       );
-      } catch (err) {
+    }
+
+    setLinks((currentLinks) =>
+      currentLinks.map((item) =>
+        item.code === link.code
+          ? { ...item, active: data.active }
+          : item
+      )
+    );
+  } catch (err) {
     setError(err.message);
   }
 }
-const stockLinks = links.filter(
-  async function cancelStock(link) {
+
+async function cancelStock(link) {
   const confirmed = window.confirm(
     `${link.code} kodlu stok kartını iptal etmek istediğinize emin misiniz?\n\nBu işlem kartı stoktan çıkaracaktır.`
   );
@@ -139,7 +138,7 @@ const stockLinks = links.filter(
           : item
       )
     );
-    } catch (err) {
+  } catch (err) {
     setError(err.message);
   }
 }
