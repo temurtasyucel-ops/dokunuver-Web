@@ -161,9 +161,6 @@ const stockCounts = {
   ilan: stockLinks.filter(
     (link) => link.product_type === "ilan"
   ).length,
-  konum: stockLinks.filter(
-    (link) => link.product_type === "konum"
-  ).length,
   diger: stockLinks.filter(
     (link) => link.product_type === "diger"
   ).length,
@@ -320,11 +317,6 @@ return (
   <div className="stock-summary-card">
     <strong>İlan</strong>
     <span>{stockCounts.ilan}</span>
-  </div>
-
-  <div className="stock-summary-card">
-    <strong>Konum</strong>
-    <span>{stockCounts.konum}</span>
   </div>
 
   <div className="stock-summary-card">
