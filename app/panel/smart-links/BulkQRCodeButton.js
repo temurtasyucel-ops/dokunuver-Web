@@ -9,7 +9,6 @@ const productNames = {
   instagram: "Instagram",
   whatsapp: "WhatsApp",
   ilan: "İlan",
-  konum: "Konum",
   diger: "Diğer",
 };
 
