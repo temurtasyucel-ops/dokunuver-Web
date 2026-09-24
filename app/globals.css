@@ -57,3 +57,26 @@
     box-sizing: border-box;
   }
 }
+.stock-summary-card {
+  min-width: 110px;
+  padding: 14px 18px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.stock-summary-card strong {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.stock-summary-card span {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
