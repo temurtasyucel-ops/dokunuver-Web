@@ -145,7 +145,6 @@ export default function BulkSmartLinksPage() {
             <option value="instagram">Instagram</option>
             <option value="whatsapp">WhatsApp</option>
             <option value="ilan">İlan</option>
-            <option value="konum">Konum</option>
             <option value="diger">Diğer</option>
           </select>
         </div>
