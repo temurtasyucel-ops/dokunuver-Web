@@ -11,6 +11,7 @@ export default function EditSmartLinkPage() {
   const [businessName, setBusinessName] = useState("");
   const [productType, setProductType] = useState("google");
   const [targetUrl, setTargetUrl] = useState("");
+  const [status, setStatus] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -56,6 +57,7 @@ export default function EditSmartLinkPage() {
       setBusinessName(smartLink.business_name || "");
       setProductType(smartLink.product_type || "google");
       setTargetUrl(smartLink.target_url || "");
+      setStatus(smartLink.status || "");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -167,7 +169,9 @@ export default function EditSmartLinkPage() {
             fontSize: "clamp(30px, 5vw, 44px)",
           }}
         >
-          Smart Link Düzenle
+          {link?.status === "stock"
+  ? "Stok Kartını Müşteriye Ata"
+  : "Smart Link Düzenle"}
         </h1>
 
         <p
