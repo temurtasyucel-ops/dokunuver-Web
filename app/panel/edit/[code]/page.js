@@ -16,8 +16,10 @@ export default function EditIbanCardPage() {
     active: true,
   });
 
+  const [locked, setLocked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [locking, setLocking] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -60,6 +62,8 @@ export default function EditIbanCardPage() {
           iban: card.iban || "",
           active: card.active !== false,
         });
+
+        setLocked(card.locked === true);
       } catch (err) {
         setError(err.message || "Bir hata oluştu.");
       } finally {
@@ -82,34 +86,41 @@ export default function EditIbanCardPage() {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    if (locked) {
+      setError(
+        "Bu IBAN kartı doğrulanmış ve kilitlenmiştir. Finansal bilgiler değiştirilemez."
+      );
+      return;
+    }
+
     setSaving(true);
     setMessage("");
     setError("");
 
-try {
-  const token = localStorage.getItem("dokunuver_access_token");
+    try {
+      const token = localStorage.getItem("dokunuver_access_token");
 
-  if (!token) {
-    throw new Error(
-      "Oturum bulunamadı. Lütfen tekrar giriş yapın."
-    );
-  }
+      if (!token) {
+        throw new Error(
+          "Oturum bulunamadı. Lütfen tekrar giriş yapın."
+        );
+      }
 
-  const response = await fetch("/api/iban-cards", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      code,
-      business_name: form.business_name.trim(),
-      bank_name: form.bank_name.trim(),
-      account_holder: form.account_holder.trim(),
-      iban: form.iban.replace(/\s+/g, "").toUpperCase(),
-      active: form.active,
-    }),
-  });
+      const response = await fetch("/api/iban-cards", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          code,
+          business_name: form.business_name.trim(),
+          bank_name: form.bank_name.trim(),
+          account_holder: form.account_holder.trim(),
+          iban: form.iban.replace(/\s+/g, "").toUpperCase(),
+          active: form.active,
+        }),
+      });
 
       const data = await response.json();
 
@@ -127,6 +138,65 @@ try {
       setError(err.message || "Bir hata oluştu.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleLock() {
+    setMessage("");
+    setError("");
+
+    const confirmed = window.confirm(
+      "DİKKAT: Bu işlem geri alınamaz.\n\n" +
+        "Banka, hesap sahibi ve IBAN bilgilerinin doğru olduğunu onaylıyor musunuz?\n\n" +
+        "Kilitleme sonrasında bu bilgiler değiştirilemez."
+    );
+
+    if (!confirmed) return;
+
+    const finalConfirmed = window.confirm(
+      "Son onay:\n\n" +
+        "Bu IBAN kartını kalıcı olarak kilitlemek istediğinizden emin misiniz?"
+    );
+
+    if (!finalConfirmed) return;
+
+    setLocking(true);
+
+    try {
+      const token = localStorage.getItem("dokunuver_access_token");
+
+      if (!token) {
+        throw new Error(
+          "Oturum bulunamadı. Lütfen tekrar giriş yapın."
+        );
+      }
+
+      const response = await fetch("/api/iban-cards/lock", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          code,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "IBAN kartı kilitlenemedi.");
+      }
+
+      setLocked(true);
+
+      setMessage(
+        "IBAN bilgileri doğrulandı ve kart kalıcı olarak kilitlendi."
+      );
+    } catch (err) {
+      setError(err.message || "Bir hata oluştu.");
+    } finally {
+      setLocking(false);
     }
   }
 
@@ -169,16 +239,37 @@ try {
         <div style={styles.titleArea}>
           <div style={styles.eyebrow}>DOKUNUVER PANEL</div>
 
-          <h1 style={styles.title}>IBAN Kartını Düzenle</h1>
+          <h1 style={styles.title}>
+            {locked ? "IBAN Kartı" : "IBAN Kartını Düzenle"}
+          </h1>
 
           <p style={styles.subtitle}>
-            NFC kartının ödeme bilgilerini ve durumunu güncelleyin.
+            {locked
+              ? "Bu kartın finansal bilgileri doğrulanmış ve kilitlenmiştir."
+              : "NFC kartının ödeme bilgilerini kontrol edin ve doğruladıktan sonra kilitleyin."}
           </p>
 
           <div style={styles.codeBox}>
             Kart Kodu: <strong>{code}</strong>
           </div>
         </div>
+
+        {locked && (
+          <div style={styles.lockedBox}>
+            <div style={styles.lockedIcon}>🔒</div>
+
+            <div>
+              <div style={styles.lockedTitle}>
+                Doğrulanmış ve Kilitli
+              </div>
+
+              <div style={styles.lockedText}>
+                Bu kartın banka, hesap sahibi ve IBAN bilgileri
+                artık değiştirilemez.
+              </div>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={styles.card}>
           <label style={styles.label}>
@@ -188,7 +279,11 @@ try {
               value={form.business_name}
               onChange={handleChange}
               required
-              style={styles.input}
+              disabled={locked}
+              style={{
+                ...styles.input,
+                ...(locked ? styles.lockedInput : {}),
+              }}
             />
           </label>
 
@@ -199,7 +294,11 @@ try {
               value={form.bank_name}
               onChange={handleChange}
               required
-              style={styles.input}
+              disabled={locked}
+              style={{
+                ...styles.input,
+                ...(locked ? styles.lockedInput : {}),
+              }}
             />
           </label>
 
@@ -210,7 +309,11 @@ try {
               value={form.account_holder}
               onChange={handleChange}
               required
-              style={styles.input}
+              disabled={locked}
+              style={{
+                ...styles.input,
+                ...(locked ? styles.lockedInput : {}),
+              }}
             />
           </label>
 
@@ -222,41 +325,85 @@ try {
               onChange={handleChange}
               required
               autoCapitalize="characters"
-              style={styles.input}
+              disabled={locked}
+              style={{
+                ...styles.input,
+                ...(locked ? styles.lockedInput : {}),
+              }}
             />
           </label>
 
-          <label style={styles.activeBox}>
-            <input
-              type="checkbox"
-              name="active"
-              checked={form.active}
-              onChange={handleChange}
-              style={styles.checkbox}
-            />
+          {!locked && (
+            <label style={styles.activeBox}>
+              <input
+                type="checkbox"
+                name="active"
+                checked={form.active}
+                onChange={handleChange}
+                style={styles.checkbox}
+              />
 
-            <div>
-              <div style={styles.activeTitle}>Kart aktif olsun</div>
-              <div style={styles.activeText}>
-                Pasif kartlar NFC bağlantısı üzerinden görüntülenemez.
+              <div>
+                <div style={styles.activeTitle}>
+                  Kart aktif olsun
+                </div>
+
+                <div style={styles.activeText}>
+                  Pasif kartlar NFC bağlantısı üzerinden
+                  görüntülenemez.
+                </div>
               </div>
-            </div>
-          </label>
+            </label>
+          )}
 
           {error && <div style={styles.error}>{error}</div>}
 
-          {message && <div style={styles.success}>{message}</div>}
+          {message && (
+            <div style={styles.success}>{message}</div>
+          )}
 
-          <button
-            type="submit"
-            disabled={saving}
-            style={{
-              ...styles.saveButton,
-              opacity: saving ? 0.65 : 1,
-            }}
-          >
-            {saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
-          </button>
+          {!locked && (
+            <>
+              <button
+                type="submit"
+                disabled={saving || locking}
+                style={{
+                  ...styles.saveButton,
+                  opacity: saving || locking ? 0.65 : 1,
+                }}
+              >
+                {saving
+                  ? "Kaydediliyor..."
+                  : "Değişiklikleri Kaydet"}
+              </button>
+
+              <div style={styles.lockSection}>
+                <div style={styles.lockWarningTitle}>
+                  Son kontrolü yaptınız mı?
+                </div>
+
+                <div style={styles.lockWarningText}>
+                  Banka, hesap sahibi ve IBAN bilgilerinin doğru
+                  olduğundan emin olduktan sonra kartı
+                  kilitleyebilirsiniz. Kilitleme işlemi geri alınamaz.
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleLock}
+                  disabled={saving || locking}
+                  style={{
+                    ...styles.lockButton,
+                    opacity: saving || locking ? 0.65 : 1,
+                  }}
+                >
+                  {locking
+                    ? "Kilitleniyor..."
+                    : "🔒 IBAN Bilgilerini Doğrula ve Kilitle"}
+                </button>
+              </div>
+            </>
+          )}
 
           <a
             href={`/i/${code}`}
@@ -268,7 +415,9 @@ try {
           </a>
         </form>
 
-        <div style={styles.footer}>DOKUNUVER NFC Platform</div>
+        <div style={styles.footer}>
+          DOKUNUVER NFC Platform
+        </div>
       </div>
     </main>
   );
@@ -360,6 +509,34 @@ const styles = {
     fontSize: "13px",
   },
 
+  lockedBox: {
+    display: "flex",
+    gap: "14px",
+    alignItems: "flex-start",
+    background: "#ecfdf3",
+    border: "1px solid #abefc6",
+    padding: "20px",
+    borderRadius: "16px",
+    marginBottom: "22px",
+  },
+
+  lockedIcon: {
+    fontSize: "24px",
+  },
+
+  lockedTitle: {
+    color: "#067647",
+    fontSize: "16px",
+    fontWeight: "900",
+  },
+
+  lockedText: {
+    color: "#067647",
+    fontSize: "13px",
+    lineHeight: "1.5",
+    marginTop: "5px",
+  },
+
   card: {
     background: "#ffffff",
     padding: "32px",
@@ -385,6 +562,12 @@ const styles = {
     fontSize: "15px",
     outline: "none",
     background: "#ffffff",
+  },
+
+  lockedInput: {
+    background: "#f2f4f7",
+    color: "#475467",
+    cursor: "not-allowed",
   },
 
   activeBox: {
@@ -423,6 +606,40 @@ const styles = {
     padding: "17px",
     borderRadius: "13px",
     fontSize: "16px",
+    fontWeight: "800",
+    cursor: "pointer",
+  },
+
+  lockSection: {
+    marginTop: "22px",
+    padding: "20px",
+    background: "#fffaf0",
+    border: "1px solid #fedf89",
+    borderRadius: "14px",
+  },
+
+  lockWarningTitle: {
+    color: "#93370d",
+    fontWeight: "900",
+    fontSize: "15px",
+  },
+
+  lockWarningText: {
+    color: "#934a0a",
+    fontSize: "13px",
+    lineHeight: "1.6",
+    marginTop: "7px",
+    marginBottom: "15px",
+  },
+
+  lockButton: {
+    width: "100%",
+    border: "none",
+    background: "#b42318",
+    color: "#ffffff",
+    padding: "15px",
+    borderRadius: "12px",
+    fontSize: "14px",
     fontWeight: "800",
     cursor: "pointer",
   },
