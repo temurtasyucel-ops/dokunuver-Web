@@ -256,7 +256,7 @@ export default function Home() {
     <div
       style={{
         background: "#f8fafc",
-        padding: "24px",
+        padding: "32px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -320,7 +320,7 @@ export default function Home() {
         style={{
           marginTop: "6px",
           color: "#667085",
-          fontSize: "12px",
+          fontSize: "13px",
           fontWeight: "600",
         }}
       >
