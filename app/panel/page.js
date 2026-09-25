@@ -419,7 +419,27 @@ async function downloadLastCreatedQrZip() {
     startIndex,
     endIndex
   );
+const productionBatches = Object.values(
+  cards.reduce((groups, card) => {
+    if (!card.batch_code) {
+      return groups;
+    }
 
+    if (!groups[card.batch_code]) {
+      groups[card.batch_code] = {
+        batchCode: card.batch_code,
+        cards: [],
+      };
+    }
+
+    groups[card.batch_code].cards.push(card);
+
+    return groups;
+  }, {})
+).sort((a, b) =>
+  b.batchCode.localeCompare(a.batchCode)
+);
+  
   return (
     <main style={styles.page}>
       <div style={styles.container}>
