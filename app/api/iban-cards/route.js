@@ -301,7 +301,50 @@ export async function PATCH(request) {
         { status: 500 }
       );
     }
+// Önce mevcut kartı kontrol et
+const checkResponse = await fetch(
+  `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
+    code
+  )}&select=code,locked`,
+  {
+    method: "GET",
+    headers: {
+      apikey: secretKey,
+      Authorization: `Bearer ${secretKey}`,
+    },
+    cache: "no-store",
+  }
+);
 
+const existingCards = await checkResponse.json();
+
+if (!checkResponse.ok) {
+  console.error("IBAN lock check error:", existingCards);
+
+  return NextResponse.json(
+    { error: "Kart bilgileri kontrol edilemedi." },
+    { status: 500 }
+  );
+}
+
+if (!existingCards || existingCards.length === 0) {
+  return NextResponse.json(
+    { error: "Kart bulunamadı." },
+    { status: 404 }
+  );
+}
+
+const existingCard = existingCards[0];
+
+if (existingCard.locked === true) {
+  return NextResponse.json(
+    {
+      error:
+        "Bu IBAN kartı doğrulanmış ve kilitlenmiştir. Finansal bilgiler artık değiştirilemez.",
+    },
+    { status: 423 }
+  );
+}
     const response = await fetch(
       `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(code)}`,
       {
