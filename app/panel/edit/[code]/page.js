@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import QRCode from "qrcode";
 
 export default function EditIbanCardPage() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function EditIbanCardPage() {
 
   const [locked, setLocked] = useState(false);
   const [lockedAt, setLockedAt] = useState(null);
+  const [qrCode, setQrCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [locking, setLocking] = useState(false);
@@ -76,7 +78,27 @@ export default function EditIbanCardPage() {
 
     loadCard();
   }, [code]);
+useEffect(() => {
+  if (!code) return;
 
+  async function generateQr() {
+    try {
+      const url = `https://dokunuver.com.tr/i/${code}`;
+
+      const dataUrl = await QRCode.toDataURL(url, {
+        width: 500,
+        margin: 2,
+        errorCorrectionLevel: "H",
+      });
+
+      setQrCode(dataUrl);
+    } catch (err) {
+      console.error("QR kod oluşturulamadı:", err);
+    }
+  }
+
+  generateQr();
+}, [code]);
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
