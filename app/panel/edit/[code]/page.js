@@ -199,7 +199,60 @@ export default function EditIbanCardPage() {
       setLocking(false);
     }
   }
+async function handleSecurityTest() {
+  setMessage("");
+  setError("");
 
+  try {
+    const token = localStorage.getItem("dokunuver_access_token");
+
+    if (!token) {
+      throw new Error(
+        "Oturum bulunamadı. Lütfen tekrar giriş yapın."
+      );
+    }
+
+    const response = await fetch("/api/iban-cards", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        code,
+        business_name: "DEGISTIRME TESTI",
+        bank_name: "DEGISTIRME TESTI",
+        account_holder: "DEGISTIRME TESTI",
+        iban: "TR000000000000000000000000",
+        active: true,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 423) {
+      setMessage(
+        "✅ Güvenlik testi başarılı — API kilitli IBAN bilgilerinin değiştirilmesini reddetti (423)."
+      );
+      return;
+    }
+
+    if (response.ok) {
+      setError(
+        "❌ GÜVENLİK TESTİ BAŞARISIZ — API değişiklik isteğini kabul etti."
+      );
+      return;
+    }
+
+    setError(
+      `Test beklenmeyen bir cevap aldı (${response.status}): ${
+        data.error || "Bilinmeyen hata"
+      }`
+    );
+  } catch (err) {
+    setError(err.message || "Güvenlik testi çalıştırılamadı.");
+  }
+}
   if (loading) {
     return (
       <main style={styles.center}>
@@ -404,7 +457,15 @@ export default function EditIbanCardPage() {
               </div>
             </>
           )}
-
+{locked && (
+  <button
+    type="button"
+    onClick={handleSecurityTest}
+    style={styles.securityTestButton}
+  >
+    Kilit Güvenliğini Test Et
+  </button>
+)}
           <a
             href={`/i/${code}`}
             target="_blank"
@@ -693,4 +754,16 @@ const styles = {
     fontSize: "12px",
     marginTop: "28px",
   },
+  securityTestButton: {
+  width: "100%",
+  border: "1px solid #087cf0",
+  background: "#ffffff",
+  color: "#087cf0",
+  padding: "15px",
+  borderRadius: "12px",
+  fontSize: "14px",
+  fontWeight: "800",
+  cursor: "pointer",
+  marginTop: "4px",
+},
 };
