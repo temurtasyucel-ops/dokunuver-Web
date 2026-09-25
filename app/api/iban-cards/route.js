@@ -235,6 +235,56 @@ if (mode === "stock_bulk") {
     );
   }
 
+  // Bu üretim partisi için kalıcı ve benzersiz parti kodu oluştur.
+  const batchResponse = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/next_iban_batch_code`,
+    {
+      method: "POST",
+      headers: {
+        apikey: secretKey,
+        Authorization: `Bearer ${secretKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+      cache: "no-store",
+    }
+  );
+
+  const batchData = await batchResponse.json();
+
+  if (!batchResponse.ok) {
+    console.error(
+      "IBAN batch code generation error:",
+      batchData
+    );
+
+    return NextResponse.json(
+      {
+        error: "Üretim parti kodu oluşturulamadı.",
+      },
+      { status: 500 }
+    );
+  }
+
+  const batchCode = batchData;
+
+  if (
+    typeof batchCode !== "string" ||
+    !batchCode.startsWith("IBAN-")
+  ) {
+    console.error(
+      "Invalid IBAN batch code:",
+      batchCode
+    );
+
+    return NextResponse.json(
+      {
+        error: "Geçerli üretim parti kodu alınamadı.",
+      },
+      { status: 500 }
+    );
+  }
+
   const createdCards = [];
 
   for (let i = 0; i < quantity; i++) {
@@ -263,6 +313,7 @@ if (mode === "stock_bulk") {
             status: "stock",
             locked: false,
             locked_at: null,
+            batch_code: batchCode,
           }),
         }
       );
@@ -288,6 +339,7 @@ if (mode === "stock_bulk") {
         {
           error: `${createdCards.length} kart oluşturuldu ancak toplu işlem tamamlanamadı.`,
           cards: createdCards,
+          batch_code: batchCode,
         },
         { status: 500 }
       );
@@ -298,6 +350,7 @@ if (mode === "stock_bulk") {
         {
           error: `${createdCards.length} kart oluşturuldu ancak benzersiz kart kodu üretilemedi.`,
           cards: createdCards,
+          batch_code: batchCode,
         },
         { status: 500 }
       );
@@ -309,7 +362,8 @@ if (mode === "stock_bulk") {
       success: true,
       count: createdCards.length,
       cards: createdCards,
-      message: `${createdCards.length} adet stok IBAN kartı oluşturuldu.`,
+      batch_code: batchCode,
+      message: `${createdCards.length} adet stok IBAN kartı ${batchCode} partisiyle oluşturuldu.`,
     },
     { status: 201 }
   );
