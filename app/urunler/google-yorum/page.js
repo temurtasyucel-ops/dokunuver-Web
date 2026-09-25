@@ -67,123 +67,167 @@ export default function GoogleYorumPage() {
         </a>
       </header>
 
-      {/* ÜRÜN */}
+            {/* ÜRÜN */}
       <section
         style={{
           maxWidth: "1180px",
           margin: "0 auto",
-          padding: "80px 24px 110px",
+          padding: "70px 24px 100px",
         }}
       >
         <div
           style={{
-            maxWidth: "760px",
-            margin: "0 auto",
-            textAlign: "center",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "70px",
+            alignItems: "center",
           }}
         >
+          {/* ÜRÜN GÖRSELİ */}
           <div
             style={{
-              display: "inline-block",
-              padding: "8px 14px",
-              borderRadius: "999px",
-              background: "#eaf4ff",
-              color: "#087cf0",
-              fontSize: "13px",
-              fontWeight: "800",
-              marginBottom: "24px",
+              background: "#ffffff",
+              border: "1px solid #eaecf0",
+              borderRadius: "28px",
+              padding: "40px",
             }}
           >
-            GOOGLE YORUM NFC
+            <img
+              src="/images/google-yorum-nfc.png"
+              alt="DOKUNUVER Google Yorum NFC Kartı"
+              style={{
+                display: "block",
+                width: "100%",
+                height: "auto",
+                borderRadius: "20px",
+              }}
+            />
           </div>
 
-<div
-  style={{
-    maxWidth: "430px",
-    margin: "0 auto 38px",
-  }}
->
-  <img
-    src="/images/google-yorum-nfc.png"
-    alt="DOKUNUVER Google Yorum NFC kartı"
-    style={{
-      display: "block",
-      width: "100%",
-      height: "auto",
-      borderRadius: "24px",
-      boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
-    }}
-  />
-</div>
-
-          <h1
-            style={{
-              margin: "0",
-              fontSize: "clamp(40px, 7vw, 68px)",
-              lineHeight: "1.05",
-              letterSpacing: "-2.5px",
-            }}
-          >
-            Yorum almak
-            <br />
-            artık çok daha kolay.
-          </h1>
-
-          <p
-            style={{
-              maxWidth: "650px",
-              margin: "26px auto 0",
-              color: "#667085",
-              fontSize: "18px",
-              lineHeight: "1.7",
-            }}
-          >
-            Müşteriniz telefonunu DOKUNUVER Google Yorum kartına
-            yaklaştırır ve işletmenizin Google yorum sayfasına doğrudan
-            ulaşır.
-          </p>
-
-          <div
-            style={{
-              marginTop: "38px",
-              display: "flex",
-              justifyContent: "center",
-              gap: "12px",
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20Google%20Yorum%20NFC%20%C3%BCr%C3%BCn%C3%BC%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-              target="_blank"
-              rel="noreferrer"
+          {/* ÜRÜN BİLGİLERİ */}
+          <div>
+            <div
               style={{
-                textDecoration: "none",
-                background: "#25D366",
-                color: "#ffffff",
-                padding: "16px 25px",
-                borderRadius: "13px",
-                fontSize: "15px",
+                display: "inline-block",
+                padding: "8px 14px",
+                borderRadius: "999px",
+                background: "#eaf4ff",
+                color: "#087cf0",
+                fontSize: "13px",
                 fontWeight: "800",
+                marginBottom: "20px",
               }}
             >
-              WhatsApp'tan Bilgi Al
-            </a>
+              GOOGLE YORUM NFC
+            </div>
 
-            <a
-              href="/#urunler"
+            <h1
               style={{
-                textDecoration: "none",
-                background: "#ffffff",
-                color: "#344054",
-                padding: "16px 25px",
-                borderRadius: "13px",
-                border: "1px solid #d0d5dd",
-                fontSize: "15px",
-                fontWeight: "800",
+                margin: "0",
+                fontSize: "clamp(38px, 5vw, 58px)",
+                lineHeight: "1.05",
+                letterSpacing: "-2px",
               }}
             >
-              Diğer Ürünler
-            </a>
+              Google Yorum Kartı
+            </h1>
+
+            <p
+              style={{
+                margin: "22px 0 0",
+                color: "#667085",
+                fontSize: "17px",
+                lineHeight: "1.7",
+              }}
+            >
+              Müşterilerinizi işletmenizin Google yorum bağlantısına NFC
+              veya QR ile kolayca yönlendirin.
+            </p>
+
+            {/* FİYAT */}
+            <div
+              style={{
+                marginTop: "30px",
+                fontSize: "36px",
+                fontWeight: "900",
+                color: "#101828",
+              }}
+            >
+              249 TL
+            </div>
+
+            <div
+              style={{
+                marginTop: "5px",
+                color: "#667085",
+                fontSize: "13px",
+              }}
+            >
+              Kargo alıcıya aittir.
+            </div>
+
+            {/* ÜRÜN ÖZELLİKLERİ */}
+            <div
+              style={{
+                marginTop: "28px",
+                padding: "22px 0",
+                borderTop: "1px solid #eaecf0",
+                borderBottom: "1px solid #eaecf0",
+                display: "grid",
+                gap: "12px",
+                color: "#475467",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              <div>✓ 10 × 10 cm</div>
+              <div>✓ NFC + QR ile kullanım</div>
+              <div>✓ İşletmenize özel hazırlanır</div>
+              <div>✓ Stand veya yapışkanlı kullanım seçeneği</div>
+            </div>
+
+            {/* BUTONLAR */}
+            <div
+              style={{
+                marginTop: "30px",
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+              <a
+                href="https://wa.me/905075738349?text=Merhaba%2C%20DOKUNUVER%20Google%20Yorum%20Kart%C4%B1%20sipari%C5%9Fi%20vermek%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  textDecoration: "none",
+                  background: "#25D366",
+                  color: "#ffffff",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                WhatsApp'tan Sipariş Ver
+              </a>
+
+              <a
+                href="/#urunler"
+                style={{
+                  textDecoration: "none",
+                  background: "#ffffff",
+                  color: "#344054",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  border: "1px solid #d0d5dd",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                Diğer Ürünler
+              </a>
+            </div>
           </div>
         </div>
       </section>
