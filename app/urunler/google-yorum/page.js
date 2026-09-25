@@ -183,7 +183,7 @@ export default function GoogleYorumPage() {
               <div>✓ 10 × 10 cm</div>
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ İşletmenize özel hazırlanır</div>
-              <div>✓ Stand veya yapışkanlı kullanım seçeneği</div>
+              <div>✓ ✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
             </div>
 
             {/* BUTONLAR */}
@@ -280,28 +280,28 @@ export default function GoogleYorumPage() {
       }}
     >
       <FeatureCard
-        number="01"
-        title="Tek Dokunuş"
-        description="Müşteriniz telefonunu NFC ürününe yaklaştırarak bağlantıya ulaşır."
-      />
+  number="01"
+  title="NFC + QR"
+  description="Müşteriniz telefonunu karta yaklaştırabilir veya QR kodu okutarak bağlantıya ulaşabilir."
+/>
 
-      <FeatureCard
-        number="02"
-        title="Uygulama Gerektirmez"
-        description="NFC destekli uyumlu telefonlarda ek bir uygulama indirmeye gerek yoktur."
-      />
+<FeatureCard
+  number="02"
+  title="Uygulama Gerektirmez"
+  description="Desteklenen telefonlarda ek bir uygulama indirmeden bağlantıya ulaşılabilir."
+/>
 
-      <FeatureCard
-        number="03"
-        title="Doğrudan Google"
-        description="Müşterinizi işletmeniz için belirlediğiniz Google yorum bağlantısına yönlendirin."
-      />
+<FeatureCard
+  number="03"
+  title="Google'a Yönlendirme"
+  description="Kartınız işletmeniz için belirlenen Google yorum bağlantısına özel olarak hazırlanır."
+/>
 
-      <FeatureCard
-        number="04"
-        title="Tekrar Kullanılabilir"
-        description="DOKUNUVER ürünü işletmenizde sürekli kullanıma uygun bir NFC çözümüdür."
-      />
+<FeatureCard
+  number="04"
+  title="Kullanıma Hazır"
+  description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; işletmenizde doğrudan kullanmaya başlayabilirsiniz."
+/>
     </div>
   </div>
 </section>
