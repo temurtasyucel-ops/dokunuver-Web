@@ -347,7 +347,7 @@ export default function Home() {
         letterSpacing: "-1.5px",
       }}
     >
-      Bağlanmak bu kadar kolay.
+      Üç adımda kullanıma hazır.
     </h2>
 
     <p
@@ -359,8 +359,8 @@ export default function Home() {
         lineHeight: "1.7",
       }}
     >
-      Uygulama indirmeye veya QR kod okutmaya gerek yok.
-      Telefonunuzu DOKUNUVER ürününe yaklaştırmanız yeterli.
+      Ürününüzü seçin, bilgilerinizi iletin.
+DOKUNUVER kartınızı işletmenize özel hazırlayalım.
     </p>
 
     <div
@@ -372,22 +372,22 @@ export default function Home() {
       }}
     >
       <StepCard
-        number="01"
-        title="Telefonunu Yaklaştır"
-        description="NFC destekli telefonunuzu DOKUNUVER ürününün üzerine yaklaştırın."
-      />
+  number="01"
+  title="Ürününü Seç"
+  description="Google, Instagram, WhatsApp, IBAN, İlan veya Duo ürünlerinden ihtiyacınıza uygun olanı seçin."
+/>
 
-      <StepCard
-        number="02"
-        title="Bağlantıya Dokun"
-        description="Telefon ekranında açılan bildirime dokunun. Ekstra bir uygulama gerekmez."
-      />
+<StepCard
+  number="02"
+  title="Bilgilerini İlet"
+  description="Kartınızda kullanılacak bağlantı veya bilgileri sipariş sırasında bize iletin."
+/>
 
-      <StepCard
-        number="03"
-        title="Anında Bağlan"
-        description="Google, Instagram, WhatsApp, IBAN veya ilan bağlantınız saniyeler içinde açılsın."
-      />
+<StepCard
+  number="03"
+  title="Dokun ve Bağlan"
+  description="Size özel hazırlanan DOKUNUVER ürününü NFC veya QR ile kullanmaya başlayın."
+/>
     </div>
   </div>
 </section>
