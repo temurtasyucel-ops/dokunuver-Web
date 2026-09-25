@@ -96,28 +96,7 @@ export default function IbanCardPage() {
   return (
     <main style={styles.center}>
       <div style={{ width: "100%", maxWidth: "440px" }}>
-        <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <div
-            style={{
-              fontSize: "25px",
-              fontWeight: "800",
-              color: "#101828",
-            }}
-          >
-            DOKUNUVER
-          </div>
-
-          <div
-            style={{
-              fontSize: "13px",
-              color: "#087cf0",
-              fontWeight: "700",
-              marginTop: "3px",
-            }}
-          >
-            Dokun. Bağlan.
-          </div>
-        </div>
+       
 
         <div style={styles.card}>
           <div
