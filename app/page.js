@@ -444,8 +444,8 @@ DOKUNUVER kartınızı işletmenize özel hazırlayalım.
           lineHeight: "1.7",
         }}
       >
-        DOKUNUVER NFC çözümleriyle müşterileriniz ihtiyaç duydukları
-        bağlantılara hızlı ve kolay şekilde ulaşır.
+        Google, Instagram, WhatsApp, IBAN ve ilan bağlantılarınızı
+fiziksel DOKUNUVER ürünleriyle müşterilerinizin erişimine sunun.
       </p>
     </div>
 
@@ -458,28 +458,28 @@ DOKUNUVER kartınızı işletmenize özel hazırlayalım.
   }}
 >
       <BenefitCard
-        number="01"
-        title="Tek Dokunuş"
-        description="Telefonu NFC ürününe yaklaştırmak bağlantıyı açmak için yeterlidir."
-      />
+  number="01"
+  title="NFC + QR"
+  description="Müşterileriniz bağlantınıza ister telefonunu yaklaştırarak ister QR kodu okutarak ulaşabilir."
+/>
 
-      <BenefitCard
-        number="02"
-        title="Uygulama Gerektirmez"
-        description="Müşterileriniz ekstra bir uygulama indirmeden bağlantınıza ulaşabilir."
-      />
+<BenefitCard
+  number="02"
+  title="Uygulama Gerektirmez"
+  description="Ekstra bir uygulama indirmeden desteklenen telefonlarla bağlantınıza hızlıca ulaşılabilir."
+/>
 
-      <BenefitCard
-        number="03"
-        title="İşletmenize Özel"
-        description="NFC ürününüz işletmenizin kullanmak istediği dijital bağlantıya göre hazırlanır."
-      />
+<BenefitCard
+  number="03"
+  title="İşletmenize Özel"
+  description="DOKUNUVER ürününüz işletmenizin kullanmak istediği dijital bağlantıya özel hazırlanır."
+/>
 
-      <BenefitCard
-        number="04"
-        title="Kolay Kullanım"
-        description="Google, Instagram, WhatsApp, IBAN ve ilan bağlantılarını paylaşmayı kolaylaştırır."
-      />
+<BenefitCard
+  number="04"
+  title="Kullanıma Hazır"
+  description="Ürününüz bağlantınız tanımlanmış ve kullanıma hazır şekilde size ulaştırılır."
+/>
     </div>
   </div>
 </section>
