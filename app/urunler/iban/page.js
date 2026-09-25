@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "IBAN NFC",
+  title: "IBAN NFC Kartı | DOKUNUVER",
   description:
-    "DOKUNUVER IBAN NFC ile banka, hesap sahibi ve IBAN bilgilerinizi kolayca paylaşın. Müşterileriniz IBAN'ınızı tek dokunuşla görüntüleyip kopyalayabilir.",
+    "DOKUNUVER IBAN NFC Kartı ile banka, hesap sahibi ve IBAN bilgilerinizi NFC veya QR ile kolayca paylaşın.",
 };
 
 export default function IbanPage() {
@@ -72,118 +72,164 @@ export default function IbanPage() {
         style={{
           maxWidth: "1180px",
           margin: "0 auto",
-          padding: "80px 24px 110px",
+          padding: "70px 24px 100px",
         }}
       >
         <div
           style={{
-            maxWidth: "760px",
-            margin: "0 auto",
-            textAlign: "center",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "70px",
+            alignItems: "center",
           }}
         >
+          {/* ÜRÜN GÖRSELİ */}
           <div
             style={{
-              display: "inline-block",
-              padding: "8px 14px",
-              borderRadius: "999px",
-              background: "#fef3f2",
-              color: "#b42318",
-              fontSize: "13px",
-              fontWeight: "800",
-              marginBottom: "24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            IBAN NFC
+            <img
+              src="/images/iban-nfc.png"
+              alt="DOKUNUVER IBAN NFC Kartı"
+              style={{
+                display: "block",
+                width: "100%",
+                maxWidth: "500px",
+                height: "auto",
+                borderRadius: "20px",
+                boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
+              }}
+            />
           </div>
 
-         <div
-  style={{
-    maxWidth: "430px",
-    margin: "0 auto 38px",
-  }}
->
-  <img
-    src="/images/iban-nfc.png"
-    alt="DOKUNUVER IBAN NFC kartı"
-    style={{
-      display: "block",
-      width: "100%",
-      height: "auto",
-      borderRadius: "24px",
-      boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
-    }}
-  />
-</div>
-
-          <h1
-            style={{
-              margin: "0",
-              fontSize: "clamp(40px, 7vw, 68px)",
-              lineHeight: "1.05",
-              letterSpacing: "-2.5px",
-            }}
-          >
-            IBAN paylaşmanın
-            <br />
-            kolay yolu.
-          </h1>
-
-          <p
-            style={{
-              maxWidth: "650px",
-              margin: "26px auto 0",
-              color: "#667085",
-              fontSize: "18px",
-              lineHeight: "1.7",
-            }}
-          >
-            Müşteriniz telefonunu DOKUNUVER IBAN kartına yaklaştırır.
-            Banka, hesap sahibi ve IBAN bilgilerinizi görüntüler ve IBAN'ı
-            tek dokunuşla kopyalayabilir.
-          </p>
-
-          <div
-            style={{
-              marginTop: "38px",
-              display: "flex",
-              justifyContent: "center",
-              gap: "12px",
-              flexWrap: "wrap",
-            }}
-          >
-            <a
-              href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20IBAN%20NFC%20%C3%BCr%C3%BCn%C3%BC%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-              target="_blank"
-              rel="noreferrer"
+          {/* ÜRÜN BİLGİLERİ */}
+          <div>
+            <div
               style={{
-                textDecoration: "none",
-                background: "#25D366",
-                color: "#ffffff",
-                padding: "16px 25px",
-                borderRadius: "13px",
-                fontSize: "15px",
+                display: "inline-block",
+                padding: "8px 14px",
+                borderRadius: "999px",
+                background: "#fef3f2",
+                color: "#b42318",
+                fontSize: "13px",
                 fontWeight: "800",
+                marginBottom: "20px",
               }}
             >
-              WhatsApp'tan Bilgi Al
-            </a>
+              IBAN NFC
+            </div>
 
-            <a
-              href="/#urunler"
+            <h1
               style={{
-                textDecoration: "none",
-                background: "#ffffff",
-                color: "#344054",
-                padding: "16px 25px",
-                borderRadius: "13px",
-                border: "1px solid #d0d5dd",
-                fontSize: "15px",
-                fontWeight: "800",
+                margin: "0",
+                fontSize: "clamp(38px, 5vw, 58px)",
+                lineHeight: "1.05",
+                letterSpacing: "-2px",
               }}
             >
-              Diğer Ürünler
-            </a>
+              IBAN Kartı
+            </h1>
+
+            <p
+              style={{
+                margin: "22px 0 0",
+                color: "#667085",
+                fontSize: "17px",
+                lineHeight: "1.7",
+              }}
+            >
+              Banka, hesap sahibi ve IBAN bilgilerinizi müşterilerinizle NFC
+              veya QR üzerinden kolayca paylaşın.
+            </p>
+
+            {/* FİYAT */}
+            <div
+              style={{
+                marginTop: "30px",
+                fontSize: "36px",
+                fontWeight: "900",
+                color: "#101828",
+              }}
+            >
+              249 TL
+            </div>
+
+            <div
+              style={{
+                marginTop: "5px",
+                color: "#667085",
+                fontSize: "13px",
+              }}
+            >
+              Kargo alıcıya aittir.
+            </div>
+
+            {/* ÜRÜN ÖZELLİKLERİ */}
+            <div
+              style={{
+                marginTop: "28px",
+                padding: "22px 0",
+                borderTop: "1px solid #eaecf0",
+                borderBottom: "1px solid #eaecf0",
+                display: "grid",
+                gap: "12px",
+                color: "#475467",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              <div>✓ 10 × 10 cm</div>
+              <div>✓ NFC + QR ile kullanım</div>
+              <div>✓ Banka ve IBAN bilgilerinize özel hazırlanır</div>
+              <div>✓ IBAN bilgileri sonradan güncellenebilir</div>
+              <div>✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
+            </div>
+
+            {/* BUTONLAR */}
+            <div
+              style={{
+                marginTop: "30px",
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+              <a
+                href="https://wa.me/905075738349?text=Merhaba%2C%20DOKUNUVER%20IBAN%20Kart%C4%B1%20sipari%C5%9Fi%20vermek%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  textDecoration: "none",
+                  background: "#25D366",
+                  color: "#ffffff",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                WhatsApp'tan Sipariş Ver
+              </a>
+
+              <a
+                href="/#urunler"
+                style={{
+                  textDecoration: "none",
+                  background: "#ffffff",
+                  color: "#344054",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  border: "1px solid #d0d5dd",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                Diğer Ürünler
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -215,7 +261,7 @@ export default function IbanPage() {
                 marginBottom: "12px",
               }}
             >
-              NEDEN DOKUNUVER?
+              IBAN KARTI
             </div>
 
             <h2
@@ -225,40 +271,39 @@ export default function IbanPage() {
                 letterSpacing: "-1.5px",
               }}
             >
-              IBAN değişse bile kartınız değişmesin.
+              IBAN paylaşmayı kolaylaştırın.
             </h2>
           </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(240px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
               gap: "18px",
             }}
           >
             <FeatureCard
               number="01"
-              title="Tek Dokunuş"
-              description="Müşteriniz telefonunu NFC ürününe yaklaştırarak IBAN sayfanıza ulaşır."
+              title="NFC + QR"
+              description="Müşteriniz telefonunu karta yaklaştırabilir veya QR kodu okutarak IBAN sayfanıza ulaşabilir."
             />
 
             <FeatureCard
               number="02"
               title="Kolay Kopyalama"
-              description="Uzun IBAN numarasını elle yazmak yerine tek dokunuşla kopyalayabilir."
+              description="IBAN numarası ekranda görüntülenir ve uzun hesap bilgisini elle yazmak yerine kolayca kopyalanabilir."
             />
 
             <FeatureCard
               number="03"
               title="Güncellenebilir"
-              description="IBAN veya banka bilgileriniz değiştiğinde fiziksel NFC kartınızı değiştirmeden bilgiler güncellenebilir."
+              description="Banka veya IBAN bilgileriniz değiştiğinde fiziksel kartı değiştirmeden kayıtlı bilgileriniz güncellenebilir."
             />
 
             <FeatureCard
               number="04"
               title="Kontrollü Kullanım"
-              description="Gerektiğinde kart bağlantısı pasife alınabilir ve daha sonra yeniden aktif hale getirilebilir."
+              description="Gerektiğinde IBAN kartınız pasife alınabilir ve daha sonra yeniden aktif hale getirilebilir."
             />
           </div>
         </div>
