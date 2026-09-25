@@ -143,10 +143,18 @@ export default function NewIbanCardPage() {
             </div>
           </label>
 
-          {message && <div style={styles.error}>{message}</div>}
+          <div style={styles.securityInfo}>
+  <div style={styles.securityTitle}>
+    🔒 Güvenli doğrulama
+  </div>
 
-          <button
-            type="submit"
+  <div style={styles.securityText}>
+    Kart oluşturulduktan sonra banka, hesap sahibi ve IBAN
+    bilgilerini son kez kontrol ederek doğrulayabilir ve
+    kilitleyebilirsiniz. Kilitlenen finansal bilgiler normal
+    yönetim işlemleriyle değiştirilemez.
+  </div>
+</div>
             disabled={saving}
             style={{
               ...styles.submitButton,
@@ -317,4 +325,24 @@ const styles = {
     fontSize: "12px",
     marginTop: "25px",
   },
+  securityInfo: {
+  background: "#ecfdf3",
+  border: "1px solid #abefc6",
+  padding: "15px 17px",
+  borderRadius: "12px",
+  marginBottom: "22px",
+},
+
+securityTitle: {
+  color: "#067647",
+  fontSize: "13px",
+  fontWeight: "800",
+  marginBottom: "5px",
+},
+
+securityText: {
+  color: "#067647",
+  fontSize: "12px",
+  lineHeight: "1.6",
+},
 };
