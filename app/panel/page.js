@@ -314,8 +314,16 @@ async function createBulkStockCards() {
   }
 
   const filteredCards = cards.filter((card) => {
-    if (filter === "active" && !card.active) return false;
-    if (filter === "passive" && card.active) return false;
+  if (filter === "active" && !card.active) return false;
+
+  if (
+    filter === "passive" &&
+    (card.active || card.status === "stock")
+  )
+    return false;
+
+  if (filter === "stock" && card.status !== "stock")
+    return false;
 
     const searchText = search.trim().toLocaleLowerCase("tr-TR");
 
@@ -465,7 +473,10 @@ async function createBulkStockCards() {
           <Stat
             label="Pasif Kart"
             value={
-              cards.filter((card) => !card.active).length
+              cards.filter(
+  (card) =>
+    !card.active && card.status !== "stock"
+).length
             }
           />
         </section>
@@ -548,6 +559,27 @@ async function createBulkStockCards() {
               }
               )
             </button>
+                <button
+  type="button"
+  onClick={() => {
+    setFilter("stock");
+    setCurrentPage(1);
+  }}
+  style={{
+    ...styles.filterButton,
+    ...(filter === "stock"
+      ? styles.filterButtonActive
+      : {}),
+  }}
+>
+  📦 Stokta (
+  {
+    cards.filter(
+      (card) => card.status === "stock"
+    ).length
+  }
+  )
+</button>
           </div>
 
           <div style={{ marginBottom: "22px" }}>
