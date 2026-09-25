@@ -1,7 +1,7 @@
 export const metadata = {
-  title: "Duo NFC",
+  title: "Duo NFC Kartı | DOKUNUVER",
   description:
-    "DOKUNUVER Duo NFC ile iki farklı dijital bağlantıyı tek üründe bir araya getirin. Google Yorum, Instagram, WhatsApp ve diğer bağlantıları birlikte kullanın.",
+    "DOKUNUVER Duo NFC Kartı ile iki farklı dijital bağlantıyı tek kartta bir araya getirin. Google + Instagram veya WhatsApp + IBAN seçeneklerinden birini seçin.",
 };
 
 export default function DuoPage() {
@@ -23,123 +23,218 @@ export default function DuoPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "20px",
         }}
       >
         <a
           href="/"
           style={{
-            color: "#101828",
             textDecoration: "none",
-            fontSize: "20px",
-            fontWeight: "800",
+            color: "#101828",
           }}
         >
-          DOKUNUVER
+          <div
+            style={{
+              fontSize: "24px",
+              fontWeight: "900",
+              letterSpacing: "-0.7px",
+            }}
+          >
+            DOKUNUVER
+          </div>
+
+          <div
+            style={{
+              fontSize: "12px",
+              color: "#087cf0",
+              fontWeight: "700",
+              marginTop: "2px",
+            }}
+          >
+            Dokun. Bağlan.
+          </div>
         </a>
 
         <a
           href="/#urunler"
           style={{
-            color: "#475467",
             textDecoration: "none",
+            color: "#475467",
             fontSize: "14px",
-            fontWeight: "600",
+            fontWeight: "700",
           }}
         >
           ← Ürünlere Dön
         </a>
       </header>
 
-      {/* HERO */}
+      {/* ÜRÜN */}
       <section
         style={{
-          padding: "70px 24px 90px",
-          textAlign: "center",
+          maxWidth: "1180px",
+          margin: "0 auto",
+          padding: "70px 24px 100px",
         }}
       >
         <div
           style={{
-            maxWidth: "900px",
-            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "70px",
+            alignItems: "center",
           }}
         >
+          {/* ÜRÜN GÖRSELİ */}
           <div
             style={{
-              display: "inline-block",
-              background: "#eaf4ff",
-              color: "#087cf0",
-              padding: "8px 14px",
-              borderRadius: "999px",
-              fontSize: "13px",
-              fontWeight: "800",
-              marginBottom: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            DUO NFC
+            <img
+              src="/images/duo-nfc.png"
+              alt="DOKUNUVER Duo NFC Kartı"
+              style={{
+                display: "block",
+                width: "100%",
+                maxWidth: "500px",
+                height: "auto",
+                borderRadius: "20px",
+                boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
+              }}
+            />
           </div>
 
-<img
-  src="/images/duo-nfc.png"
-  alt="DOKUNUVER Duo NFC"
-  style={{
-    display: "block",
-    width: "100%",
-    maxWidth: "560px",
-    height: "auto",
-    margin: "0 auto 40px",
-    borderRadius: "24px",
-  }}
-/>
+          {/* ÜRÜN BİLGİLERİ */}
+          <div>
+            <div
+              style={{
+                display: "inline-block",
+                padding: "8px 14px",
+                borderRadius: "999px",
+                background: "#eaf4ff",
+                color: "#087cf0",
+                fontSize: "13px",
+                fontWeight: "800",
+                marginBottom: "20px",
+              }}
+            >
+              DUO NFC
+            </div>
 
-          <h1
-            style={{
-              margin: "0 0 22px",
-              fontSize: "clamp(42px, 7vw, 68px)",
-              lineHeight: "1.05",
-              letterSpacing: "-2px",
-            }}
-          >
-            İki bağlantı.
-            <br />
-            Tek DOKUNUVER.
-          </h1>
+            <h1
+              style={{
+                margin: "0",
+                fontSize: "clamp(38px, 5vw, 58px)",
+                lineHeight: "1.05",
+                letterSpacing: "-2px",
+              }}
+            >
+              Duo NFC Kartı
+            </h1>
 
-          <p
-            style={{
-              maxWidth: "680px",
-              margin: "0 auto",
-              color: "#667085",
-              fontSize: "18px",
-              lineHeight: "1.7",
-            }}
-          >
-            Duo NFC ile iki farklı dijital bağlantıyı tek üründe bir araya
-            getirin. Müşterileriniz ihtiyaç duydukları bağlantıya hızlı ve
-            kolay şekilde ulaşsın.
-          </p>
+            <p
+              style={{
+                margin: "22px 0 0",
+                color: "#667085",
+                fontSize: "17px",
+                lineHeight: "1.7",
+              }}
+            >
+              İki farklı dijital bağlantıyı, iki ayrı NFC alanı ve QR
+              kodlarıyla tek DOKUNUVER kartında bir araya getirin.
+            </p>
 
-          <a
-            href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20Duo%20NFC%20%C3%BCr%C3%BCn%C3%BC%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-block",
-              marginTop: "34px",
-              background: "#101828",
-              color: "#ffffff",
-              padding: "16px 26px",
-              borderRadius: "12px",
-              textDecoration: "none",
-              fontWeight: "700",
-            }}
-          >
-            WhatsApp'tan Bilgi Al
-          </a>
+            {/* FİYAT */}
+            <div
+              style={{
+                marginTop: "30px",
+                fontSize: "36px",
+                fontWeight: "900",
+                color: "#101828",
+              }}
+            >
+              349 TL
+            </div>
+
+            <div
+              style={{
+                marginTop: "5px",
+                color: "#667085",
+                fontSize: "13px",
+              }}
+            >
+              Kargo alıcıya aittir.
+            </div>
+
+            {/* ÜRÜN ÖZELLİKLERİ */}
+            <div
+              style={{
+                marginTop: "28px",
+                padding: "22px 0",
+                borderTop: "1px solid #eaecf0",
+                borderBottom: "1px solid #eaecf0",
+                display: "grid",
+                gap: "12px",
+                color: "#475467",
+                fontSize: "14px",
+                fontWeight: "600",
+              }}
+            >
+              <div>✓ 10 × 10 cm</div>
+              <div>✓ 2 ayrı NFC alanı</div>
+              <div>✓ 2 ayrı QR kod</div>
+              <div>✓ İki bağlantı tek kartta</div>
+              <div>✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
+            </div>
+
+            {/* BUTONLAR */}
+            <div
+              style={{
+                marginTop: "30px",
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+              }}
+            >
+              <a
+                href="https://wa.me/905075738349?text=Merhaba%2C%20DOKUNUVER%20Duo%20NFC%20Kart%C4%B1%20sipari%C5%9Fi%20vermek%20istiyorum."
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  textDecoration: "none",
+                  background: "#25D366",
+                  color: "#ffffff",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                WhatsApp'tan Sipariş Ver
+              </a>
+
+              <a
+                href="/#urunler"
+                style={{
+                  textDecoration: "none",
+                  background: "#ffffff",
+                  color: "#344054",
+                  padding: "16px 25px",
+                  borderRadius: "13px",
+                  border: "1px solid #d0d5dd",
+                  fontSize: "15px",
+                  fontWeight: "800",
+                }}
+              >
+                Diğer Ürünler
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* AVANTAJLAR */}
+      {/* DUO SEÇENEKLERİ */}
       <section
         style={{
           background: "#ffffff",
@@ -154,7 +249,7 @@ export default function DuoPage() {
         >
           <div
             style={{
-              maxWidth: "650px",
+              maxWidth: "700px",
               marginBottom: "48px",
             }}
           >
@@ -162,124 +257,131 @@ export default function DuoPage() {
               style={{
                 color: "#087cf0",
                 fontSize: "13px",
-                fontWeight: "900",
-                letterSpacing: "1px",
-                marginBottom: "14px",
+                fontWeight: "800",
+                marginBottom: "12px",
               }}
             >
-              NEDEN DUO NFC?
+              DUO SEÇENEKLERİ
             </div>
 
             <h2
               style={{
-                margin: "0 0 16px",
+                margin: "0",
                 fontSize: "clamp(32px, 5vw, 48px)",
-                lineHeight: "1.1",
                 letterSpacing: "-1.5px",
               }}
             >
-              İki ihtiyacı tek üründe birleştirin.
+              İşletmenize uygun Duo'yu seçin.
             </h2>
 
             <p
               style={{
-                margin: 0,
+                margin: "18px 0 0",
                 color: "#667085",
                 fontSize: "17px",
                 lineHeight: "1.7",
               }}
             >
-              İşletmenizin en çok kullandığı iki dijital bağlantıyı aynı
-              DOKUNUVER ürününde müşterilerinize sunun.
+              Duo NFC Kartı iki farklı seçenekle hazırlanır.
             </p>
           </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: "18px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "20px",
             }}
           >
-            <FeatureCard
+            <DuoOption
               number="01"
-              title="İki NFC Noktası"
-              description="Tek ürün üzerinde iki farklı NFC bağlantısı kullanın."
+              title="Google + Instagram"
+              description="Google yorum bağlantınızı ve Instagram profilinizi tek kart üzerinde müşterilerinize sunun."
+              first="Google Yorum"
+              second="Instagram"
             />
 
-            <FeatureCard
+            <DuoOption
               number="02"
-              title="Size Özel Kombinasyon"
-              description="İhtiyacınıza uygun iki dijital bağlantıyı bir araya getirin."
-            />
-
-            <FeatureCard
-              number="03"
-              title="Tek Ürün"
-              description="İki farklı kullanım için ayrı ürünler yerine tek bir çözüm kullanın."
-            />
-
-            <FeatureCard
-              number="04"
-              title="Kolay Kullanım"
-              description="Müşteriniz istediği NFC alanına telefonunu yaklaştırarak ilgili bağlantıya ulaşır."
+              title="WhatsApp + IBAN"
+              description="WhatsApp iletişim bağlantınızı ve IBAN bilgilerinizi tek kart üzerinde bir araya getirin."
+              first="WhatsApp"
+              second="IBAN"
             />
           </div>
         </div>
       </section>
 
-      {/* ÖRNEK KOMBİNASYONLAR */}
+      {/* AVANTAJLAR */}
       <section
         style={{
-          padding: "90px 24px",
           background: "#f8fafc",
+          padding: "90px 24px",
         }}
       >
         <div
           style={{
-            maxWidth: "900px",
+            maxWidth: "1180px",
             margin: "0 auto",
-            textAlign: "center",
           }}
         >
           <div
             style={{
-              color: "#087cf0",
-              fontSize: "13px",
-              fontWeight: "900",
-              letterSpacing: "1px",
-              marginBottom: "14px",
+              maxWidth: "700px",
+              marginBottom: "48px",
             }}
           >
-            ÖRNEK KOMBİNASYONLAR
-          </div>
+            <div
+              style={{
+                color: "#087cf0",
+                fontSize: "13px",
+                fontWeight: "800",
+                marginBottom: "12px",
+              }}
+            >
+              DUO NFC KARTI
+            </div>
 
-          <h2
-            style={{
-              margin: "0 0 38px",
-              fontSize: "clamp(30px, 5vw, 44px)",
-            }}
-          >
-            İşletmenize uygun ikiliyi seçin.
-          </h2>
+            <h2
+              style={{
+                margin: "0",
+                fontSize: "clamp(32px, 5vw, 48px)",
+                letterSpacing: "-1.5px",
+              }}
+            >
+              İki ihtiyacı tek kartta birleştirin.
+            </h2>
+          </div>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(240px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
               gap: "18px",
             }}
           >
-            <CombinationCard
-              first="Google Yorum"
-              second="Instagram"
+            <FeatureCard
+              number="01"
+              title="İki NFC Alanı"
+              description="Kart üzerindeki iki ayrı NFC alanı iki farklı dijital bağlantı için kullanılır."
             />
 
-            <CombinationCard
-              first="IBAN"
-              second="WhatsApp"
+            <FeatureCard
+              number="02"
+              title="NFC + QR"
+              description="Her bağlantıya NFC alanının yanı sıra kendi QR kodu üzerinden de ulaşılabilir."
+            />
+
+            <FeatureCard
+              number="03"
+              title="Tek Kart"
+              description="İki farklı bağlantıyı iki ayrı fiziksel ürün yerine tek DOKUNUVER kartında sunabilirsiniz."
+            />
+
+            <FeatureCard
+              number="04"
+              title="Kullanıma Hazır"
+              description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; işletmenizde doğrudan kullanmaya başlayabilirsiniz."
             />
           </div>
         </div>
@@ -288,14 +390,80 @@ export default function DuoPage() {
   );
 }
 
+function DuoOption({ number, title, description, first, second }) {
+  return (
+    <div
+      style={{
+        padding: "30px",
+        background: "#ffffff",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+      }}
+    >
+      <div
+        style={{
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "900",
+          marginBottom: "20px",
+        }}
+      >
+        {number}
+      </div>
+
+      <h3
+        style={{
+          margin: "0 0 12px",
+          fontSize: "22px",
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        style={{
+          margin: "0 0 24px",
+          color: "#667085",
+          fontSize: "14px",
+          lineHeight: "1.7",
+        }}
+      >
+        {description}
+      </p>
+
+      <div
+        style={{
+          padding: "14px 16px",
+          background: "#f8fafc",
+          borderRadius: "12px",
+          fontSize: "14px",
+          fontWeight: "800",
+          textAlign: "center",
+        }}
+      >
+        {first}
+        <span
+          style={{
+            color: "#087cf0",
+            margin: "0 10px",
+          }}
+        >
+          +
+        </span>
+        {second}
+      </div>
+    </div>
+  );
+}
+
 function FeatureCard({ number, title, description }) {
   return (
     <div
       style={{
-        padding: "28px",
-        background: "#f8fafc",
         border: "1px solid #eaecf0",
         borderRadius: "20px",
+        padding: "28px",
+        background: "#ffffff",
       }}
     >
       <div
@@ -320,7 +488,7 @@ function FeatureCard({ number, title, description }) {
 
       <p
         style={{
-          margin: 0,
+          margin: "0",
           color: "#667085",
           fontSize: "14px",
           lineHeight: "1.7",
@@ -328,32 +496,6 @@ function FeatureCard({ number, title, description }) {
       >
         {description}
       </p>
-    </div>
-  );
-}
-
-function CombinationCard({ first, second }) {
-  return (
-    <div
-      style={{
-        padding: "30px 22px",
-        background: "#ffffff",
-        border: "1px solid #eaecf0",
-        borderRadius: "20px",
-        fontSize: "18px",
-        fontWeight: "800",
-      }}
-    >
-      {first}
-      <span
-        style={{
-          color: "#087cf0",
-          margin: "0 12px",
-        }}
-      >
-        +
-      </span>
-      {second}
     </div>
   );
 }
