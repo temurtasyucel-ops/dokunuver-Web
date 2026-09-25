@@ -522,7 +522,8 @@ fiziksel DOKUNUVER ürünleriyle müşterilerinizin erişimine sunun.
         letterSpacing: "-1.5px",
       }}
     >
-      İşletmenizi tek dokunuşla bağlayın.
+      DOKUNUVER'ınızı seçin,
+siparişinizi oluşturalım.
     </h2>
 
     <p
@@ -534,13 +535,13 @@ fiziksel DOKUNUVER ürünleriyle müşterilerinizin erişimine sunun.
         lineHeight: "1.7",
       }}
     >
-      İşletmenize uygun DOKUNUVER NFC çözümünü belirlemek,
-      ürünler hakkında bilgi almak veya sipariş vermek için
-      bizimle iletişime geçin.
+      Ürününüzü seçtikten sonra WhatsApp üzerinden bize ulaşın.
+İşletmenize özel bilgileri birlikte hazırlayalım ve
+DOKUNUVER ürününüzü kullanıma hazır hale getirelim.
     </p>
 
     <a
-      href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20NFC%20%C3%BCr%C3%BCnleriniz%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum."
+      href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20NFC%20%C3%BCr%C3%BCnlerinizden%20sipari%C5%9F%20vermek%20istiyorum."
       target="_blank"
       rel="noreferrer"
       style={{
@@ -554,7 +555,7 @@ fiziksel DOKUNUVER ürünleriyle müşterilerinizin erişimine sunun.
         fontWeight: "800",
       }}
     >
-      WhatsApp'tan İletişime Geç
+      WhatsApp'tan Sipariş Ver
     </a>
 
   </div>
