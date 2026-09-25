@@ -180,9 +180,10 @@ export async function POST(request) {
       Stok kartında müşteri bilgileri henüz bulunmaz.
     */
     if (
-      mode !== "stock" &&
-      (!businessName || !bankName || !accountHolder || !iban)
-    ) {
+  mode !== "stock" &&
+  mode !== "stock_bulk" &&
+  (!businessName || !bankName || !accountHolder || !iban)
+) {
       return NextResponse.json(
         { error: "Lütfen tüm alanları doldurun." },
         { status: 400 }
