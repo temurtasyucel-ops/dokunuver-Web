@@ -20,6 +20,7 @@ export default function EditIbanCardPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [locking, setLocking] = useState(false);
+  const [lockConfirmed, setLockConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -387,14 +388,32 @@ export default function EditIbanCardPage() {
                   olduğundan emin olduktan sonra kartı
                   kilitleyebilirsiniz. Kilitleme işlemi geri alınamaz.
                 </div>
+                    <label style={styles.confirmBox}>
+  <input
+    type="checkbox"
+    checked={lockConfirmed}
+    onChange={(e) => setLockConfirmed(e.target.checked)}
+    style={styles.checkbox}
+  />
+
+  <div>
+    <div style={styles.confirmTitle}>
+      Bilgileri kontrol ettim
+    </div>
+
+    <div style={styles.confirmText}>
+      Banka, hesap sahibi ve IBAN bilgilerinin doğru olduğunu onaylıyorum.
+    </div>
+  </div>
+</label>
 
                 <button
                   type="button"
                   onClick={handleLock}
-                  disabled={saving || locking}
+                  disabled={saving || locking || !lockConfirmed}
                   style={{
                     ...styles.lockButton,
-                    opacity: saving || locking ? 0.65 : 1,
+                    opacity: saving || locking || !lockConfirmed ? 0.45 : 1,
                   }}
                 >
                   {locking
@@ -693,5 +712,28 @@ const styles = {
     fontSize: "12px",
     marginTop: "28px",
   },
+confirmBox: {
+  display: "flex",
+  alignItems: "flex-start",
+  gap: "12px",
+  background: "#ffffff",
+  border: "1px solid #fedf89",
+  padding: "14px",
+  borderRadius: "10px",
+  marginBottom: "15px",
+  cursor: "pointer",
+},
 
+confirmTitle: {
+  color: "#7a2e0e",
+  fontSize: "13px",
+  fontWeight: "900",
+},
+
+confirmText: {
+  color: "#934a0a",
+  fontSize: "12px",
+  lineHeight: "1.5",
+  marginTop: "4px",
+},
 };
