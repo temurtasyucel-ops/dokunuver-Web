@@ -236,180 +236,73 @@ export default function Home() {
 >
       <a
   href="/urunler/google-yorum"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
-  <div
-    className="product-card"
-    style={{
-      height: "100%",
-      border: "1px solid #eaecf0",
-      borderRadius: "20px",
-      background: "#ffffff",
-      overflow: "hidden",
-      display: "flex",
-      flexDirection: "column",
-    }}
-  >
-    <div
-      style={{
-        background: "#f8fafc",
-        padding: "32px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        aspectRatio: "1 / 1",
-      }}
-    >
-      <img
-        src="/images/google-yorum-nfc.png"
-        alt="DOKUNUVER Google Yorum NFC Kartı"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          borderRadius: "14px",
-        }}
-      />
-    </div>
-
-    <div
-      style={{
-        padding: "24px",
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-      }}
-    >
-      <h3
-        style={{
-          margin: "0 0 10px",
-          fontSize: "20px",
-          color: "#101828",
-        }}
-      >
-        Google Yorum Kartı
-      </h3>
-
-      <p
-        style={{
-          margin: "0",
-          color: "#667085",
-          lineHeight: "1.6",
-          fontSize: "14px",
-        }}
-      >
-        Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca
-        yönlendirin.
-      </p>
-
-      <div
-        style={{
-          marginTop: "22px",
-          fontSize: "26px",
-          fontWeight: "900",
-          color: "#101828",
-        }}
-      >
-        249 TL
-      </div>
-
-      <div
-        style={{
-          marginTop: "6px",
-          color: "#667085",
-          fontSize: "13px",
-          fontWeight: "600",
-        }}
-      >
-        NFC + QR • Stand veya yapışkanlı kullanım
-      </div>
-
-      <div
-        style={{
-          marginTop: "22px",
-          paddingTop: "18px",
-          borderTop: "1px solid #eaecf0",
-          color: "#087cf0",
-          fontSize: "14px",
-          fontWeight: "800",
-        }}
-      >
-        Ürünü İncele →
-      </div>
-    </div>
-  </div>
+  <ProductCard
+    image="/images/google-yorum-nfc.png"
+    title="Google Yorum Kartı"
+    description="Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca yönlendirin."
+    price="249 TL"
+  />
 </a>
 
-      <a
+<a
   href="/urunler/instagram"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
   <ProductCard
-    icon="◎"
-    title="Instagram"
-    description="Instagram profilinizi müşterilerinizle saniyeler içinde paylaşın."
+    image="/images/instagram-nfc.png"
+    title="Instagram Kartı"
+    description="Instagram profilinizi müşterilerinizle NFC veya QR üzerinden kolayca paylaşın."
+    price="249 TL"
   />
 </a>
 
-      <a
+<a
   href="/urunler/whatsapp"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
   <ProductCard
-    icon="✆"
-    title="WhatsApp"
+    image="/images/whatsapp-nfc.png"
+    title="WhatsApp Kartı"
     description="Müşterilerinizin sizinle WhatsApp üzerinden hızlıca iletişime geçmesini sağlayın."
+    price="249 TL"
   />
 </a>
 
-     <a
+<a
   href="/urunler/iban"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
   <ProductCard
-    icon="₺"
-    title="IBAN"
-    description="Ödeme bilgilerinizi yazma hatası olmadan kolayca paylaşın."
+    image="/images/iban-nfc.png"
+    title="IBAN Kartı"
+    description="Ödeme bilgilerinizi yazma hatası olmadan NFC veya QR ile kolayca paylaşın."
+    price="249 TL"
   />
 </a>
 
-      <a
+<a
   href="/urunler/ilan"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
   <ProductCard
-    icon="⌂"
-    title="İlan"
-    description="Araç veya gayrimenkul ilanınızı NFC ile doğrudan müşterilerinize açın."
+    image="/images/ilan-nfc.png"
+    title="İlan Kartı"
+    description="İlan bağlantınızı NFC veya QR ile müşterilerinize doğrudan ulaştırın."
+    price="249 TL"
   />
 </a>
 
 <a
   href="/urunler/duo"
-  style={{
-    textDecoration: "none",
-    color: "inherit",
-  }}
+  style={{ textDecoration: "none", color: "inherit" }}
 >
   <ProductCard
-    icon="⇄"
-    title="Duo NFC"
+    image="/images/duo-nfc.png"
+    title="Duo NFC Kartı"
     description="İki farklı dijital bağlantıyı tek DOKUNUVER ürününde bir araya getirin."
+    price="349 TL"
   />
 </a>
       
@@ -757,54 +650,106 @@ export default function Home() {
     </main>
   );
 }
-function ProductCard({ icon, title, description }) {
+function ProductCard({ image, title, description, price = "249 TL" }) {
   return (
-  <div
-  className="product-card"
-  style={{
-    padding: "28px",
-    border: "1px solid #eaecf0",
-    borderRadius: "20px",
-    background: "#ffffff",
-  }}
->
+    <div
+      className="product-card"
+      style={{
+        height: "100%",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+        background: "#ffffff",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <div
         style={{
-          width: "48px",
-          height: "48px",
-          borderRadius: "14px",
-          background: "#eaf4ff",
-          color: "#087cf0",
+          background: "#f8fafc",
+          padding: "32px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "22px",
-          fontWeight: "800",
-          marginBottom: "22px",
+          aspectRatio: "1 / 1",
         }}
       >
-        {icon}
+        <img
+          src={image}
+          alt={`DOKUNUVER ${title}`}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            borderRadius: "14px",
+          }}
+        />
       </div>
 
-      <h3
+      <div
         style={{
-          margin: "0 0 10px",
-          fontSize: "19px",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
         }}
       >
-        {title}
-      </h3>
+        <h3
+          style={{
+            margin: "0 0 10px",
+            fontSize: "20px",
+            color: "#101828",
+          }}
+        >
+          {title}
+        </h3>
 
-      <p
-        style={{
-          margin: "0",
-          color: "#667085",
-          lineHeight: "1.6",
-          fontSize: "14px",
-        }}
-      >
-        {description}
-      </p>
+        <p
+          style={{
+            margin: "0",
+            color: "#667085",
+            lineHeight: "1.6",
+            fontSize: "14px",
+          }}
+        >
+          {description}
+        </p>
+
+        <div
+          style={{
+            marginTop: "22px",
+            fontSize: "26px",
+            fontWeight: "900",
+            color: "#101828",
+          }}
+        >
+          {price}
+        </div>
+
+        <div
+          style={{
+            marginTop: "6px",
+            color: "#667085",
+            fontSize: "13px",
+            fontWeight: "600",
+          }}
+        >
+          NFC + QR • Stand veya yapışkanlı kullanım
+        </div>
+
+        <div
+          style={{
+            marginTop: "22px",
+            paddingTop: "18px",
+            borderTop: "1px solid #eaecf0",
+            color: "#087cf0",
+            fontSize: "14px",
+            fontWeight: "800",
+          }}
+        >
+          Ürünü İncele →
+        </div>
+      </div>
     </div>
   );
 }
