@@ -303,15 +303,30 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
                     </div>
 
                     <div
-                      style={
-                        card.active
-                          ? styles.active
-                          : styles.passive
-                      }
-                    >
-                      {card.active ? "Aktif" : "Pasif"}
-                    </div>
-                  </div>
+  style={{
+    display: "flex",
+    gap: "8px",
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+  }}
+>
+  {card.locked && (
+    <div style={styles.locked}>
+      🔒 Kilitli
+    </div>
+  )}
+
+  <div
+    style={
+      card.active
+        ? styles.active
+        : styles.passive
+    }
+  >
+    {card.active ? "Aktif" : "Pasif"}
+  </div>
+</div>
 
                   <div style={styles.infoGrid}>
                     <Info
@@ -749,5 +764,15 @@ paginationButtonActive: {
   background: "#087cf0",
   color: "#ffffff",
   border: "1px solid #087cf0",
+},
+
+  locked: {
+  background: "#eff8ff",
+  color: "#175cd3",
+  padding: "6px 10px",
+  borderRadius: "20px",
+  fontSize: "12px",
+  fontWeight: "800",
+  border: "1px solid #b2ddff",
 },
 };
