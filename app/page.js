@@ -58,16 +58,16 @@ export default function Home() {
         </a>
       </header>
 
-      {/* HERO */}
-<section
-  className="hero-section"
-  style={{
-    maxWidth: "1180px",
-    margin: "0 auto",
-    padding: "90px 24px 110px",
-    textAlign: "center",
-  }}
->
+            {/* HERO */}
+      <section
+        className="hero-section"
+        style={{
+          maxWidth: "1180px",
+          margin: "0 auto",
+          padding: "90px 24px 95px",
+          textAlign: "center",
+        }}
+      >
         <div
           style={{
             display: "inline-block",
@@ -85,30 +85,30 @@ export default function Home() {
 
         <h1
           style={{
-            maxWidth: "850px",
+            maxWidth: "900px",
             margin: "0 auto",
             fontSize: "clamp(42px, 7vw, 76px)",
             lineHeight: "1.03",
             letterSpacing: "-3px",
           }}
         >
-          Tek dokunuşla
+          İşletmenizi
           <br />
-          dijital dünyaya bağlan.
+          tek dokunuşla bağlayın.
         </h1>
 
         <p
           style={{
-            maxWidth: "650px",
+            maxWidth: "720px",
             margin: "28px auto 0",
             color: "#667085",
             fontSize: "18px",
             lineHeight: "1.7",
           }}
         >
-          DOKUNUVER NFC ürünleriyle müşterilerinizi Google yorumlarına,
-          sosyal medya hesaplarınıza, ödeme bilgilerinize ve dijital
-          içeriklerinize saniyeler içinde yönlendirin.
+          Google yorumlarından Instagram ve WhatsApp&apos;a, ödeme
+          bilgilerinden ilanlarınıza kadar dijital bağlantılarınızı NFC ve QR
+          ile müşterilerinize ulaştırın.
         </p>
 
         <div
@@ -132,7 +132,7 @@ export default function Home() {
               fontSize: "15px",
             }}
           >
-            NFC Ürünlerini Keşfet
+            Ürünleri İncele
           </a>
 
           <a
@@ -153,36 +153,20 @@ export default function Home() {
         </div>
 
         <div
-  className="hero-nfc"
-  style={{
-    margin: "70px auto 0",
-    width: "150px",
-    height: "150px",
-            borderRadius: "50%",
-            background:
-              "linear-gradient(135deg, #087cf0 0%, #6941c6 100%)",
+          style={{
+            marginTop: "42px",
             display: "flex",
-            alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 25px 60px rgba(8,124,240,0.25)",
+            gap: "24px",
+            flexWrap: "wrap",
+            color: "#667085",
+            fontSize: "13px",
+            fontWeight: "700",
           }}
         >
-          <div
-            style={{
-              width: "90px",
-              height: "90px",
-              borderRadius: "50%",
-              border: "3px solid rgba(255,255,255,0.9)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ffffff",
-              fontSize: "36px",
-              fontWeight: "700",
-            }}
-          >
-            N
-          </div>
+          <span>✓ NFC + QR</span>
+          <span>✓ İşletmenize özel hazırlanır</span>
+          <span>✓ Stand veya yapışkanlı kullanım</span>
         </div>
       </section>
               {/* ÜRÜNLER */}
