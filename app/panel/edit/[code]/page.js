@@ -190,6 +190,7 @@ if (!finalConfirmed) return;
       }
 
       setLocked(true);
+      setLockedAt(new Date().toISOString());
 
       setMessage(
         "IBAN bilgileri doğrulandı ve kart kalıcı olarak kilitlendi."
