@@ -241,11 +241,106 @@ export default function Home() {
     color: "inherit",
   }}
 >
-  <ProductCard
-    icon="★"
-    title="Google Yorum"
-    description="Müşterilerinizi Google yorum sayfanıza tek dokunuşla yönlendirin."
-  />
+  <div
+    className="product-card"
+    style={{
+      height: "100%",
+      border: "1px solid #eaecf0",
+      borderRadius: "20px",
+      background: "#ffffff",
+      overflow: "hidden",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+    <div
+      style={{
+        background: "#f8fafc",
+        padding: "24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        aspectRatio: "1 / 1",
+      }}
+    >
+      <img
+        src="/images/google-yorum-nfc.png"
+        alt="DOKUNUVER Google Yorum NFC Kartı"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          borderRadius: "14px",
+        }}
+      />
+    </div>
+
+    <div
+      style={{
+        padding: "24px",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+      }}
+    >
+      <h3
+        style={{
+          margin: "0 0 10px",
+          fontSize: "20px",
+          color: "#101828",
+        }}
+      >
+        Google Yorum Kartı
+      </h3>
+
+      <p
+        style={{
+          margin: "0",
+          color: "#667085",
+          lineHeight: "1.6",
+          fontSize: "14px",
+        }}
+      >
+        Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca
+        yönlendirin.
+      </p>
+
+      <div
+        style={{
+          marginTop: "22px",
+          fontSize: "26px",
+          fontWeight: "900",
+          color: "#101828",
+        }}
+      >
+        249 TL
+      </div>
+
+      <div
+        style={{
+          marginTop: "6px",
+          color: "#667085",
+          fontSize: "12px",
+          fontWeight: "600",
+        }}
+      >
+        NFC + QR • Stand veya yapışkanlı kullanım
+      </div>
+
+      <div
+        style={{
+          marginTop: "22px",
+          paddingTop: "18px",
+          borderTop: "1px solid #eaecf0",
+          color: "#087cf0",
+          fontSize: "14px",
+          fontWeight: "800",
+        }}
+      >
+        Ürünü İncele →
+      </div>
+    </div>
+  </div>
 </a>
 
       <a
