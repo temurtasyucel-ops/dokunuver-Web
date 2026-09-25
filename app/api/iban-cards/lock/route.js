@@ -161,8 +161,9 @@ export async function POST(request) {
           Prefer: "return=representation",
         },
         body: JSON.stringify({
-          locked: true,
-        }),
+  locked: true,
+  locked_at: new Date().toISOString(),
+}),
       }
     );
 
