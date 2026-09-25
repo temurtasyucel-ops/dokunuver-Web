@@ -10,6 +10,7 @@ export default function AdminPanel() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [creatingStock, setCreatingStock] = useState(false);
+  const [creatingBulkStock, setCreatingBulkStock] = useState(false);
 
   const cardsPerPage = 20;
 
@@ -111,7 +112,81 @@ export default function AdminPanel() {
       setCreatingStock(false);
     }
   }
+async function createBulkStockCards() {
+  const quantityText = window.prompt(
+    "Kaç adet stok IBAN kartı oluşturmak istiyorsunuz?\n\n1 ile 100 arasında bir sayı girin.",
+    "10"
+  );
 
+  if (quantityText === null) return;
+
+  const quantity = Number(quantityText);
+
+  if (
+    !Number.isInteger(quantity) ||
+    quantity < 1 ||
+    quantity > 100
+  ) {
+    alert("Lütfen 1 ile 100 arasında geçerli bir adet girin.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `${quantity} adet boş IBAN stok kartı oluşturulacak.\n\nDevam etmek istiyor musunuz?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setCreatingBulkStock(true);
+
+    const token = localStorage.getItem(
+      "dokunuver_access_token"
+    );
+
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    const response = await fetch("/api/iban-cards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        mode: "stock_bulk",
+        quantity,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) {
+      localStorage.removeItem("dokunuver_access_token");
+      localStorage.removeItem("dokunuver_refresh_token");
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Toplu stok kartları oluşturulamadı."
+      );
+    }
+
+    await loadCards();
+
+    alert(
+      `${data.count} adet stok IBAN kartı başarıyla oluşturuldu.`
+    );
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    setCreatingBulkStock(false);
+  }
+}
   async function toggleCardStatus(card) {
     const action = card.active ? "pasife almak" : "aktif etmek";
 
@@ -264,7 +339,21 @@ export default function AdminPanel() {
                 ? "Stok Oluşturuluyor..."
                 : "+ Stok IBAN Kartı Oluştur"}
             </button>
-
+<button
+  type="button"
+  onClick={createBulkStockCards}
+  disabled={creatingBulkStock}
+  style={{
+    ...styles.newButton,
+    background: "#ffffff",
+    color: "#101828",
+    opacity: creatingBulkStock ? 0.6 : 1,
+  }}
+>
+  {creatingBulkStock
+    ? "Toplu Stok Oluşturuluyor..."
+    : "+ Toplu Stok Oluştur"}
+</button>
             <button
               type="button"
               onClick={() =>
