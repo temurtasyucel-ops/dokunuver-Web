@@ -114,7 +114,17 @@ export default function EditIbanCardPage() {
 
     generateQr();
   }, [code]);
+  function downloadQrCode() {
+  if (!qrCode || !code) return;
 
+  const link = document.createElement("a");
+  link.href = qrCode;
+  link.download = `DOKUNUVER-IBAN-${code}-QR.png`;
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
@@ -620,6 +630,13 @@ export default function EditIbanCardPage() {
               <div style={styles.qrUrl}>
                 dokunuver.com.tr/i/{code}
               </div>
+                <button
+  type="button"
+  onClick={downloadQrCode}
+  style={styles.qrDownloadButton}
+>
+  ↓ QR Kodunu PNG İndir
+</button>
             </div>
           )}
 
@@ -1004,7 +1021,19 @@ const styles = {
     color: "#667085",
     wordBreak: "break-all",
   },
-
+  
+  qrDownloadButton: {
+  marginTop: "16px",
+  border: "none",
+  background: "#101828",
+  color: "#ffffff",
+  padding: "12px 18px",
+  borderRadius: "10px",
+  fontSize: "13px",
+  fontWeight: "800",
+  cursor: "pointer",
+},
+  
   viewCard: {
     display: "block",
     textAlign: "center",
