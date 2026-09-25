@@ -19,6 +19,7 @@ export default function EditIbanCardPage() {
 
   const [locked, setLocked] = useState(false);
   const [lockedAt, setLockedAt] = useState(null);
+  const [status, setStatus] = useState("assigned");
   const [qrCode, setQrCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -26,51 +27,64 @@ export default function EditIbanCardPage() {
   const [lockConfirmed, setLockConfirmed] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
     if (!code) return;
 
     async function loadCard() {
       try {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+        const token = localStorage.getItem("dokunuver_access_token");
 
-        const response = await fetch(
-          `${url}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
-            code
-          )}&select=*`,
-          {
-            headers: {
-              apikey: key,
-              Authorization: `Bearer ${key}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Kart bilgileri alınamadı.");
+        if (!token) {
+          window.location.href = "/panel/login";
+          return;
         }
+
+        const response = await fetch("/api/iban-cards", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
 
         const data = await response.json();
 
-        if (!data || data.length === 0) {
-          throw new Error("Kart bulunamadı.");
+        if (response.status === 401) {
+          localStorage.removeItem("dokunuver_access_token");
+          localStorage.removeItem("dokunuver_refresh_token");
+          window.location.href = "/panel/login";
+          return;
         }
 
-        const card = data[0];
+        if (!response.ok) {
+          throw new Error(data.error || "Kart bilgileri alınamadı.");
+        }
+
+        const card = Array.isArray(data.cards)
+          ? data.cards.find((item) => item.code === code)
+          : null;
+
+        if (!card) {
+          throw new Error("Kart bulunamadı.");
+        }
 
         setForm({
           business_name: card.business_name || "",
           bank_name: card.bank_name || "",
           account_holder: card.account_holder || "",
           iban: card.iban || "",
-          active: card.active !== false,
+          active: card.active === true,
         });
 
         setLocked(card.locked === true);
         setLockedAt(card.locked_at || null);
+        setStatus(card.status || "assigned");
       } catch (err) {
-        setError(err.message || "Bir hata oluştu.");
+        const text = err.message || "Bir hata oluştu.";
+        setError(text);
+        setLoadError(text);
       } finally {
         setLoading(false);
       }
@@ -78,27 +92,29 @@ export default function EditIbanCardPage() {
 
     loadCard();
   }, [code]);
-useEffect(() => {
-  if (!code) return;
 
-  async function generateQr() {
-    try {
-      const url = `https://dokunuver.com.tr/i/${code}`;
+  useEffect(() => {
+    if (!code) return;
 
-      const dataUrl = await QRCode.toDataURL(url, {
-        width: 500,
-        margin: 2,
-        errorCorrectionLevel: "H",
-      });
+    async function generateQr() {
+      try {
+        const url = `https://dokunuver.com.tr/i/${code}`;
 
-      setQrCode(dataUrl);
-    } catch (err) {
-      console.error("QR kod oluşturulamadı:", err);
+        const dataUrl = await QRCode.toDataURL(url, {
+          width: 500,
+          margin: 2,
+          errorCorrectionLevel: "H",
+        });
+
+        setQrCode(dataUrl);
+      } catch (err) {
+        console.error("QR kod oluşturulamadı:", err);
+      }
     }
-  }
 
-  generateQr();
-}, [code]);
+    generateQr();
+  }, [code]);
+
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
@@ -143,17 +159,35 @@ useEffect(() => {
           bank_name: form.bank_name.trim(),
           account_holder: form.account_holder.trim(),
           iban: form.iban.replace(/\s+/g, "").toUpperCase(),
-          active: form.active,
+
+          // Stok kartı ilk atamada pasif kalır.
+          active: status === "stock" ? false : form.active,
         }),
       });
 
       const data = await response.json();
 
+      if (response.status === 401) {
+        localStorage.removeItem("dokunuver_access_token");
+        localStorage.removeItem("dokunuver_refresh_token");
+        window.location.href = "/panel/login";
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(data.error || "Kart güncellenemedi.");
       }
 
-      setMessage("Kart başarıyla güncellendi.");
+      if (status === "stock") {
+        setStatus("assigned");
+        setForm((current) => ({
+          ...current,
+          active: false,
+        }));
+        setMessage("Stok kartı müşteriye başarıyla atandı.");
+      } else {
+        setMessage("Kart başarıyla güncellendi.");
+      }
 
       setTimeout(() => {
         router.push("/panel");
@@ -171,17 +205,19 @@ useEffect(() => {
     setError("");
 
     if (!lockConfirmed) {
-  setError("Kilitlemeden önce bilgilerin doğruluğunu onaylamalısınız.");
-  return;
-}
+      setError(
+        "Kilitlemeden önce bilgilerin doğruluğunu onaylamalısınız."
+      );
+      return;
+    }
 
-const finalConfirmed = window.confirm(
-  "SON ONAY\n\n" +
-    "Bu IBAN kartını doğrulayıp kalıcı olarak kilitlemek istediğinizden emin misiniz?\n\n" +
-    "Banka, hesap sahibi ve IBAN bilgileri kilitleme sonrasında değiştirilemez."
-);
+    const finalConfirmed = window.confirm(
+      "SON ONAY\n\n" +
+        "Bu IBAN kartını doğrulayıp kalıcı olarak kilitlemek istediğinizden emin misiniz?\n\n" +
+        "Banka, hesap sahibi ve IBAN bilgileri kilitleme sonrasında değiştirilemez."
+    );
 
-if (!finalConfirmed) return;
+    if (!finalConfirmed) return;
 
     setLocking(true);
 
@@ -208,7 +244,9 @@ if (!finalConfirmed) return;
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "IBAN kartı kilitlenemedi.");
+        throw new Error(
+          data.error || "IBAN kartı kilitlenemedi."
+        );
       }
 
       setLocked(true);
@@ -232,12 +270,14 @@ if (!finalConfirmed) return;
     );
   }
 
-  if (error && !form.business_name) {
+  if (loadError) {
     return (
       <main style={styles.center}>
         <div style={styles.errorBox}>
-          <strong>{error}</strong>
+          <strong>{loadError}</strong>
+
           <br />
+
           <a href="/panel" style={styles.backLink}>
             ← Panele Dön
           </a>
@@ -245,6 +285,8 @@ if (!finalConfirmed) return;
       </main>
     );
   }
+
+  const isStock = status === "stock";
 
   return (
     <main style={styles.page}>
@@ -264,12 +306,18 @@ if (!finalConfirmed) return;
           <div style={styles.eyebrow}>DOKUNUVER PANEL</div>
 
           <h1 style={styles.title}>
-            {locked ? "IBAN Kartı" : "IBAN Kartını Düzenle"}
+            {locked
+              ? "IBAN Kartı"
+              : isStock
+              ? "Stok Kartını Müşteriye Ata"
+              : "IBAN Kartını Düzenle"}
           </h1>
 
           <p style={styles.subtitle}>
             {locked
               ? "Bu kartın finansal bilgileri doğrulanmış ve kilitlenmiştir."
+              : isStock
+              ? "Bu fiziksel stok kartına müşteri ve ödeme bilgilerini atayın. Kart kodu, NFC ve QR adresi değişmez."
               : "NFC kartının ödeme bilgilerini kontrol edin ve doğruladıktan sonra kilitleyin."}
           </p>
 
@@ -291,19 +339,38 @@ if (!finalConfirmed) return;
                 Bu kartın banka, hesap sahibi ve IBAN bilgileri
                 artık değiştirilemez.
               </div>
-                  {lockedAt && (
-  <div style={styles.lockedDate}>
-    Kilitlenme:{" "}
-    {new Date(lockedAt).toLocaleString("tr-TR", {
-      timeZone: "Europe/Istanbul",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })}
-  </div>
-)}
+
+              {lockedAt && (
+                <div style={styles.lockedDate}>
+                  Kilitlenme:{" "}
+                  {new Date(lockedAt).toLocaleString("tr-TR", {
+                    timeZone: "Europe/Istanbul",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {isStock && !locked && (
+          <div style={styles.stockBox}>
+            <div style={styles.stockIcon}>📦</div>
+
+            <div>
+              <div style={styles.stockTitle}>
+                Stok Kartı
+              </div>
+
+              <div style={styles.stockText}>
+                Bu kart henüz bir müşteriye atanmamıştır.
+                Bilgileri kaydettiğinizde kart stoktan çıkar ve
+                müşteriye atanmış duruma geçer.
+              </div>
             </div>
           </div>
         )}
@@ -311,6 +378,7 @@ if (!finalConfirmed) return;
         <form onSubmit={handleSubmit} style={styles.card}>
           <label style={styles.label}>
             İşletme / Kart Adı
+
             <input
               name="business_name"
               value={form.business_name}
@@ -326,6 +394,7 @@ if (!finalConfirmed) return;
 
           <label style={styles.label}>
             Banka
+
             <input
               name="bank_name"
               value={form.bank_name}
@@ -341,6 +410,7 @@ if (!finalConfirmed) return;
 
           <label style={styles.label}>
             Hesap Sahibi
+
             <input
               name="account_holder"
               value={form.account_holder}
@@ -356,6 +426,7 @@ if (!finalConfirmed) return;
 
           <label style={styles.label}>
             IBAN
+
             <input
               name="iban"
               value={form.iban}
@@ -370,7 +441,7 @@ if (!finalConfirmed) return;
             />
           </label>
 
-          {!locked && (
+          {!locked && !isStock && (
             <label style={styles.activeBox}>
               <input
                 type="checkbox"
@@ -393,10 +464,27 @@ if (!finalConfirmed) return;
             </label>
           )}
 
-          {error && <div style={styles.error}>{error}</div>}
+          {isStock && (
+            <div style={styles.stockPassiveInfo}>
+              <strong>İlk atamada kart pasif kalacaktır.</strong>
+              <div style={styles.stockPassiveText}>
+                Müşteri bilgilerini kaydettikten ve kontrol
+                ettikten sonra kartı panelden aktif hale
+                getirebilirsiniz.
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div style={styles.error}>
+              {error}
+            </div>
+          )}
 
           {message && (
-            <div style={styles.success}>{message}</div>
+            <div style={styles.success}>
+              {message}
+            </div>
           )}
 
           {!locked && (
@@ -406,104 +494,145 @@ if (!finalConfirmed) return;
                 disabled={saving || locking}
                 style={{
                   ...styles.saveButton,
-                  opacity: saving || locking ? 0.65 : 1,
+                  opacity:
+                    saving || locking ? 0.65 : 1,
                 }}
               >
                 {saving
                   ? "Kaydediliyor..."
+                  : isStock
+                  ? "Müşteriye Ata ve Kaydet"
                   : "Değişiklikleri Kaydet"}
               </button>
 
-              <div style={styles.lockSection}>
-                <div style={styles.lockWarningTitle}>
-                  Son kontrolü yaptınız mı?
+              {!isStock && (
+                <div style={styles.lockSection}>
+                  <div style={styles.lockWarningTitle}>
+                    Son kontrolü yaptınız mı?
+                  </div>
+
+                  <div style={styles.lockWarningText}>
+                    Banka, hesap sahibi ve IBAN bilgilerinin
+                    doğru olduğundan emin olduktan sonra kartı
+                    kilitleyebilirsiniz. Kilitleme işlemi geri
+                    alınamaz.
+                  </div>
+
+                  <div style={styles.verificationSummary}>
+                    <div style={styles.verificationRow}>
+                      <span style={styles.verificationLabel}>
+                        Banka
+                      </span>
+
+                      <strong>
+                        {form.bank_name || "-"}
+                      </strong>
+                    </div>
+
+                    <div style={styles.verificationRow}>
+                      <span style={styles.verificationLabel}>
+                        Hesap Sahibi
+                      </span>
+
+                      <strong>
+                        {form.account_holder || "-"}
+                      </strong>
+                    </div>
+
+                    <div style={styles.verificationRow}>
+                      <span style={styles.verificationLabel}>
+                        IBAN
+                      </span>
+
+                      <strong style={styles.verificationIban}>
+                        {form.iban || "-"}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <label style={styles.confirmBox}>
+                    <input
+                      type="checkbox"
+                      checked={lockConfirmed}
+                      onChange={(e) =>
+                        setLockConfirmed(e.target.checked)
+                      }
+                      style={styles.checkbox}
+                    />
+
+                    <div>
+                      <div style={styles.confirmTitle}>
+                        Bilgileri kontrol ettim
+                      </div>
+
+                      <div style={styles.confirmText}>
+                        Banka, hesap sahibi ve IBAN bilgilerinin
+                        doğru olduğunu onaylıyorum.
+                      </div>
+                    </div>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={handleLock}
+                    disabled={
+                      saving ||
+                      locking ||
+                      !lockConfirmed
+                    }
+                    style={{
+                      ...styles.lockButton,
+                      opacity:
+                        saving ||
+                        locking ||
+                        !lockConfirmed
+                          ? 0.45
+                          : 1,
+                    }}
+                  >
+                    {locking
+                      ? "Kilitleniyor..."
+                      : "🔒 IBAN Bilgilerini Doğrula ve Kilitle"}
+                  </button>
                 </div>
-
-                <div style={styles.lockWarningText}>
-                  Banka, hesap sahibi ve IBAN bilgilerinin doğru
-                  olduğundan emin olduktan sonra kartı
-                  kilitleyebilirsiniz. Kilitleme işlemi geri alınamaz.
-                </div>
-                    <div style={styles.verificationSummary}>
-  <div style={styles.verificationRow}>
-    <span style={styles.verificationLabel}>Banka</span>
-    <strong>{form.bank_name || "-"}</strong>
-  </div>
-
-  <div style={styles.verificationRow}>
-    <span style={styles.verificationLabel}>Hesap Sahibi</span>
-    <strong>{form.account_holder || "-"}</strong>
-  </div>
-
-  <div style={styles.verificationRow}>
-    <span style={styles.verificationLabel}>IBAN</span>
-    <strong style={styles.verificationIban}>
-      {form.iban || "-"}
-    </strong>
-  </div>
-</div>
-                    <label style={styles.confirmBox}>
-  <input
-    type="checkbox"
-    checked={lockConfirmed}
-    onChange={(e) => setLockConfirmed(e.target.checked)}
-    style={styles.checkbox}
-  />
-
-  <div>
-    <div style={styles.confirmTitle}>
-      Bilgileri kontrol ettim
-    </div>
-
-    <div style={styles.confirmText}>
-      Banka, hesap sahibi ve IBAN bilgilerinin doğru olduğunu onaylıyorum.
-    </div>
-  </div>
-</label>
-
-                <button
-                  type="button"
-                  onClick={handleLock}
-                  disabled={saving || locking || !lockConfirmed}
-                  style={{
-                    ...styles.lockButton,
-                    opacity: saving || locking || !lockConfirmed ? 0.45 : 1,
-                  }}
-                >
-                  {locking
-                    ? "Kilitleniyor..."
-                    : "🔒 IBAN Bilgilerini Doğrula ve Kilitle"}
-                </button>
-              </div>
+              )}
             </>
           )}
-{qrCode && (
-  <div style={styles.qrSection}>
-    <div style={styles.qrTitle}>IBAN Kartı QR Kodu</div>
 
-    <div style={styles.qrDescription}>
-      Bu QR kod okutulduğunda müşterinin IBAN kartı açılır.
-    </div>
+          {qrCode && (
+            <div style={styles.qrSection}>
+              <div style={styles.qrTitle}>
+                IBAN Kartı QR Kodu
+              </div>
 
-    <img
-      src={qrCode}
-      alt="IBAN Kartı QR Kodu"
-      style={styles.qrImage}
-    />
+              <div style={styles.qrDescription}>
+                {isStock
+                  ? "Bu QR kod fiziksel stok kartının kalıcı adresidir. Müşteri atandığında QR kod değişmez."
+                  : "Bu QR kod okutulduğunda müşterinin IBAN kartı açılır."}
+              </div>
 
-    <div style={styles.qrUrl}>
-      dokunuver.com.tr/i/{code}
-    </div>
-  </div>
-)}
-          <a
-            href={`/i/${code}`}
-            target="_blank"
-            rel="noreferrer"
-            style={styles.viewCard}
-          >
-            Kartı Görüntüle ↗
-          </a>
+              <img
+                src={qrCode}
+                alt="IBAN Kartı QR Kodu"
+                style={styles.qrImage}
+              />
+
+              <div style={styles.qrUrl}>
+                dokunuver.com.tr/i/{code}
+              </div>
+            </div>
+          )}
+
+          {!isStock && (
+            <a
+              href={`/i/${code}`}
+              target="_blank"
+              rel="noreferrer"
+              style={styles.viewCard}
+            >
+              Kartı Görüntüle ↗
+            </a>
+          )}
         </form>
 
         <div style={styles.footer}>
@@ -628,11 +757,47 @@ const styles = {
     marginTop: "5px",
   },
 
+  lockedDate: {
+    color: "#067647",
+    fontSize: "12px",
+    fontWeight: "700",
+    marginTop: "8px",
+  },
+
+  stockBox: {
+    display: "flex",
+    gap: "14px",
+    alignItems: "flex-start",
+    background: "#fff7ed",
+    border: "1px solid #fed7aa",
+    padding: "20px",
+    borderRadius: "16px",
+    marginBottom: "22px",
+  },
+
+  stockIcon: {
+    fontSize: "24px",
+  },
+
+  stockTitle: {
+    color: "#c2410c",
+    fontSize: "16px",
+    fontWeight: "900",
+  },
+
+  stockText: {
+    color: "#9a3412",
+    fontSize: "13px",
+    lineHeight: "1.5",
+    marginTop: "5px",
+  },
+
   card: {
     background: "#ffffff",
     padding: "32px",
     borderRadius: "24px",
-    boxShadow: "0 12px 40px rgba(16,24,40,0.07)",
+    boxShadow:
+      "0 12px 40px rgba(16,24,40,0.07)",
   },
 
   label: {
@@ -689,6 +854,22 @@ const styles = {
     marginTop: "5px",
   },
 
+  stockPassiveInfo: {
+    background: "#f9fafb",
+    border: "1px solid #eaecf0",
+    padding: "16px",
+    borderRadius: "12px",
+    marginBottom: "22px",
+    color: "#344054",
+    fontSize: "13px",
+  },
+
+  stockPassiveText: {
+    marginTop: "5px",
+    color: "#667085",
+    lineHeight: "1.5",
+  },
+
   saveButton: {
     width: "100%",
     border: "none",
@@ -723,6 +904,58 @@ const styles = {
     marginBottom: "15px",
   },
 
+  verificationSummary: {
+    background: "#ffffff",
+    border: "1px solid #fedf89",
+    borderRadius: "12px",
+    padding: "16px",
+    marginBottom: "15px",
+  },
+
+  verificationRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: "20px",
+    padding: "8px 0",
+    fontSize: "13px",
+  },
+
+  verificationLabel: {
+    color: "#667085",
+    flexShrink: 0,
+  },
+
+  verificationIban: {
+    textAlign: "right",
+    wordBreak: "break-all",
+  },
+
+  confirmBox: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "12px",
+    background: "#ffffff",
+    border: "1px solid #fedf89",
+    padding: "14px",
+    borderRadius: "10px",
+    marginBottom: "15px",
+    cursor: "pointer",
+  },
+
+  confirmTitle: {
+    color: "#7a2e0e",
+    fontSize: "13px",
+    fontWeight: "900",
+  },
+
+  confirmText: {
+    color: "#934a0a",
+    fontSize: "12px",
+    lineHeight: "1.5",
+    marginTop: "4px",
+  },
+
   lockButton: {
     width: "100%",
     border: "none",
@@ -733,6 +966,43 @@ const styles = {
     fontSize: "14px",
     fontWeight: "800",
     cursor: "pointer",
+  },
+
+  qrSection: {
+    marginTop: "24px",
+    padding: "22px",
+    background: "#f8fafc",
+    border: "1px solid #e4e7ec",
+    borderRadius: "16px",
+    textAlign: "center",
+  },
+
+  qrTitle: {
+    fontSize: "16px",
+    fontWeight: "900",
+    color: "#101828",
+  },
+
+  qrDescription: {
+    marginTop: "6px",
+    marginBottom: "16px",
+    fontSize: "12px",
+    color: "#667085",
+  },
+
+  qrImage: {
+    width: "180px",
+    height: "180px",
+    display: "block",
+    margin: "0 auto",
+    borderRadius: "8px",
+  },
+
+  qrUrl: {
+    marginTop: "12px",
+    fontSize: "12px",
+    color: "#667085",
+    wordBreak: "break-all",
   },
 
   viewCard: {
@@ -784,96 +1054,4 @@ const styles = {
     fontSize: "12px",
     marginTop: "28px",
   },
-confirmBox: {
-  display: "flex",
-  alignItems: "flex-start",
-  gap: "12px",
-  background: "#ffffff",
-  border: "1px solid #fedf89",
-  padding: "14px",
-  borderRadius: "10px",
-  marginBottom: "15px",
-  cursor: "pointer",
-},
-
-confirmTitle: {
-  color: "#7a2e0e",
-  fontSize: "13px",
-  fontWeight: "900",
-},
-
-confirmText: {
-  color: "#934a0a",
-  fontSize: "12px",
-  lineHeight: "1.5",
-  marginTop: "4px",
-},
-  verificationSummary: {
-  background: "#ffffff",
-  border: "1px solid #fedf89",
-  borderRadius: "12px",
-  padding: "16px",
-  marginBottom: "15px",
-},
-
-verificationRow: {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-start",
-  gap: "20px",
-  padding: "8px 0",
-  fontSize: "13px",
-},
-
-verificationLabel: {
-  color: "#667085",
-  flexShrink: 0,
-},
-
-verificationIban: {
-  textAlign: "right",
-  wordBreak: "break-all",
-},
-  lockedDate: {
-  color: "#067647",
-  fontSize: "12px",
-  fontWeight: "700",
-  marginTop: "8px",
-},
-  qrSection: {
-  marginTop: "24px",
-  padding: "22px",
-  background: "#f8fafc",
-  border: "1px solid #e4e7ec",
-  borderRadius: "16px",
-  textAlign: "center",
-},
-
-qrTitle: {
-  fontSize: "16px",
-  fontWeight: "900",
-  color: "#101828",
-},
-
-qrDescription: {
-  marginTop: "6px",
-  marginBottom: "16px",
-  fontSize: "12px",
-  color: "#667085",
-},
-
-qrImage: {
-  width: "180px",
-  height: "180px",
-  display: "block",
-  margin: "0 auto",
-  borderRadius: "8px",
-},
-
-qrUrl: {
-  marginTop: "12px",
-  fontSize: "12px",
-  color: "#667085",
-  wordBreak: "break-all",
-},
 };
