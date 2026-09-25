@@ -184,7 +184,7 @@ export default function GoogleYorumPage() {
               <div>✓ 10 × 10 cm</div>
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ İşletmenize özel hazırlanır</div>
-              <div>✓ ✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
+              <div>✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
             </div>
 
             {/* BUTONLAR */}
