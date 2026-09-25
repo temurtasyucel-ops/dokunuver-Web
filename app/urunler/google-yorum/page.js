@@ -85,24 +85,25 @@ export default function GoogleYorumPage() {
         >
           {/* ÜRÜN GÖRSELİ */}
           <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid #eaecf0",
-              borderRadius: "28px",
-              padding: "40px",
-            }}
-          >
-            <img
-              src="/images/google-yorum-nfc.png"
-              alt="DOKUNUVER Google Yorum NFC Kartı"
-              style={{
-                display: "block",
-                width: "100%",
-                height: "auto",
-                borderRadius: "20px",
-              }}
-            />
-          </div>
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
+  <img
+    src="/images/google-yorum-nfc.png"
+    alt="DOKUNUVER Google Yorum NFC Kartı"
+    style={{
+      display: "block",
+      width: "100%",
+      maxWidth: "500px",
+      height: "auto",
+      borderRadius: "20px",
+      boxShadow: "0 20px 50px rgba(16,24,40,0.12)",
+    }}
+  />
+</div>
 
           {/* ÜRÜN BİLGİLERİ */}
           <div>
