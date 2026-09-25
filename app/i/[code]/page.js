@@ -220,6 +220,38 @@ export default function IbanCardPage() {
           Ödeme yapmadan önce hesap sahibi ve IBAN bilgilerini
           kontrol ediniz.
         </p>
+            <div
+  style={{
+    textAlign: "center",
+    marginTop: "22px",
+    paddingTop: "20px",
+    borderTop: "1px solid #e4e7ec",
+  }}
+>
+  <div
+    style={{
+      color: "#667085",
+      fontSize: "11px",
+      marginBottom: "7px",
+    }}
+  >
+    Bu NFC kart DOKUNUVER altyapısıyla çalışmaktadır.
+  </div>
+
+  <a
+    href="https://dokunuver.com.tr"
+    target="_blank"
+    rel="noreferrer"
+    style={{
+      color: "#087cf0",
+      fontSize: "13px",
+      fontWeight: "700",
+      textDecoration: "none",
+    }}
+  >
+    NFC çözümlerini incele →
+  </a>
+</div>
       </div>
     </main>
   );
