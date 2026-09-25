@@ -146,20 +146,18 @@ export default function EditIbanCardPage() {
     setMessage("");
     setError("");
 
-    const confirmed = window.confirm(
-      "DİKKAT: Bu işlem geri alınamaz.\n\n" +
-        "Banka, hesap sahibi ve IBAN bilgilerinin doğru olduğunu onaylıyor musunuz?\n\n" +
-        "Kilitleme sonrasında bu bilgiler değiştirilemez."
-    );
+    if (!lockConfirmed) {
+  setError("Kilitlemeden önce bilgilerin doğruluğunu onaylamalısınız.");
+  return;
+}
 
-    if (!confirmed) return;
+const finalConfirmed = window.confirm(
+  "SON ONAY\n\n" +
+    "Bu IBAN kartını doğrulayıp kalıcı olarak kilitlemek istediğinizden emin misiniz?\n\n" +
+    "Banka, hesap sahibi ve IBAN bilgileri kilitleme sonrasında değiştirilemez."
+);
 
-    const finalConfirmed = window.confirm(
-      "Son onay:\n\n" +
-        "Bu IBAN kartını kalıcı olarak kilitlemek istediğinizden emin misiniz?"
-    );
-
-    if (!finalConfirmed) return;
+if (!finalConfirmed) return;
 
     setLocking(true);
 
