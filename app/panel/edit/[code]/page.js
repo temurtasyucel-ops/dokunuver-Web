@@ -388,6 +388,24 @@ export default function EditIbanCardPage() {
                   olduğundan emin olduktan sonra kartı
                   kilitleyebilirsiniz. Kilitleme işlemi geri alınamaz.
                 </div>
+                    <div style={styles.verificationSummary}>
+  <div style={styles.verificationRow}>
+    <span style={styles.verificationLabel}>Banka</span>
+    <strong>{form.bank_name || "-"}</strong>
+  </div>
+
+  <div style={styles.verificationRow}>
+    <span style={styles.verificationLabel}>Hesap Sahibi</span>
+    <strong>{form.account_holder || "-"}</strong>
+  </div>
+
+  <div style={styles.verificationRow}>
+    <span style={styles.verificationLabel}>IBAN</span>
+    <strong style={styles.verificationIban}>
+      {form.iban || "-"}
+    </strong>
+  </div>
+</div>
                     <label style={styles.confirmBox}>
   <input
     type="checkbox"
@@ -735,5 +753,31 @@ confirmText: {
   fontSize: "12px",
   lineHeight: "1.5",
   marginTop: "4px",
+},
+  verificationSummary: {
+  background: "#ffffff",
+  border: "1px solid #fedf89",
+  borderRadius: "12px",
+  padding: "16px",
+  marginBottom: "15px",
+},
+
+verificationRow: {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  gap: "20px",
+  padding: "8px 0",
+  fontSize: "13px",
+},
+
+verificationLabel: {
+  color: "#667085",
+  flexShrink: 0,
+},
+
+verificationIban: {
+  textAlign: "right",
+  wordBreak: "break-all",
 },
 };
