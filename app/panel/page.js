@@ -327,8 +327,9 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
     {card.active ? "Aktif" : "Pasif"}
   </div>
 </div>
+</div>
 
-                  <div style={styles.infoGrid}>
+<div style={styles.infoGrid}>
                     <Info
                       label="Banka"
                       value={card.bank_name}
