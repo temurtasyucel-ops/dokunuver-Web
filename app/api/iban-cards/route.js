@@ -167,6 +167,7 @@ export async function POST(request) {
     const body = await request.json();
 
     const mode = body.mode;
+    const quantity = Number(body.quantity);
 
     const businessName = body.business_name?.trim();
     const bankName = body.bank_name?.trim();
@@ -213,6 +214,104 @@ export async function POST(request) {
         { status: 500 }
       );
     }
+    /* =====================================================
+   TOPLU STOK IBAN KARTI
+===================================================== */
+
+if (mode === "stock_bulk") {
+  if (
+    !Number.isInteger(quantity) ||
+    quantity < 1 ||
+    quantity > 100
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Toplu stok adedi 1 ile 100 arasında olmalıdır.",
+      },
+      { status: 400 }
+    );
+  }
+
+  const createdCards = [];
+
+  for (let i = 0; i < quantity; i++) {
+    let created = false;
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const code = generateCode();
+
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/iban_cards`,
+        {
+          method: "POST",
+          headers: {
+            apikey: secretKey,
+            Authorization: `Bearer ${secretKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            code,
+            business_name: null,
+            bank_name: null,
+            account_holder: null,
+            iban: null,
+            active: false,
+            status: "stock",
+            locked: false,
+            locked_at: null,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        createdCards.push(data[0]);
+        created = true;
+        break;
+      }
+
+      if (response.status === 409) {
+        continue;
+      }
+
+      console.error(
+        "Supabase bulk stock insert error:",
+        data
+      );
+
+      return NextResponse.json(
+        {
+          error: `${createdCards.length} kart oluşturuldu ancak toplu işlem tamamlanamadı.`,
+          cards: createdCards,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!created) {
+      return NextResponse.json(
+        {
+          error: `${createdCards.length} kart oluşturuldu ancak benzersiz kart kodu üretilemedi.`,
+          cards: createdCards,
+        },
+        { status: 500 }
+      );
+    }
+  }
+
+  return NextResponse.json(
+    {
+      success: true,
+      count: createdCards.length,
+      cards: createdCards,
+      message: `${createdCards.length} adet stok IBAN kartı oluşturuldu.`,
+    },
+    { status: 201 }
+  );
+}
 
     /* =====================================================
        STOK IBAN KARTI
