@@ -195,9 +195,10 @@ export async function POST(request) {
       Stok kartında henüz IBAN olmadığı için uygulanmaz.
     */
     if (
-      mode !== "stock" &&
-      (!iban.startsWith("TR") || iban.length !== 26)
-    ) {
+  mode !== "stock" &&
+  mode !== "stock_bulk" &&
+  (!iban.startsWith("TR") || iban.length !== 26)
+) {
       return NextResponse.json(
         { error: "Geçerli bir Türkiye IBAN'ı girin." },
         { status: 400 }
