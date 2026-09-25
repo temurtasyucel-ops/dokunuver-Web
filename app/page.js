@@ -311,6 +311,86 @@ export default function Home() {
 </section>
 
 
+
+
+          {/* NASIL ÇALIŞIR */}
+<section
+  id="nasil-calisir"
+  className="how-section"
+  style={{
+    background: "#f8fafc",
+    padding: "100px 24px",
+  }}
+>
+  <div
+    style={{
+      maxWidth: "1180px",
+      margin: "0 auto",
+      textAlign: "center",
+    }}
+  >
+    <div
+      style={{
+        color: "#087cf0",
+        fontSize: "13px",
+        fontWeight: "800",
+        marginBottom: "12px",
+      }}
+    >
+      NASIL ÇALIŞIR?
+    </div>
+
+    <h2
+      style={{
+        margin: "0",
+        fontSize: "clamp(32px, 5vw, 48px)",
+        letterSpacing: "-1.5px",
+      }}
+    >
+      Bağlanmak bu kadar kolay.
+    </h2>
+
+    <p
+      style={{
+        maxWidth: "600px",
+        margin: "18px auto 50px",
+        color: "#667085",
+        fontSize: "17px",
+        lineHeight: "1.7",
+      }}
+    >
+      Uygulama indirmeye veya QR kod okutmaya gerek yok.
+      Telefonunuzu DOKUNUVER ürününe yaklaştırmanız yeterli.
+    </p>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        gap: "20px",
+        textAlign: "left",
+      }}
+    >
+      <StepCard
+        number="01"
+        title="Telefonunu Yaklaştır"
+        description="NFC destekli telefonunuzu DOKUNUVER ürününün üzerine yaklaştırın."
+      />
+
+      <StepCard
+        number="02"
+        title="Bağlantıya Dokun"
+        description="Telefon ekranında açılan bildirime dokunun. Ekstra bir uygulama gerekmez."
+      />
+
+      <StepCard
+        number="03"
+        title="Anında Bağlan"
+        description="Google, Instagram, WhatsApp, IBAN veya ilan bağlantınız saniyeler içinde açılsın."
+      />
+    </div>
+  </div>
+</section>
 {/* NEDEN DOKUNUVER */}
 <section
   className="benefits-section"
@@ -403,86 +483,6 @@ export default function Home() {
     </div>
   </div>
 </section>
-
-          {/* NASIL ÇALIŞIR */}
-<section
-  id="nasil-calisir"
-  className="how-section"
-  style={{
-    background: "#f8fafc",
-    padding: "100px 24px",
-  }}
->
-  <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-      textAlign: "center",
-    }}
-  >
-    <div
-      style={{
-        color: "#087cf0",
-        fontSize: "13px",
-        fontWeight: "800",
-        marginBottom: "12px",
-      }}
-    >
-      NASIL ÇALIŞIR?
-    </div>
-
-    <h2
-      style={{
-        margin: "0",
-        fontSize: "clamp(32px, 5vw, 48px)",
-        letterSpacing: "-1.5px",
-      }}
-    >
-      Bağlanmak bu kadar kolay.
-    </h2>
-
-    <p
-      style={{
-        maxWidth: "600px",
-        margin: "18px auto 50px",
-        color: "#667085",
-        fontSize: "17px",
-        lineHeight: "1.7",
-      }}
-    >
-      Uygulama indirmeye veya QR kod okutmaya gerek yok.
-      Telefonunuzu DOKUNUVER ürününe yaklaştırmanız yeterli.
-    </p>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-        gap: "20px",
-        textAlign: "left",
-      }}
-    >
-      <StepCard
-        number="01"
-        title="Telefonunu Yaklaştır"
-        description="NFC destekli telefonunuzu DOKUNUVER ürününün üzerine yaklaştırın."
-      />
-
-      <StepCard
-        number="02"
-        title="Bağlantıya Dokun"
-        description="Telefon ekranında açılan bildirime dokunun. Ekstra bir uygulama gerekmez."
-      />
-
-      <StepCard
-        number="03"
-        title="Anında Bağlan"
-        description="Google, Instagram, WhatsApp, IBAN veya ilan bağlantınız saniyeler içinde açılsın."
-      />
-    </div>
-  </div>
-</section>
-
 <section
   className="contact-section"
   style={{
