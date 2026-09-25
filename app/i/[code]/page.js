@@ -184,6 +184,38 @@ export default function IbanCardPage() {
             >
               {copied ? "✓ IBAN Kopyalandı" : "IBAN'ı Kopyala"}
             </button>
+              <div
+  style={{
+    marginTop: "16px",
+    padding: "14px 16px",
+    background: "#ecfdf3",
+    border: "1px solid #abefc6",
+    borderRadius: "12px",
+  }}
+>
+  <div
+    style={{
+      color: "#067647",
+      fontSize: "13px",
+      fontWeight: "800",
+      marginBottom: "4px",
+    }}
+  >
+    🔒 Doğrulanmış ödeme bilgileri
+  </div>
+
+  <div
+    style={{
+      color: "#067647",
+      fontSize: "12px",
+      lineHeight: "1.5",
+    }}
+  >
+    Bu kartın banka, hesap sahibi ve IBAN bilgileri doğrulama
+    sonrasında kilitlenmiştir ve normal yönetim işlemleriyle
+    değiştirilemez.
+  </div>
+</div>
           </div>
         </div>
 
