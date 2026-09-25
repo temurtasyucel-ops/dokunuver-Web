@@ -124,26 +124,26 @@ export default function NewIbanCardPage() {
           />
 
           <label style={styles.activeRow}>
-            <input
-              type="checkbox"
-              checked={form.active}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  active: e.target.checked,
-                }))
-              }
-            />
+  <input
+    type="checkbox"
+    checked={form.active}
+    onChange={(e) =>
+      setForm((prev) => ({
+        ...prev,
+        active: e.target.checked,
+      }))
+    }
+  />
 
-            <div>
-              <div style={styles.activeTitle}>Kart aktif olsun</div>
-              <div style={styles.activeDescription}>
-                Aktif kartlar NFC bağlantısı üzerinden görüntülenebilir.
-              </div>
-            </div>
-          </label>
+  <div>
+    <div style={styles.activeTitle}>Kart aktif olsun</div>
+    <div style={styles.activeDescription}>
+      Aktif kartlar NFC bağlantısı üzerinden görüntülenebilir.
+    </div>
+  </div>
+</label>
 
-          <div style={styles.securityInfo}>
+<div style={styles.securityInfo}>
   <div style={styles.securityTitle}>
     🔒 Güvenli doğrulama
   </div>
@@ -155,15 +155,20 @@ export default function NewIbanCardPage() {
     yönetim işlemleriyle değiştirilemez.
   </div>
 </div>
-            disabled={saving}
-            style={{
-              ...styles.submitButton,
-              opacity: saving ? 0.6 : 1,
-            }}
-          >
-            {saving ? "Oluşturuluyor..." : "IBAN Kartını Oluştur"}
-          </button>
-        </form>
+
+{message && <div style={styles.error}>{message}</div>}
+
+<button
+  type="submit"
+  disabled={saving}
+  style={{
+    ...styles.submitButton,
+    opacity: saving ? 0.6 : 1,
+  }}
+>
+  {saving ? "Oluşturuluyor..." : "IBAN Kartını Oluştur"}
+</button>
+</form>
 
         <p style={styles.footer}>DOKUNUVER NFC Platform</p>
       </div>
