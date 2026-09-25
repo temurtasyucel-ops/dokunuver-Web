@@ -17,6 +17,7 @@ export default function EditIbanCardPage() {
   });
 
   const [locked, setLocked] = useState(false);
+  const [lockedAt, setLockedAt] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [locking, setLocking] = useState(false);
@@ -65,6 +66,7 @@ export default function EditIbanCardPage() {
         });
 
         setLocked(card.locked === true);
+        setLockedAt(card.locked_at || null);
       } catch (err) {
         setError(err.message || "Bir hata oluştu.");
       } finally {
@@ -266,6 +268,19 @@ if (!finalConfirmed) return;
                 Bu kartın banka, hesap sahibi ve IBAN bilgileri
                 artık değiştirilemez.
               </div>
+                  {lockedAt && (
+  <div style={styles.lockedDate}>
+    Kilitlenme:{" "}
+    {new Date(lockedAt).toLocaleString("tr-TR", {
+      timeZone: "Europe/Istanbul",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })}
+  </div>
+)}
             </div>
           </div>
         )}
@@ -777,5 +792,11 @@ verificationLabel: {
 verificationIban: {
   textAlign: "right",
   wordBreak: "break-all",
+},
+  lockedDate: {
+  color: "#067647",
+  fontSize: "12px",
+  fontWeight: "700",
+  marginTop: "8px",
 },
 };
