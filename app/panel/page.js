@@ -14,6 +14,7 @@ export default function AdminPanel() {
   const [creatingStock, setCreatingStock] = useState(false);
   const [creatingBulkStock, setCreatingBulkStock] = useState(false);
   const [downloadingStockQr, setDownloadingStockQr] = useState(false);
+  const [lastCreatedStockCards, setLastCreatedStockCards] = useState([]);
 
   const cardsPerPage = 20;
 
@@ -179,11 +180,15 @@ async function createBulkStockCards() {
       );
     }
 
-    await loadCards();
+    setLastCreatedStockCards(
+  Array.isArray(data.cards) ? data.cards : []
+);
 
-    alert(
-      `${data.count} adet stok IBAN kartı başarıyla oluşturuldu.`
-    );
+await loadCards();
+
+alert(
+  `${data.count} adet stok IBAN kartı başarıyla oluşturuldu.\n\nBu üretim partisinin QR kodlarını ayrı olarak indirebilirsiniz.`
+);
   } catch (error) {
     alert(error.message);
   } finally {
@@ -194,7 +199,64 @@ async function createBulkStockCards() {
   const stockCards = cards.filter(
     (card) => card.status === "stock"
   );
+  async function downloadLastCreatedQrZip() {
+  if (lastCreatedStockCards.length === 0) {
+    alert("Bu oturumda henüz toplu stok oluşturulmadı.");
+    return;
+  }
 
+  const confirmed = window.confirm(
+    `Son oluşturulan ${lastCreatedStockCards.length} adet kartın QR kodları indirilecek.\n\nDevam etmek istiyor musunuz?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDownloadingStockQr(true);
+
+    const zip = new JSZip();
+
+    for (const card of lastCreatedStockCards) {
+      const url = `https://dokunuver.com.tr/i/${card.code}`;
+
+      const qrDataUrl = await QRCode.toDataURL(url, {
+        width: 1000,
+        margin: 2,
+        errorCorrectionLevel: "H",
+      });
+
+      const base64Data = qrDataUrl.split(",")[1];
+
+      zip.file(
+        `DOKUNUVER-IBAN-${card.code}-QR.png`,
+        base64Data,
+        { base64: true }
+      );
+    }
+
+    const zipBlob = await zip.generateAsync({
+      type: "blob",
+    });
+
+    const downloadUrl = URL.createObjectURL(zipBlob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download =
+      `DOKUNUVER-IBAN-YENI-PARTI-${lastCreatedStockCards.length}-ADET.zip`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error("Üretim partisi QR ZIP hatası:", error);
+    alert("Üretim partisi QR ZIP dosyası oluşturulamadı.");
+  } finally {
+    setDownloadingStockQr(false);
+  }
+}
   if (stockCards.length === 0) {
     alert("İndirilecek stok IBAN kartı bulunmuyor.");
     return;
@@ -426,6 +488,22 @@ async function createBulkStockCards() {
     ? "Toplu Stok Oluşturuluyor..."
     : "+ Toplu Stok Oluştur"}
 </button>
+  {lastCreatedStockCards.length > 0 && (
+  <button
+    type="button"
+    onClick={downloadLastCreatedQrZip}
+    disabled={downloadingStockQr}
+    style={{
+      ...styles.newButton,
+      background: "#ecfdf3",
+      color: "#027a48",
+      opacity: downloadingStockQr ? 0.6 : 1,
+    }}
+  >
+    ↓ Yeni Parti QR'ları (
+    {lastCreatedStockCards.length})
+  </button>
+)}
   <button
   type="button"
   onClick={downloadStockQrZip}
