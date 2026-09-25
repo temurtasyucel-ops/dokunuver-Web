@@ -200,32 +200,6 @@ export default function EditIbanCardPage() {
     }
   }
 
-
-    const data = await response.json();
-
-    if (response.status === 423) {
-      setMessage(
-        "✅ Güvenlik testi başarılı — API kilitli IBAN bilgilerinin değiştirilmesini reddetti (423)."
-      );
-      return;
-    }
-
-    if (response.ok) {
-      setError(
-        "❌ GÜVENLİK TESTİ BAŞARISIZ — API değişiklik isteğini kabul etti."
-      );
-      return;
-    }
-
-    setError(
-      `Test beklenmeyen bir cevap aldı (${response.status}): ${
-        data.error || "Bilinmeyen hata"
-      }`
-    );
-  } catch (err) {
-    setError(err.message || "Güvenlik testi çalıştırılamadı.");
-  }
-}
   if (loading) {
     return (
       <main style={styles.center}>
