@@ -215,6 +215,24 @@ export default function IbanCardPage() {
     sonrasında kilitlenmiştir ve normal yönetim işlemleriyle
     değiştirilemez.
   </div>
+      {card.locked_at && (
+  <div
+    style={{
+      color: "#067647",
+      fontSize: "12px",
+      fontWeight: "700",
+      marginTop: "8px",
+    }}
+  >
+    Doğrulama tarihi:{" "}
+    {new Date(card.locked_at).toLocaleDateString("tr-TR", {
+      timeZone: "Europe/Istanbul",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })}
+  </div>
+)}
 </div>
           </div>
         </div>
