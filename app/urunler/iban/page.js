@@ -184,7 +184,7 @@ export default function IbanPage() {
               <div>✓ 10 × 10 cm</div>
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ Banka ve IBAN bilgilerinize özel hazırlanır</div>
-              <div>✓ IBAN bilgileri sonradan güncellenebilir</div>
+              <div>✓ Doğrulama sonrasında IBAN bilgileri kilitlenir</div>
               <div>✓ Masaüstü stand veya çift taraflı bant seçeneği</div>
             </div>
 
@@ -295,10 +295,10 @@ export default function IbanPage() {
             />
 
             <FeatureCard
-              number="03"
-              title="Güncellenebilir"
-              description="Banka veya IBAN bilgileriniz değiştiğinde fiziksel kartı değiştirmeden kayıtlı bilgileriniz güncellenebilir."
-            />
+  number="03"
+  title="Doğrulanır ve Kilitlenir"
+  description="Banka, hesap sahibi ve IBAN bilgileriniz kontrol edilip doğrulandıktan sonra kilitlenir ve normal yönetim işlemleriyle değiştirilemez."
+/>
 
             <FeatureCard
               number="04"
