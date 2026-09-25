@@ -477,7 +477,25 @@ if (!finalConfirmed) return;
               </div>
             </>
           )}
+{qrCode && (
+  <div style={styles.qrSection}>
+    <div style={styles.qrTitle}>IBAN Kartı QR Kodu</div>
 
+    <div style={styles.qrDescription}>
+      Bu QR kod okutulduğunda müşterinin IBAN kartı açılır.
+    </div>
+
+    <img
+      src={qrCode}
+      alt="IBAN Kartı QR Kodu"
+      style={styles.qrImage}
+    />
+
+    <div style={styles.qrUrl}>
+      dokunuver.com.tr/i/{code}
+    </div>
+  </div>
+)}
           <a
             href={`/i/${code}`}
             target="_blank"
@@ -821,5 +839,41 @@ verificationIban: {
   fontSize: "12px",
   fontWeight: "700",
   marginTop: "8px",
+},
+  qrSection: {
+  marginTop: "24px",
+  padding: "22px",
+  background: "#f8fafc",
+  border: "1px solid #e4e7ec",
+  borderRadius: "16px",
+  textAlign: "center",
+},
+
+qrTitle: {
+  fontSize: "16px",
+  fontWeight: "900",
+  color: "#101828",
+},
+
+qrDescription: {
+  marginTop: "6px",
+  marginBottom: "16px",
+  fontSize: "12px",
+  color: "#667085",
+},
+
+qrImage: {
+  width: "180px",
+  height: "180px",
+  display: "block",
+  margin: "0 auto",
+  borderRadius: "8px",
+},
+
+qrUrl: {
+  marginTop: "12px",
+  fontSize: "12px",
+  color: "#667085",
+  wordBreak: "break-all",
 },
 };
