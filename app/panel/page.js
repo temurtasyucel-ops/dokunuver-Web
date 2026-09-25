@@ -9,129 +9,205 @@ export default function AdminPanel() {
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [creatingStock, setCreatingStock] = useState(false);
 
-const cardsPerPage = 20;
-  
+  const cardsPerPage = 20;
+
   useEffect(() => {
     loadCards();
   }, []);
-async function loadCards() {
-  try {
-    const token = localStorage.getItem("dokunuver_access_token");
 
-    if (!token) {
-      window.location.href = "/panel/login";
-      return;
+  async function loadCards() {
+    try {
+      const token = localStorage.getItem("dokunuver_access_token");
+
+      if (!token) {
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      const response = await fetch("/api/iban-cards", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        localStorage.removeItem("dokunuver_access_token");
+        localStorage.removeItem("dokunuver_refresh_token");
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Kartlar getirilemedi.");
+      }
+
+      setCards(Array.isArray(data.cards) ? data.cards : []);
+    } catch (error) {
+      console.error("Kartlar yüklenirken hata oluştu:", error);
+      setCards([]);
+    } finally {
+      setLoading(false);
     }
-
-    const response = await fetch("/api/iban-cards", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    });
-
-    const data = await response.json();
-
-    if (response.status === 401) {
-      localStorage.removeItem("dokunuver_access_token");
-      localStorage.removeItem("dokunuver_refresh_token");
-      window.location.href = "/panel/login";
-      return;
-    }
-
-    if (!response.ok) {
-      throw new Error(data.error || "Kartlar getirilemedi.");
-    }
-
-    setCards(Array.isArray(data.cards) ? data.cards : []);
-  } catch (error) {
-    console.error("Kartlar yüklenirken hata oluştu:", error);
-    setCards([]);
-  } finally {
-    setLoading(false);
-  }
-}
-async function toggleCardStatus(card) {
-  const action = card.active ? "pasife almak" : "aktif etmek";
-
-  const confirmed = window.confirm(
-    `${card.business_name} kartını ${action} istediğinize emin misiniz?`
-  );
-
-  if (!confirmed) {
-    return;
   }
 
-  try {
-    const token = localStorage.getItem("dokunuver_access_token");
-
-    if (!token) {
-      window.location.href = "/panel/login";
-      return;
-    }
-
-    const response = await fetch("/api/iban-cards", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        code: card.code,
-        active: !card.active,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.status === 401) {
-      localStorage.removeItem("dokunuver_access_token");
-      localStorage.removeItem("dokunuver_refresh_token");
-      window.location.href = "/panel/login";
-      return;
-    }
-
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Kart durumu değiştirilemedi."
-      );
-    }
-
-    setCards((currentCards) =>
-      currentCards.map((item) =>
-        item.code === card.code
-          ? { ...item, active: !card.active }
-          : item
-      )
+  async function createStockCard() {
+    const confirmed = window.confirm(
+      "Yeni bir boş IBAN stok kartı oluşturulsun mu?\n\n" +
+        "Kart müşteri bilgisi olmadan oluşturulacak ve pasif durumda olacaktır."
     );
-  } catch (error) {
-    alert(error.message);
+
+    if (!confirmed) return;
+
+    try {
+      setCreatingStock(true);
+
+      const token = localStorage.getItem("dokunuver_access_token");
+
+      if (!token) {
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      const response = await fetch("/api/iban-cards", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          mode: "stock",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        localStorage.removeItem("dokunuver_access_token");
+        localStorage.removeItem("dokunuver_refresh_token");
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Stok IBAN kartı oluşturulamadı."
+        );
+      }
+
+      await loadCards();
+
+      alert(
+        `Stok kartı başarıyla oluşturuldu.\n\nKart Kodu: ${data.card.code}`
+      );
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setCreatingStock(false);
+    }
   }
-}
-  
+
+  async function toggleCardStatus(card) {
+    const action = card.active ? "pasife almak" : "aktif etmek";
+
+    const cardName =
+      card.business_name ||
+      (card.status === "stock" ? `Stok ${card.code}` : card.code);
+
+    const confirmed = window.confirm(
+      `${cardName} kartını ${action} istediğinize emin misiniz?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("dokunuver_access_token");
+
+      if (!token) {
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      const response = await fetch("/api/iban-cards", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          code: card.code,
+          active: !card.active,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        localStorage.removeItem("dokunuver_access_token");
+        localStorage.removeItem("dokunuver_refresh_token");
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Kart durumu değiştirilemedi."
+        );
+      }
+
+      setCards((currentCards) =>
+        currentCards.map((item) =>
+          item.code === card.code
+            ? { ...item, active: !card.active }
+            : item
+        )
+      );
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   const filteredCards = cards.filter((card) => {
-  if (filter === "active" && !card.active) return false;
-  if (filter === "passive" && card.active) return false;
+    if (filter === "active" && !card.active) return false;
+    if (filter === "passive" && card.active) return false;
 
-  const searchText = search.trim().toLocaleLowerCase("tr-TR");
+    const searchText = search.trim().toLocaleLowerCase("tr-TR");
 
-  if (!searchText) return true;
+    if (!searchText) return true;
 
-  return (
-    card.business_name?.toLocaleLowerCase("tr-TR").includes(searchText) ||
-    card.code?.toLocaleLowerCase("tr-TR").includes(searchText) ||
-    card.account_holder?.toLocaleLowerCase("tr-TR").includes(searchText) ||
-    card.bank_name?.toLocaleLowerCase("tr-TR").includes(searchText)
+    return (
+      card.business_name
+        ?.toLocaleLowerCase("tr-TR")
+        .includes(searchText) ||
+      card.code?.toLocaleLowerCase("tr-TR").includes(searchText) ||
+      card.account_holder
+        ?.toLocaleLowerCase("tr-TR")
+        .includes(searchText) ||
+      card.bank_name
+        ?.toLocaleLowerCase("tr-TR")
+        .includes(searchText)
+    );
+  });
+
+  const totalPages = Math.ceil(
+    filteredCards.length / cardsPerPage
   );
-});
-  const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
 
-const startIndex = (currentPage - 1) * cardsPerPage;
-const endIndex = startIndex + cardsPerPage;
+  const startIndex = (currentPage - 1) * cardsPerPage;
+  const endIndex = startIndex + cardsPerPage;
 
-const paginatedCards = filteredCards.slice(startIndex, endIndex);
+  const paginatedCards = filteredCards.slice(
+    startIndex,
+    endIndex
+  );
+
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -148,42 +224,61 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
           <div>
             <p style={styles.eyebrow}>DOKUNUVER PANEL</p>
 
-            <h1 style={styles.title}>
-              NFC Kart Yönetimi
-            </h1>
+            <h1 style={styles.title}>NFC Kart Yönetimi</h1>
 
             <p style={styles.description}>
-              DOKUNUVER NFC ürünlerini ve müşteri
-              bağlantılarını tek noktadan yönetin.
+              DOKUNUVER NFC ürünlerini ve müşteri bağlantılarını
+              tek noktadan yönetin.
             </p>
           </div>
 
           <div
-  style={{
-    display: "flex",
-    gap: "10px",
-    flexWrap: "wrap",
-  }}
->
-  <button
-    type="button"
-    onClick={() => window.location.href = "/panel/new"}
-    style={styles.newButton}
-  >
-    + Yeni IBAN Kartı
-  </button>
+            style={{
+              display: "flex",
+              gap: "10px",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                (window.location.href = "/panel/new")
+              }
+              style={styles.newButton}
+            >
+              + Yeni IBAN Kartı
+            </button>
 
-  <button
-    type="button"
-    onClick={() => window.location.href = "/panel/smart-links"}
-    style={{
-      ...styles.newButton,
-      background: "#101828",
-    }}
-  >
-    Smart Links Yönetimi →
-  </button>
-</div>
+            <button
+              type="button"
+              onClick={createStockCard}
+              disabled={creatingStock}
+              style={{
+                ...styles.newButton,
+                background: "#ffffff",
+                color: "#101828",
+                opacity: creatingStock ? 0.6 : 1,
+              }}
+            >
+              {creatingStock
+                ? "Stok Oluşturuluyor..."
+                : "+ Stok IBAN Kartı Oluştur"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                (window.location.href =
+                  "/panel/smart-links")
+              }
+              style={{
+                ...styles.newButton,
+                background: "#101828",
+              }}
+            >
+              Smart Links Yönetimi →
+            </button>
+          </div>
         </section>
 
         <section style={styles.stats}>
@@ -194,12 +289,16 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
 
           <Stat
             label="Aktif Kart"
-            value={cards.filter((card) => card.active).length}
+            value={
+              cards.filter((card) => card.active).length
+            }
           />
 
           <Stat
             label="Pasif Kart"
-            value={cards.filter((card) => !card.active).length}
+            value={
+              cards.filter((card) => !card.active).length
+            }
           />
         </section>
 
@@ -215,69 +314,86 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
               </p>
             </div>
           </div>
-<div
-  style={{
-    display: "flex",
-    gap: "10px",
-    marginBottom: "22px",
-    flexWrap: "wrap",
-  }}
->
-  <button
-    type="button"
-    onClick={() => {
-  setFilter("all");
-  setCurrentPage(1);
-}}
-    style={{
-      ...styles.filterButton,
-      ...(filter === "all" ? styles.filterButtonActive : {}),
-    }}
-  >
-    Tümü ({cards.length})
-  </button>
 
-  <button
-    type="button"
-    onClick={() => {
-  setFilter("active");
-  setCurrentPage(1);
-}}
-    style={{
-      ...styles.filterButton,
-      ...(filter === "active" ? styles.filterButtonActive : {}),
-    }}
-  >
-    Aktif ({cards.filter((card) => card.active).length})
-  </button>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              marginBottom: "22px",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setFilter("all");
+                setCurrentPage(1);
+              }}
+              style={{
+                ...styles.filterButton,
+                ...(filter === "all"
+                  ? styles.filterButtonActive
+                  : {}),
+              }}
+            >
+              Tümü ({cards.length})
+            </button>
 
-  <button
-    type="button"
-    onClick={() => {
-  setFilter("passive");
-  setCurrentPage(1);
-}}
-    style={{
-      ...styles.filterButton,
-      ...(filter === "passive" ? styles.filterButtonActive : {}),
-    }}
-  >
-    Pasif ({cards.filter((card) => !card.active).length})
-  </button>
-</div>
-      
-<div style={{ marginBottom: "22px" }}>
-  <input
-    type="text"
-    value={search}
-    onChange={(e) => {
-  setSearch(e.target.value);
-  setCurrentPage(1);
-}}
-    placeholder="İşletme, kart kodu, hesap sahibi veya banka ara..."
-    style={styles.searchInput}
-  />
-</div>
+            <button
+              type="button"
+              onClick={() => {
+                setFilter("active");
+                setCurrentPage(1);
+              }}
+              style={{
+                ...styles.filterButton,
+                ...(filter === "active"
+                  ? styles.filterButtonActive
+                  : {}),
+              }}
+            >
+              Aktif (
+              {
+                cards.filter((card) => card.active)
+                  .length
+              }
+              )
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setFilter("passive");
+                setCurrentPage(1);
+              }}
+              style={{
+                ...styles.filterButton,
+                ...(filter === "passive"
+                  ? styles.filterButtonActive
+                  : {}),
+              }}
+            >
+              Pasif (
+              {
+                cards.filter((card) => !card.active)
+                  .length
+              }
+              )
+            </button>
+          </div>
+
+          <div style={{ marginBottom: "22px" }}>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="İşletme, kart kodu, hesap sahibi veya banka ara..."
+              style={styles.searchInput}
+            />
+          </div>
 
           {loading ? (
             <div style={styles.empty}>
@@ -290,11 +406,17 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
           ) : (
             <div style={styles.cardList}>
               {paginatedCards.map((card) => (
-                <div key={card.id} style={styles.customerCard}>
+                <div
+                  key={card.id}
+                  style={styles.customerCard}
+                >
                   <div style={styles.customerTop}>
                     <div>
                       <div style={styles.customerName}>
-                        {card.business_name}
+                        {card.business_name ||
+                          (card.status === "stock"
+                            ? "Stok IBAN Kartı"
+                            : "İsimsiz Kart")}
                       </div>
 
                       <div style={styles.code}>
@@ -303,33 +425,41 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
                     </div>
 
                     <div
-  style={{
-    display: "flex",
-    gap: "8px",
-    alignItems: "center",
-    flexWrap: "wrap",
-    justifyContent: "flex-end",
-  }}
->
-  {card.locked && (
-    <div style={styles.locked}>
-      🔒 Kilitli
-    </div>
-  )}
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      {card.status === "stock" && (
+                        <div style={styles.stock}>
+                          📦 Stokta
+                        </div>
+                      )}
 
-  <div
-    style={
-      card.active
-        ? styles.active
-        : styles.passive
-    }
-  >
-    {card.active ? "Aktif" : "Pasif"}
-  </div>
-</div>
-</div>
+                      {card.locked && (
+                        <div style={styles.locked}>
+                          🔒 Kilitli
+                        </div>
+                      )}
 
-<div style={styles.infoGrid}>
+                      <div
+                        style={
+                          card.active
+                            ? styles.active
+                            : styles.passive
+                        }
+                      >
+                        {card.active
+                          ? "Aktif"
+                          : "Pasif"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={styles.infoGrid}>
                     <Info
                       label="Banka"
                       value={card.bank_name}
@@ -346,98 +476,127 @@ const paginatedCards = filteredCards.slice(startIndex, endIndex);
                     />
                   </div>
 
-<div
-  style={{
-    display: "flex",
-    gap: "16px",
-    alignItems: "center",
-    marginTop: "20px",
-  }}
->
-  <a
-    href={`/i/${card.code}`}
-    target="_blank"
-    rel="noreferrer"
-    style={styles.openButton}
-  >
-    Kartı Görüntüle
-  </a>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "16px",
+                      alignItems: "center",
+                      marginTop: "20px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {card.status !== "stock" && (
+                      <a
+                        href={`/i/${card.code}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={styles.openButton}
+                      >
+                        Kartı Görüntüle
+                      </a>
+                    )}
 
-  <a
-    href={`/panel/edit/${card.code}`}
-    style={styles.editButton}
-  >
-    Düzenle
-  </a>
-      <button
-  type="button"
-  onClick={() => toggleCardStatus(card)}
-  style={{
-    ...styles.statusButton,
-    ...(card.active
-      ? styles.deactivateButton
-      : styles.activateButton),
-  }}
->
-  {card.active ? "Pasife Al" : "Aktif Et"}
-</button>
-</div>
+                    <a
+                      href={`/panel/edit/${card.code}`}
+                      style={styles.editButton}
+                    >
+                      {card.status === "stock"
+                        ? "Müşteriye Ata"
+                        : "Düzenle"}
+                    </a>
+
+                    {card.status !== "stock" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          toggleCardStatus(card)
+                        }
+                        style={{
+                          ...styles.statusButton,
+                          ...(card.active
+                            ? styles.deactivateButton
+                            : styles.activateButton),
+                        }}
+                      >
+                        {card.active
+                          ? "Pasife Al"
+                          : "Aktif Et"}
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           )}
-            {totalPages > 1 && (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      gap: "8px",
-      marginTop: "24px",
-      flexWrap: "wrap",
-    }}
-  >
-    <button
-      type="button"
-      onClick={() => setCurrentPage((page) => Math.max(page - 1, 1))}
-      disabled={currentPage === 1}
-      style={styles.paginationButton}
-    >
-      Önceki
-    </button>
 
-    {Array.from({ length: totalPages }, (_, index) => {
-      const page = index + 1;
+          {totalPages > 1 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "8px",
+                marginTop: "24px",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((page) =>
+                    Math.max(page - 1, 1)
+                  )
+                }
+                disabled={currentPage === 1}
+                style={styles.paginationButton}
+              >
+                Önceki
+              </button>
 
-      return (
-        <button
-          key={page}
-          type="button"
-          onClick={() => setCurrentPage(page)}
-          style={{
-            ...styles.paginationButton,
-            ...(currentPage === page
-              ? styles.paginationButtonActive
-              : {}),
-          }}
-        >
-          {page}
-        </button>
-      );
-    })}
+              {Array.from(
+                { length: totalPages },
+                (_, index) => {
+                  const page = index + 1;
 
-    <button
-      type="button"
-      onClick={() =>
-        setCurrentPage((page) => Math.min(page + 1, totalPages))
-      }
-      disabled={currentPage === totalPages}
-      style={styles.paginationButton}
-    >
-      Sonraki
-    </button>
-  </div>
-)}
+                  return (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() =>
+                        setCurrentPage(page)
+                      }
+                      style={{
+                        ...styles.paginationButton,
+                        ...(currentPage === page
+                          ? styles.paginationButtonActive
+                          : {}),
+                      }}
+                    >
+                      {page}
+                    </button>
+                  );
+                }
+              )}
+
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((page) =>
+                    Math.min(
+                      page + 1,
+                      totalPages
+                    )
+                  )
+                }
+                disabled={
+                  currentPage === totalPages
+                }
+                style={styles.paginationButton}
+              >
+                Sonraki
+              </button>
+            </div>
+          )}
         </section>
 
         <footer style={styles.footer}>
@@ -461,7 +620,9 @@ function Info({ label, value }) {
   return (
     <div>
       <div style={styles.infoLabel}>{label}</div>
-      <div style={styles.infoValue}>{value || "-"}</div>
+      <div style={styles.infoValue}>
+        {value || "-"}
+      </div>
     </div>
   );
 }
@@ -554,7 +715,8 @@ const styles = {
 
   stats: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(180px, 1fr))",
     gap: "16px",
     marginTop: "20px",
   },
@@ -648,6 +810,16 @@ const styles = {
     fontWeight: "800",
   },
 
+  stock: {
+    background: "#fff7ed",
+    color: "#c2410c",
+    padding: "6px 10px",
+    borderRadius: "20px",
+    fontSize: "12px",
+    fontWeight: "800",
+    border: "1px solid #fed7aa",
+  },
+
   infoGrid: {
     display: "grid",
     gridTemplateColumns:
@@ -671,24 +843,23 @@ const styles = {
 
   openButton: {
     display: "inline-block",
-    marginTop: "20px",
     color: "#087cf0",
     textDecoration: "none",
     fontSize: "13px",
     fontWeight: "800",
   },
 
-editButton: {
-  display: "inline-block",
-  color: "#ffffff",
-  background: "#101828",
-  padding: "10px 16px",
-  borderRadius: "10px",
-  textDecoration: "none",
-  fontSize: "13px",
-  fontWeight: "800",
-},
-  
+  editButton: {
+    display: "inline-block",
+    color: "#ffffff",
+    background: "#101828",
+    padding: "10px 16px",
+    borderRadius: "10px",
+    textDecoration: "none",
+    fontSize: "13px",
+    fontWeight: "800",
+  },
+
   empty: {
     padding: "40px 20px",
     textAlign: "center",
@@ -703,77 +874,81 @@ editButton: {
     fontSize: "12px",
     marginTop: "30px",
   },
+
   filterButton: {
-  border: "1px solid #d0d5dd",
-  background: "#ffffff",
-  color: "#475467",
-  borderRadius: "10px",
-  padding: "10px 16px",
-  fontSize: "13px",
-  fontWeight: "700",
-  cursor: "pointer",
-},
+    border: "1px solid #d0d5dd",
+    background: "#ffffff",
+    color: "#475467",
+    borderRadius: "10px",
+    padding: "10px 16px",
+    fontSize: "13px",
+    fontWeight: "700",
+    cursor: "pointer",
+  },
 
-filterButtonActive: {
-  background: "#087cf0",
-  color: "#ffffff",
-  border: "1px solid #087cf0",
-},
+  filterButtonActive: {
+    background: "#087cf0",
+    color: "#ffffff",
+    border: "1px solid #087cf0",
+  },
+
   statusButton: {
-  borderRadius: "10px",
-  padding: "11px 16px",
-  fontSize: "13px",
-  fontWeight: "800",
-  cursor: "pointer",
-},
+    borderRadius: "10px",
+    padding: "11px 16px",
+    fontSize: "13px",
+    fontWeight: "800",
+    cursor: "pointer",
+  },
 
-deactivateButton: {
-  background: "#ffffff",
-  color: "#b42318",
-  border: "1px solid #fda29b",
-},
+  deactivateButton: {
+    background: "#ffffff",
+    color: "#b42318",
+    border: "1px solid #fda29b",
+  },
 
-activateButton: {
-  background: "#ecfdf3",
-  color: "#027a48",
-  border: "1px solid #abefc6",
-},
+  activateButton: {
+    background: "#ecfdf3",
+    color: "#027a48",
+    border: "1px solid #abefc6",
+  },
+
   searchInput: {
-  width: "100%",
-  boxSizing: "border-box",
-  padding: "14px 16px",
-  border: "1px solid #d0d5dd",
-  borderRadius: "12px",
-  background: "#ffffff",
-  color: "#101828",
-  fontSize: "14px",
-  outline: "none",
-},
-  paginationButton: {
-  minWidth: "42px",
-  padding: "10px 13px",
-  border: "1px solid #d0d5dd",
-  borderRadius: "10px",
-  background: "#ffffff",
-  color: "#344054",
-  fontSize: "13px",
-  fontWeight: "700",
-  cursor: "pointer",
-},
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "14px 16px",
+    border: "1px solid #d0d5dd",
+    borderRadius: "12px",
+    background: "#ffffff",
+    color: "#101828",
+    fontSize: "14px",
+    outline: "none",
+  },
 
-paginationButtonActive: {
-  background: "#087cf0",
-  color: "#ffffff",
-  border: "1px solid #087cf0",
-},
+  paginationButton: {
+    minWidth: "42px",
+    padding: "10px 13px",
+    border: "1px solid #d0d5dd",
+    borderRadius: "10px",
+    background: "#ffffff",
+    color: "#344054",
+    fontSize: "13px",
+    fontWeight: "700",
+    cursor: "pointer",
+  },
+
+  paginationButtonActive: {
+    background: "#087cf0",
+    color: "#ffffff",
+    border: "1px solid #087cf0",
+  },
 
   locked: {
-  background: "#eff8ff",
-  color: "#175cd3",
-  padding: "6px 10px",
-  borderRadius: "20px",
-  fontSize: "12px",
-  fontWeight: "800",
-  border: "1px solid #b2ddff",
-},
+    background: "#eff8ff",
+    color: "#175cd3",
+    padding: "6px 10px",
+    borderRadius: "20px",
+    fontSize: "12px",
+    fontWeight: "800",
+    border: "1px solid #b2ddff",
+  },
 };
