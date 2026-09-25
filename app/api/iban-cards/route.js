@@ -86,6 +86,11 @@ async function verifyAdmin(request) {
     };
   }
 }
+
+/* =========================================================
+   GET - IBAN KARTLARINI GETİR
+========================================================= */
+
 export async function GET(request) {
   try {
     const auth = await verifyAdmin(request);
@@ -143,6 +148,11 @@ export async function GET(request) {
     );
   }
 }
+
+/* =========================================================
+   POST - NORMAL IBAN KARTI VEYA STOK KARTI OLUŞTUR
+========================================================= */
+
 export async function POST(request) {
   try {
     const auth = await verifyAdmin(request);
@@ -156,20 +166,36 @@ export async function POST(request) {
 
     const body = await request.json();
 
+    const mode = body.mode;
+
     const businessName = body.business_name?.trim();
     const bankName = body.bank_name?.trim();
     const accountHolder = body.account_holder?.trim();
     const iban = body.iban?.replace(/\s/g, "").toUpperCase();
     const active = body.active !== false;
 
-    if (!businessName || !bankName || !accountHolder || !iban) {
+    /*
+      Normal kart oluşturuluyorsa alanlar zorunlu.
+      Stok kartında müşteri bilgileri henüz bulunmaz.
+    */
+    if (
+      mode !== "stock" &&
+      (!businessName || !bankName || !accountHolder || !iban)
+    ) {
       return NextResponse.json(
         { error: "Lütfen tüm alanları doldurun." },
         { status: 400 }
       );
     }
 
-    if (!iban.startsWith("TR") || iban.length !== 26) {
+    /*
+      Normal kart için Türkiye IBAN kontrolü.
+      Stok kartında henüz IBAN olmadığı için uygulanmaz.
+    */
+    if (
+      mode !== "stock" &&
+      (!iban.startsWith("TR") || iban.length !== 26)
+    ) {
       return NextResponse.json(
         { error: "Geçerli bir Türkiye IBAN'ı girin." },
         { status: 400 }
@@ -187,6 +213,73 @@ export async function POST(request) {
         { status: 500 }
       );
     }
+
+    /* =====================================================
+       STOK IBAN KARTI
+    ===================================================== */
+
+    if (mode === "stock") {
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const code = generateCode();
+
+        const response = await fetch(
+          `${supabaseUrl}/rest/v1/iban_cards`,
+          {
+            method: "POST",
+            headers: {
+              apikey: secretKey,
+              Authorization: `Bearer ${secretKey}`,
+              "Content-Type": "application/json",
+              Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+              code,
+              business_name: null,
+              bank_name: null,
+              account_holder: null,
+              iban: null,
+              active: false,
+              status: "stock",
+              locked: false,
+              locked_at: null,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          return NextResponse.json(
+            {
+              success: true,
+              card: data[0],
+            },
+            { status: 201 }
+          );
+        }
+
+        // Kod çakışırsa yeni kod üret.
+        if (response.status === 409) {
+          continue;
+        }
+
+        console.error("Supabase stock insert error:", data);
+
+        return NextResponse.json(
+          { error: "Stok IBAN kartı oluşturulamadı." },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json(
+        { error: "Benzersiz stok kartı kodu oluşturulamadı." },
+        { status: 500 }
+      );
+    }
+
+    /* =====================================================
+       NORMAL IBAN KARTI
+    ===================================================== */
 
     for (let attempt = 0; attempt < 5; attempt++) {
       const code = generateCode();
@@ -208,6 +301,7 @@ export async function POST(request) {
             account_holder: accountHolder,
             iban,
             active,
+            status: "assigned",
           }),
         }
       );
@@ -250,6 +344,10 @@ export async function POST(request) {
     );
   }
 }
+
+/* =========================================================
+   PATCH - IBAN KARTI BİLGİLERİNİ GÜNCELLE
+========================================================= */
 
 export async function PATCH(request) {
   try {
@@ -301,52 +399,65 @@ export async function PATCH(request) {
         { status: 500 }
       );
     }
-// Önce mevcut kartı kontrol et
-const checkResponse = await fetch(
-  `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
-    code
-  )}&select=code,locked`,
-  {
-    method: "GET",
-    headers: {
-      apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
-    },
-    cache: "no-store",
-  }
-);
 
-const existingCards = await checkResponse.json();
+    // Önce mevcut kartı kontrol et.
+    const checkResponse = await fetch(
+      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
+        code
+      )}&select=code,locked,status`,
+      {
+        method: "GET",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+        },
+        cache: "no-store",
+      }
+    );
 
-if (!checkResponse.ok) {
-  console.error("IBAN lock check error:", existingCards);
+    const existingCards = await checkResponse.json();
 
-  return NextResponse.json(
-    { error: "Kart bilgileri kontrol edilemedi." },
-    { status: 500 }
-  );
-}
+    if (!checkResponse.ok) {
+      console.error("IBAN lock check error:", existingCards);
 
-if (!existingCards || existingCards.length === 0) {
-  return NextResponse.json(
-    { error: "Kart bulunamadı." },
-    { status: 404 }
-  );
-}
+      return NextResponse.json(
+        { error: "Kart bilgileri kontrol edilemedi." },
+        { status: 500 }
+      );
+    }
 
-const existingCard = existingCards[0];
+    if (!existingCards || existingCards.length === 0) {
+      return NextResponse.json(
+        { error: "Kart bulunamadı." },
+        { status: 404 }
+      );
+    }
 
-if (existingCard.locked === true) {
-  return NextResponse.json(
-    {
-      error:
-        "Bu IBAN kartı doğrulanmış ve kilitlenmiştir. Finansal bilgiler artık değiştirilemez.",
-    },
-    { status: 423 }
-  );
-}
+    const existingCard = existingCards[0];
+
+    if (existingCard.locked === true) {
+      return NextResponse.json(
+        {
+          error:
+            "Bu IBAN kartı doğrulanmış ve kilitlenmiştir. Finansal bilgiler artık değiştirilemez.",
+        },
+        { status: 423 }
+      );
+    }
+
+    /*
+      Eğer kart stoktaysa, müşteri bilgileri ilk kez girildiğinde
+      otomatik olarak assigned durumuna geçer.
+    */
+    const nextStatus =
+      existingCard.status === "stock"
+        ? "assigned"
+        : existingCard.status || "assigned";
+
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(code)}`,
+      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
+        code
+      )}`,
       {
         method: "PATCH",
         headers: {
@@ -361,6 +472,7 @@ if (existingCard.locked === true) {
           account_holder: accountHolder,
           iban,
           active,
+          status: nextStatus,
         }),
       }
     );
@@ -396,6 +508,11 @@ if (existingCard.locked === true) {
     );
   }
 }
+
+/* =========================================================
+   PUT - KARTI AKTİF / PASİF YAP
+========================================================= */
+
 export async function PUT(request) {
   try {
     const auth = await verifyAdmin(request);
@@ -429,8 +546,55 @@ export async function PUT(request) {
       );
     }
 
+    /*
+      Stok kartlarının yanlışlıkla aktif edilmesini engelle.
+    */
+    if (active === true) {
+      const checkResponse = await fetch(
+        `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
+          code
+        )}&select=code,status`,
+        {
+          method: "GET",
+          headers: {
+            apikey: secretKey,
+            Authorization: `Bearer ${secretKey}`,
+          },
+          cache: "no-store",
+        }
+      );
+
+      const existingCards = await checkResponse.json();
+
+      if (!checkResponse.ok) {
+        return NextResponse.json(
+          { error: "Kart durumu kontrol edilemedi." },
+          { status: 500 }
+        );
+      }
+
+      if (!existingCards || existingCards.length === 0) {
+        return NextResponse.json(
+          { error: "Kart bulunamadı." },
+          { status: 404 }
+        );
+      }
+
+      if (existingCards[0].status === "stock") {
+        return NextResponse.json(
+          {
+            error:
+              "Stok kartı müşteriye atanmadan aktif hale getirilemez.",
+          },
+          { status: 409 }
+        );
+      }
+    }
+
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(code)}`,
+      `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
+        code
+      )}`,
       {
         method: "PATCH",
         headers: {
