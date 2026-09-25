@@ -111,7 +111,7 @@ export async function POST(request) {
     const checkResponse = await fetch(
       `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
         code
-      )}&select=code,locked`,
+      )}&select=code,locked,status`,
       {
         method: "GET",
         headers: {
@@ -140,14 +140,28 @@ export async function POST(request) {
       );
     }
 
-    if (existingCards[0].locked === true) {
+    const existingCard = existingCards[0];
+
+    if (existingCard.locked === true) {
       return NextResponse.json(
         { error: "Bu IBAN kartı zaten kilitlenmiş." },
         { status: 409 }
       );
     }
 
-    // Kartı kalıcı olarak kilitle
+    // Stok kartı doğrudan kilitlenemez
+    if (existingCard.status === "stock") {
+      return NextResponse.json(
+        {
+          error:
+            "Stok kartı müşteriye atanmadan kilitlenemez.",
+        },
+        { status: 409 }
+      );
+    }
+
+    // Kartı doğrula ve kalıcı olarak kilitle.
+    // locked, locked_at ve status aynı işlemde güncellenir.
     const lockResponse = await fetch(
       `${supabaseUrl}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
         code
@@ -163,6 +177,7 @@ export async function POST(request) {
         body: JSON.stringify({
           locked: true,
           locked_at: new Date().toISOString(),
+          status: "locked",
         }),
       }
     );
@@ -180,7 +195,10 @@ export async function POST(request) {
 
     if (!data || data.length === 0) {
       return NextResponse.json(
-        { error: "Kart kilitlenemedi veya zaten kilitli." },
+        {
+          error:
+            "Kart kilitlenemedi veya zaten kilitli.",
+        },
         { status: 409 }
       );
     }
@@ -195,7 +213,10 @@ export async function POST(request) {
     console.error("POST /api/iban-cards/lock error:", error);
 
     return NextResponse.json(
-      { error: "Sunucuda beklenmeyen bir hata oluştu." },
+      {
+        error:
+          "Sunucuda beklenmeyen bir hata oluştu.",
+      },
       { status: 500 }
     );
   }
