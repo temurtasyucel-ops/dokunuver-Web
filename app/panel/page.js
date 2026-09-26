@@ -581,6 +581,45 @@ const productionBatches = Object.values(
             }
           />
         </section>
+            {productionBatches.length > 0 && (
+  <section style={styles.section}>
+    <div style={styles.sectionHeader}>
+      <h2 style={styles.sectionTitle}>
+        Üretim Partileri
+      </h2>
+
+      <p style={styles.sectionDescription}>
+        Toplu oluşturulan IBAN kartlarının üretim geçmişi.
+      </p>
+    </div>
+
+    <div style={styles.cardList}>
+      {productionBatches.map((batch) => (
+        <div
+          key={batch.batchCode}
+          style={styles.customerCard}
+        >
+          <div style={styles.customerTop}>
+            <div>
+              <div style={styles.customerName}>
+                📦 {batch.batchCode}
+              </div>
+
+              <div style={styles.code}>
+                {batch.cards.length} kart
+              </div>
+            </div>
+
+            <div style={styles.stock}>
+              Üretim Partisi
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+  
 
         <section style={styles.section}>
           <div style={styles.sectionHeader}>
