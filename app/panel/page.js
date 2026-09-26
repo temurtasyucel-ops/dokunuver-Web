@@ -676,19 +676,21 @@ const productionBatches = Object.values(
 )}
   
 
-        <section style={styles.section}>
-          <div style={styles.sectionHeader}>
-            <div>
-              <section
+        <section
   id="iban-kartlari"
   style={styles.section}
 >
+  <div style={styles.sectionHeader}>
+    <div>
+      <h2 style={styles.sectionTitle}>
+        IBAN Kartları
+      </h2>
 
-              <p style={styles.sectionDescription}>
-                Oluşturulan müşteri kartlarını görüntüleyin.
-              </p>
-            </div>
-          </div>
+      <p style={styles.sectionDescription}>
+        Oluşturulan müşteri kartlarını görüntüleyin.
+      </p>
+    </div>
+  </div>
 
           <div
             style={{
