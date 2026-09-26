@@ -857,8 +857,21 @@ const productionBatches = Object.values(
                       </div>
 
                       <div style={styles.code}>
-                        /i/{card.code}
-                      </div>
+  /i/{card.code}
+</div>
+
+{card.batch_code && (
+  <div
+    style={{
+      marginTop: "5px",
+      color: "#667085",
+      fontSize: "12px",
+      fontWeight: "700",
+    }}
+  >
+    Parti: {card.batch_code}
+  </div>
+)}
                     </div>
 
                     <div
@@ -882,17 +895,19 @@ const productionBatches = Object.values(
                         </div>
                       )}
 
-                      <div
-                        style={
-                          card.active
-                            ? styles.active
-                            : styles.passive
-                        }
-                      >
-                        {card.active
-                          ? "Aktif"
-                          : "Pasif"}
-                      </div>
+                      {card.status !== "stock" && (
+  <div
+    style={
+      card.active
+        ? styles.active
+        : styles.passive
+    }
+  >
+    {card.active
+      ? "Aktif"
+      : "Pasif"}
+  </div>
+)}
                     </div>
                   </div>
 
