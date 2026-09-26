@@ -14,7 +14,7 @@ export default function AdminPanel() {
   const [creatingStock, setCreatingStock] = useState(false);
   const [creatingBulkStock, setCreatingBulkStock] = useState(false);
   const [downloadingStockQr, setDownloadingStockQr] = useState(false);
-  const [lastCreatedStockCards, setLastCreatedStockCards] = useState([]);
+  
 
   const cardsPerPage = 20;
 
@@ -180,14 +180,12 @@ async function createBulkStockCards() {
       );
     }
 
-    setLastCreatedStockCards(
-  Array.isArray(data.cards) ? data.cards : []
-);
+    
 
 await loadCards();
 
 alert(
-  `${data.count} adet stok IBAN kartı başarıyla oluşturuldu.\n\nBu üretim partisinin QR kodlarını ayrı olarak indirebilirsiniz.`
+  `${data.count} adet stok IBAN kartı başarıyla oluşturuldu.\n\nÜretim Partisi: ${data.batch_code}`
 );
   } catch (error) {
     alert(error.message);
@@ -258,11 +256,6 @@ alert(
   }
 }
 
-async function downloadLastCreatedQrZip() {
-  if (lastCreatedStockCards.length === 0) {
-    alert("Bu oturumda henüz toplu stok oluşturulmadı.");
-    return;
-  }
 
   const confirmed = window.confirm(
     `Son oluşturulan ${lastCreatedStockCards.length} adet kartın QR kodları indirilecek.\n\nDevam etmek istiyor musunuz?`
@@ -570,23 +563,7 @@ const productionBatches = Object.values(
   {creatingBulkStock
     ? "Toplu Stok Oluşturuluyor..."
     : "+ Toplu Stok Oluştur"}
-</button>
-  {lastCreatedStockCards.length > 0 && (
-  <button
-    type="button"
-    onClick={downloadLastCreatedQrZip}
-    disabled={downloadingStockQr}
-    style={{
-      ...styles.newButton,
-      background: "#ecfdf3",
-      color: "#027a48",
-      opacity: downloadingStockQr ? 0.6 : 1,
-    }}
-  >
-    ↓ Yeni Parti QR'ları (
-    {lastCreatedStockCards.length})
-  </button>
-)}
+
   <button
   type="button"
   onClick={downloadStockQrZip}
