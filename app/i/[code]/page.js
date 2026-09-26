@@ -222,19 +222,25 @@ export default function IbanCardPage() {
             </p>
 
             <div
-              style={{
-                background: "#f7f9fc",
-                padding: "16px",
-                borderRadius: "14px",
-                fontSize: "16px",
-                fontWeight: "700",
-                color: "#101828",
-                lineHeight: "1.6",
-                wordBreak: "break-word",
-              }}
-            >
-              {card.iban}
-            </div>
+  style={{
+    background: "#f7f9fc",
+    padding: "16px",
+    borderRadius: "14px",
+    fontSize: "16px",
+    fontWeight: "700",
+    color: "#101828",
+    lineHeight: "1.6",
+    wordBreak: "break-word",
+    letterSpacing: "0.3px",
+  }}
+>
+  {card.iban
+    ? card.iban
+        .replace(/\s+/g, "")
+        .replace(/(.{4})/g, "$1 ")
+        .trim()
+    : "-"}
+</div>
 
             <button
               type="button"
