@@ -147,7 +147,29 @@ async function cancelStock(link) {
 const stockLinks = links.filter(
   (link) => link.status === "stock"
 );
+const statusCounts = {
+  total: links.length,
 
+  active: links.filter(
+    (link) =>
+      link.status === "assigned" &&
+      link.active
+  ).length,
+
+  passive: links.filter(
+    (link) =>
+      link.status === "assigned" &&
+      !link.active
+  ).length,
+
+  stock: links.filter(
+    (link) => link.status === "stock"
+  ).length,
+
+  cancelled: links.filter(
+    (link) => link.status === "cancelled"
+  ).length,
+};
 const stockCounts = {
   total: stockLinks.length,
   google: stockLinks.filter(
@@ -314,6 +336,40 @@ return (
   <BulkQRCodeButton links={links} />
 </div>
       </div>
+      <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    marginTop: "20px",
+    marginBottom: "12px",
+  }}
+>
+  <div className="stock-summary-card">
+    <strong>Toplam</strong>
+    <span>{statusCounts.total}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Aktif</strong>
+    <span>{statusCounts.active}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Pasif</strong>
+    <span>{statusCounts.passive}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>Stok</strong>
+    <span>{statusCounts.stock}</span>
+  </div>
+
+  <div className="stock-summary-card">
+    <strong>İptal</strong>
+    <span>{statusCounts.cancelled}</span>
+  </div>
+</div>
 <div
   style={{
     display: "flex",
