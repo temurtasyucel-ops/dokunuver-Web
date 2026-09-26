@@ -1024,7 +1024,6 @@ return (
               </div>
             </div>
           ))}
-                      ))}
 
           {totalPages > 1 && (
             <div
