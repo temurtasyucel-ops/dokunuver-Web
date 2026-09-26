@@ -228,13 +228,12 @@ export async function PATCH(request) {
     }
 
     const allowedProductTypes = [
-      "google",
-      "instagram",
-      "whatsapp",
-      "ilan",
-      "konum",
-      "diger",
-    ];
+  "google",
+  "instagram",
+  "whatsapp",
+  "ilan",
+  "diger",
+];
 
     if (!allowedProductTypes.includes(productType)) {
       return Response.json(
