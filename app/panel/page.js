@@ -15,6 +15,7 @@ export default function AdminPanel() {
   const [creatingBulkStock, setCreatingBulkStock] = useState(false);
   const [downloadingStockQr, setDownloadingStockQr] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [showAllBatches, setShowAllBatches] = useState(false);
   
 
   const cardsPerPage = 20;
@@ -451,9 +452,11 @@ const productionBatches = Object.values(
     return groups;
   }, {})
 ).sort((a, b) =>
-  b.batchCode.localeCompare(a.batchCode)
+  {visibleProductionBatches.map((batch) => (
 );
-  
+const visibleProductionBatches = showAllBatches
+  ? productionBatches
+  : productionBatches.slice(0, 5);  
   return (
     <main style={styles.page}>
       <div style={styles.container}>
@@ -705,12 +708,38 @@ const productionBatches = Object.values(
       opacity: downloadingStockQr ? 0.6 : 1,
     }}
   >
-    ↓ QR'ları İndir
+        ↓ QR'ları İndir
   </button>
 </div>
           </div>
         </div>
       ))}
+
+      {productionBatches.length > 5 && (
+        <button
+          type="button"
+          onClick={() =>
+            setShowAllBatches((current) => !current)
+          }
+          style={{
+            width: "100%",
+            marginTop: "4px",
+            border: "1px solid #d0d5dd",
+            padding: "12px 16px",
+            background: "#f8fafc",
+            color: "#344054",
+            borderRadius: "10px",
+            fontSize: "13px",
+            fontWeight: "800",
+            cursor: "pointer",
+          }}
+        >
+          {showAllBatches
+            ? "Son 5 Üretim Partisini Göster"
+            : `Tüm Üretim Partilerini Gör (${productionBatches.length})`}
+        </button>
+      )}
+
     </div>
   </section>
 )}
