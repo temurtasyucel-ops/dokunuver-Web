@@ -257,58 +257,7 @@ alert(
 }
 
 
-  const confirmed = window.confirm(
-    `Son oluşturulan ${lastCreatedStockCards.length} adet kartın QR kodları indirilecek.\n\nDevam etmek istiyor musunuz?`
-  );
 
-  if (!confirmed) return;
-
-  try {
-    setDownloadingStockQr(true);
-
-    const zip = new JSZip();
-
-    for (const card of lastCreatedStockCards) {
-      const url = `https://dokunuver.com.tr/i/${card.code}`;
-
-      const qrDataUrl = await QRCode.toDataURL(url, {
-        width: 1000,
-        margin: 2,
-        errorCorrectionLevel: "H",
-      });
-
-      const base64Data = qrDataUrl.split(",")[1];
-
-      zip.file(
-        `DOKUNUVER-IBAN-${card.code}-QR.png`,
-        base64Data,
-        { base64: true }
-      );
-    }
-
-    const zipBlob = await zip.generateAsync({
-      type: "blob",
-    });
-
-    const downloadUrl = URL.createObjectURL(zipBlob);
-
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download =
-      `DOKUNUVER-IBAN-YENI-PARTI-${lastCreatedStockCards.length}-ADET.zip`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(downloadUrl);
-  } catch (error) {
-    console.error("Üretim partisi QR ZIP hatası:", error);
-    alert("Üretim partisi QR ZIP dosyası oluşturulamadı.");
-  } finally {
-    setDownloadingStockQr(false);
-  }
-}
 
   async function downloadBatchQrZip(batch) {
   if (!batch?.cards?.length) {
@@ -561,10 +510,11 @@ const productionBatches = Object.values(
   }}
 >
   {creatingBulkStock
-    ? "Toplu Stok Oluşturuluyor..."
-    : "+ Toplu Stok Oluştur"}
+  ? "Toplu Stok Oluşturuluyor..."
+  : "+ Toplu Stok Oluştur"}
+</button>
 
-  <button
+<button
   type="button"
   onClick={downloadStockQrZip}
   disabled={downloadingStockQr}
