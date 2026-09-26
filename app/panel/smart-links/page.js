@@ -298,7 +298,46 @@ return (
 
     <LogoutButton />
   </header>
+<div
+  style={{
+    display: "flex",
+    gap: "8px",
+    marginBottom: "16px",
+    flexWrap: "wrap",
+  }}
+>
+  <a
+    href="/panel"
+    style={{
+      padding: "10px 16px",
+      border: "1px solid #d0d5dd",
+      borderRadius: "10px",
+      background: "#ffffff",
+      color: "#344054",
+      textDecoration: "none",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    IBAN Kartları
+  </a>
 
+  <a
+    href="/panel/smart-links"
+    style={{
+      padding: "10px 16px",
+      border: "1px solid #087cf0",
+      borderRadius: "10px",
+      background: "#087cf0",
+      color: "#ffffff",
+      textDecoration: "none",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    Smart Links
+  </a>
+</div>
   <section
     style={{
       background: "#101828",
@@ -380,22 +419,6 @@ return (
         }}
       >
         + Toplu Stok Oluştur
-      </a>
-
-      <a
-        href="/panel"
-        style={{
-          display: "inline-block",
-          padding: "12px 18px",
-          background: "#ffffff",
-          color: "#101828",
-          textDecoration: "none",
-          borderRadius: "10px",
-          fontSize: "14px",
-          fontWeight: "800",
-        }}
-      >
-        IBAN Kart Yönetimi
       </a>
     </div>
 
