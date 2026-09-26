@@ -8,8 +8,8 @@ export default async function SmartLinkPage({ params }) {
 
   const response = await fetch(
     `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
-      code
-    )}&active=eq.true&select=target_url`,
+  code
+)}&status=eq.assigned&active=eq.true&select=target_url`,
     {
       headers: {
         apikey: secretKey,
