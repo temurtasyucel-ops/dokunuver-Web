@@ -300,7 +300,53 @@ export async function PATCH(request) {
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const secretKey = process.env.SUPABASE_SECRET_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const secretKey = process.env.SUPABASE_SECRET_KEY;
 
+// İptal edilmiş kart yeniden atanamasın
+const checkResponse = await fetch(
+  `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+    code
+  )}&select=code,status`,
+  {
+    headers: {
+      apikey: secretKey,
+      Authorization: `Bearer ${secretKey}`,
+    },
+    cache: "no-store",
+  }
+);
+
+if (!checkResponse.ok) {
+  return Response.json(
+    { error: "Smart Link durumu kontrol edilemedi." },
+    { status: 500 }
+  );
+}
+
+const existingLinks = await checkResponse.json();
+const existingLink = existingLinks?.[0];
+
+if (!existingLink) {
+  return Response.json(
+    { error: "Smart Link bulunamadı." },
+    { status: 404 }
+  );
+}
+
+if (existingLink.status === "cancelled") {
+  return Response.json(
+    {
+      error:
+        "İptal edilmiş Smart Link yeniden müşteriye atanamaz.",
+    },
+    { status: 409 }
+  );
+}
+
+// Bundan sonrası mevcut PATCH kodun
+const response = await fetch(
+  `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(code)}`,
     const response = await fetch(
       `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(code)}`,
       {
@@ -382,55 +428,6 @@ export async function PUT(request) {
       process.env.SUPABASE_SECRET_KEY;
 
     // Önce kartın mevcut durumunu kontrol et.
-    const checkResponse = await fetch(
-      `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
-        code
-      )}&select=code,status,active`,
-      {
-        headers: {
-          apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-        },
-        cache: "no-store",
-      }
-    );
-
-    if (!checkResponse.ok) {
-      const errorText = await checkResponse.text();
-
-      console.error(
-        "Smart Link status check error:",
-        errorText
-      );
-
-      return Response.json(
-        { error: "Smart Link durumu kontrol edilemedi." },
-        { status: 500 }
-      );
-    }
-
-    const existingLinks = await checkResponse.json();
-    const existingLink = existingLinks?.[0];
-
-    if (!existingLink) {
-      return Response.json(
-        { error: "Smart Link bulunamadı." },
-        { status: 404 }
-      );
-    }
-
-    // Stok ve iptal kartları aktif/pasif yapılamaz.
-    if (existingLink.status !== "assigned") {
-      return Response.json(
-        {
-          error:
-            existingLink.status === "stock"
-              ? "Stok kartları müşteriye atanmadan aktifleştirilemez."
-              : "İptal edilmiş Smart Linklerin durumu değiştirilemez.",
-        },
-        { status: 409 }
-      );
-    }
 
     // Yalnızca assigned durumundaki kartı güncelle.
     const response = await fetch(
