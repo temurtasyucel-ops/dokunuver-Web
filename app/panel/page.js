@@ -593,8 +593,26 @@ const productionBatches = Object.values(
               </div>
 
               <div style={styles.code}>
-                {batch.cards.length} kart
-              </div>
+  Toplam: {batch.cards.length}
+  {" • "}
+  Stokta: {
+    batch.cards.filter(
+      (card) => card.status === "stock"
+    ).length
+  }
+  {" • "}
+  Atandı: {
+    batch.cards.filter(
+      (card) => card.status === "assigned"
+    ).length
+  }
+  {" • "}
+  Kilitli: {
+    batch.cards.filter(
+      (card) => card.status === "locked"
+    ).length
+  }
+</div>
             </div>
 
             <div
