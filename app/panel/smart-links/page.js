@@ -439,18 +439,32 @@ return (
           </div>
 
           <div
-            style={{
-              padding: "7px 11px",
-              borderRadius: "999px",
-              background: "#fff7ed",
-              color: "#c2410c",
-              border: "1px solid #fed7aa",
-              fontSize: "12px",
-              fontWeight: "800",
-            }}
-          >
-            Üretim Partisi
-          </div>
+  style={{
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    flexWrap: "wrap",
+  }}
+>
+  <div
+    style={{
+      padding: "7px 11px",
+      borderRadius: "999px",
+      background: "#fff7ed",
+      color: "#c2410c",
+      border: "1px solid #fed7aa",
+      fontSize: "12px",
+      fontWeight: "800",
+    }}
+  >
+    Üretim Partisi
+  </div>
+
+  <BulkQRCodeButton
+    links={batch.links}
+    batchCode={batch.batchCode}
+  />
+</div>
         </div>
       ))}
     </div>
