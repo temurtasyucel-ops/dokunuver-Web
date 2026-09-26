@@ -3,6 +3,18 @@
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
 import BulkQRCodeButton from "./BulkQRCodeButton";
+function formatSmartBatchDate(batchCode) {
+  const match =
+    /^SMART-(\d{2})(\d{2})(\d{2})-\d+$/.exec(
+      batchCode
+    );
+
+  if (!match) return "";
+
+  const [, year, month, day] = match;
+
+  return `${day}.${month}.20${year}`;
+}
 
 export default function SmartLinksPage() {
   const [links, setLinks] = useState([]);
@@ -478,6 +490,8 @@ return (
                 fontWeight: "700",
               }}
             >
+{formatSmartBatchDate(batch.batchCode)}
+{" • "}
               {batch.productType?.toLocaleUpperCase("tr-TR")}
               {" • "}
               Toplam: {batch.links.length}
