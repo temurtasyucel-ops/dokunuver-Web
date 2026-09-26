@@ -316,6 +316,66 @@ async function downloadLastCreatedQrZip() {
     setDownloadingStockQr(false);
   }
 }
+
+  async function downloadBatchQrZip(batch) {
+  if (!batch?.cards?.length) {
+    alert("Bu üretim partisinde kart bulunamadı.");
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `${batch.batchCode} partisindeki ${batch.cards.length} kartın QR kodları ZIP olarak indirilecek.\n\nDevam etmek istiyor musunuz?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDownloadingStockQr(true);
+
+    const zip = new JSZip();
+
+    for (const card of batch.cards) {
+      const url = `https://dokunuver.com.tr/i/${card.code}`;
+
+      const qrDataUrl = await QRCode.toDataURL(url, {
+        width: 1000,
+        margin: 2,
+        errorCorrectionLevel: "H",
+      });
+
+      const base64Data = qrDataUrl.split(",")[1];
+
+      zip.file(
+        `DOKUNUVER-IBAN-${card.code}-QR.png`,
+        base64Data,
+        { base64: true }
+      );
+    }
+
+    const zipBlob = await zip.generateAsync({
+      type: "blob",
+    });
+
+    const downloadUrl = URL.createObjectURL(zipBlob);
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download =
+      `DOKUNUVER-${batch.batchCode}-${batch.cards.length}-ADET.zip`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error("Üretim partisi QR ZIP hatası:", error);
+    alert("Üretim partisi QR ZIP dosyası oluşturulamadı.");
+  } finally {
+    setDownloadingStockQr(false);
+  }
+}
+  
   async function toggleCardStatus(card) {
     const action = card.active ? "pasife almak" : "aktif etmek";
 
@@ -610,9 +670,31 @@ const productionBatches = Object.values(
               </div>
             </div>
 
-            <div style={styles.stock}>
-              Üretim Partisi
-            </div>
+            <div
+  style={{
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+  }}
+>
+  <div style={styles.stock}>
+    Üretim Partisi
+  </div>
+
+  <button
+    type="button"
+    onClick={() => downloadBatchQrZip(batch)}
+    disabled={downloadingStockQr}
+    style={{
+      ...styles.filterButton,
+      opacity: downloadingStockQr ? 0.6 : 1,
+    }}
+  >
+    ↓ QR'ları İndir
+  </button>
+</div>
           </div>
         </div>
       ))}
