@@ -58,9 +58,41 @@ export default function EditSmartLinkPage() {
       }
 
       setBusinessName(smartLink.business_name || "");
-      setProductType(smartLink.product_type || "google");
-      setTargetUrl(smartLink.target_url || "");
-      setStatus(smartLink.status || "");
+setProductType(smartLink.product_type || "google");
+setTargetUrl(smartLink.target_url || "");
+setStatus(smartLink.status || "");
+
+if (
+  smartLink.product_type === "google" &&
+  smartLink.target_url
+) {
+  setGoogleMapsUrl(smartLink.target_url);
+}
+
+if (
+  smartLink.product_type === "whatsapp" &&
+  smartLink.target_url
+) {
+  const phone = smartLink.target_url
+    .replace(/^https?:\/\/wa\.me\//i, "")
+    .replace(/\D/g, "");
+
+  setWhatsappNumber(phone);
+}
+
+if (
+  smartLink.product_type === "instagram" &&
+  smartLink.target_url
+) {
+  const username = smartLink.target_url
+    .replace(
+      /^https?:\/\/(www\.)?instagram\.com\//i,
+      ""
+    )
+    .split(/[/?#]/)[0];
+
+  setInstagramUsername(username);
+}
     } catch (err) {
       setError(err.message);
     } finally {
@@ -117,6 +149,31 @@ if (productType === "instagram") {
   }
 
   finalTargetUrl = `https://www.instagram.com/${username}/`;
+}
+    if (productType === "google") {
+  const googleUrl = googleMapsUrl.trim();
+
+  if (!googleUrl) {
+    setError("Google Maps işletme bağlantısını girin.");
+    return;
+  }
+
+  try {
+    const parsedUrl = new URL(googleUrl);
+
+    if (
+      !["http:", "https:"].includes(parsedUrl.protocol)
+    ) {
+      throw new Error();
+    }
+
+    finalTargetUrl = parsedUrl.toString();
+  } catch {
+    setError(
+      "Geçerli bir Google Maps işletme bağlantısı girin."
+    );
+    return;
+  }
 }
     const response = await fetch("/api/smart-links", {
       method: "PATCH",
