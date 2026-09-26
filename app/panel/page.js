@@ -1211,12 +1211,12 @@ const styles = {
   },
 
   stats: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "16px",
-    marginTop: "20px",
-  },
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(2, minmax(0, 1fr))",
+  gap: "16px",
+  marginTop: "20px",
+},
 
   statCard: {
     background: "#ffffff",
