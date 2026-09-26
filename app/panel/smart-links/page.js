@@ -187,6 +187,27 @@ const filteredLinks = links.filter((link) => {
 
 return matchesSearch && matchesFilter;
 });
+  const productionBatches = Object.values(
+  links.reduce((groups, link) => {
+    if (!link.batch_code) {
+      return groups;
+    }
+
+    if (!groups[link.batch_code]) {
+      groups[link.batch_code] = {
+        batchCode: link.batch_code,
+        productType: link.product_type,
+        links: [],
+      };
+    }
+
+    groups[link.batch_code].links.push(link);
+
+    return groups;
+  }, {})
+).sort((a, b) =>
+  b.batchCode.localeCompare(a.batchCode)
+);
 return (
     <main
       style={{
