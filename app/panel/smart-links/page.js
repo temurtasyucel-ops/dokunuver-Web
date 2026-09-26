@@ -345,6 +345,117 @@ return (
     <span>{stockCounts.diger}</span>
   </div>
 </div>
+  {productionBatches.length > 0 && (
+  <section
+    style={{
+      marginBottom: "28px",
+      padding: "24px",
+      background: "#ffffff",
+      border: "1px solid #eaecf0",
+      borderRadius: "18px",
+    }}
+  >
+    <div style={{ marginBottom: "18px" }}>
+      <h2
+        style={{
+          margin: 0,
+          fontSize: "21px",
+        }}
+      >
+        Üretim Partileri
+      </h2>
+
+      <p
+        style={{
+          margin: "6px 0 0",
+          color: "#667085",
+          fontSize: "14px",
+        }}
+      >
+        Toplu oluşturulan Smart Link kartlarının üretim geçmişi.
+      </p>
+    </div>
+
+    <div
+      style={{
+        display: "grid",
+        gap: "12px",
+      }}
+    >
+      {productionBatches.map((batch) => (
+        <div
+          key={batch.batchCode}
+          style={{
+            border: "1px solid #eaecf0",
+            borderRadius: "14px",
+            padding: "18px",
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "16px",
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: "17px",
+                fontWeight: "800",
+              }}
+            >
+              📦 {batch.batchCode}
+            </div>
+
+            <div
+              style={{
+                marginTop: "6px",
+                color: "#667085",
+                fontSize: "13px",
+                fontWeight: "700",
+              }}
+            >
+              {batch.productType?.toLocaleUpperCase("tr-TR")}
+              {" • "}
+              Toplam: {batch.links.length}
+              {" • "}
+              Stokta: {
+                batch.links.filter(
+                  (link) => link.status === "stock"
+                ).length
+              }
+              {" • "}
+              Atandı: {
+                batch.links.filter(
+                  (link) => link.status === "assigned"
+                ).length
+              }
+              {" • "}
+              İptal: {
+                batch.links.filter(
+                  (link) => link.status === "cancelled"
+                ).length
+              }
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: "7px 11px",
+              borderRadius: "999px",
+              background: "#fff7ed",
+              color: "#c2410c",
+              border: "1px solid #fed7aa",
+              fontSize: "12px",
+              fontWeight: "800",
+            }}
+          >
+            Üretim Partisi
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
 <div
   style={{
     display: "flex",
