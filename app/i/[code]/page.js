@@ -10,40 +10,41 @@ export default function IbanCardPage() {
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [copiedHolder, setCopiedHolder] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!code) return;
 
-async function getCard() {
-  try {
-    const response = await fetch(
-      `/api/public-iban/${encodeURIComponent(code)}`,
-      {
-        cache: "no-store",
+    async function getCard() {
+      try {
+        const response = await fetch(
+          `/api/public-iban/${encodeURIComponent(code)}`,
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          setError(true);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!data) {
+          setError(true);
+          return;
+        }
+
+        setCard(data);
+      } catch (err) {
+        console.error(err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-    );
-
-    if (!response.ok) {
-      setError(true);
-      return;
     }
-
-    const data = await response.json();
-
-    if (!data) {
-      setError(true);
-      return;
-    }
-
-    setCard(data);
-  } catch (err) {
-    console.error(err);
-    setError(true);
-  } finally {
-    setLoading(false);
-  }
-}
 
     getCard();
   }, [code]);
@@ -66,6 +67,24 @@ async function getCard() {
     }
   }
 
+  async function copyAccountHolder() {
+    if (!card?.account_holder) return;
+
+    try {
+      await navigator.clipboard.writeText(
+        card.account_holder
+      );
+
+      setCopiedHolder(true);
+
+      setTimeout(() => {
+        setCopiedHolder(false);
+      }, 2500);
+    } catch {
+      alert("Hesap sahibi kopyalanamadı.");
+    }
+  }
+
   if (loading) {
     return (
       <main style={styles.center}>
@@ -78,7 +97,10 @@ async function getCard() {
     return (
       <main style={styles.center}>
         <div style={styles.card}>
-          <h1 style={{ marginTop: 0 }}>Kart bulunamadı</h1>
+          <h1 style={{ marginTop: 0 }}>
+            Kart bulunamadı
+          </h1>
+
           <p style={{ color: "#667085" }}>
             Bu IBAN kartı bulunamadı veya kullanım dışı.
           </p>
@@ -89,9 +111,12 @@ async function getCard() {
 
   return (
     <main style={styles.center}>
-      <div style={{ width: "100%", maxWidth: "440px" }}>
-       
-
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "440px",
+        }}
+      >
         <div style={styles.card}>
           <div
             style={{
@@ -138,13 +163,63 @@ async function getCard() {
               paddingTop: "22px",
             }}
           >
-            <Info label="BANKA" value={card.bank_name} />
             <Info
-              label="HESAP SAHİBİ"
-              value={card.account_holder}
+              label="BANKA"
+              value={card.bank_name}
             />
 
-            <p style={styles.label}>IBAN</p>
+            <p style={styles.label}>
+              HESAP SAHİBİ
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "12px",
+                marginBottom: "20px",
+              }}
+            >
+              <div
+                style={{
+                  color: "#101828",
+                  fontSize: "17px",
+                  fontWeight: "700",
+                  wordBreak: "break-word",
+                }}
+              >
+                {card.account_holder}
+              </div>
+
+              <button
+                type="button"
+                onClick={copyAccountHolder}
+                style={{
+                  flexShrink: 0,
+                  border: "1px solid #d0d5dd",
+                  background: copiedHolder
+                    ? "#ecfdf3"
+                    : "#ffffff",
+                  color: copiedHolder
+                    ? "#067647"
+                    : "#344054",
+                  padding: "8px 11px",
+                  borderRadius: "9px",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                }}
+              >
+                {copiedHolder
+                  ? "✓ Kopyalandı"
+                  : "Kopyala"}
+              </button>
+            </div>
+
+            <p style={styles.label}>
+              IBAN
+            </p>
 
             <div
               style={{
@@ -162,6 +237,7 @@ async function getCard() {
             </div>
 
             <button
+              type="button"
               onClick={copyIban}
               style={{
                 width: "100%",
@@ -169,65 +245,77 @@ async function getCard() {
                 marginTop: "18px",
                 padding: "17px",
                 borderRadius: "14px",
-                background: copied ? "#12b76a" : "#087cf0",
+                background: copied
+                  ? "#12b76a"
+                  : "#087cf0",
                 color: "#ffffff",
                 fontSize: "16px",
                 fontWeight: "700",
                 cursor: "pointer",
               }}
             >
-              {copied ? "✓ IBAN Kopyalandı" : "IBAN'ı Kopyala"}
+              {copied
+                ? "✓ IBAN Kopyalandı"
+                : "IBAN'ı Kopyala"}
             </button>
-              <div
-  style={{
-    marginTop: "16px",
-    padding: "14px 16px",
-    background: "#ecfdf3",
-    border: "1px solid #abefc6",
-    borderRadius: "12px",
-  }}
->
-  <div
-    style={{
-      color: "#067647",
-      fontSize: "13px",
-      fontWeight: "800",
-      marginBottom: "4px",
-    }}
-  >
-    🔒 Doğrulanmış ödeme bilgileri
-  </div>
 
-  <div
-    style={{
-      color: "#067647",
-      fontSize: "12px",
-      lineHeight: "1.5",
-    }}
-  >
-    Bu kartın banka, hesap sahibi ve IBAN bilgileri doğrulama
-    sonrasında kilitlenmiştir ve normal yönetim işlemleriyle
-    değiştirilemez.
-  </div>
-      {card.locked_at && (
-  <div
-    style={{
-      color: "#067647",
-      fontSize: "12px",
-      fontWeight: "700",
-      marginTop: "8px",
-    }}
-  >
-    Doğrulama tarihi:{" "}
-    {new Date(card.locked_at).toLocaleDateString("tr-TR", {
-      timeZone: "Europe/Istanbul",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })}
-  </div>
-)}
-</div>
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "14px 16px",
+                background: "#ecfdf3",
+                border: "1px solid #abefc6",
+                borderRadius: "12px",
+              }}
+            >
+              <div
+                style={{
+                  color: "#067647",
+                  fontSize: "13px",
+                  fontWeight: "800",
+                  marginBottom: "4px",
+                }}
+              >
+                🔒 Doğrulanmış ödeme bilgileri
+              </div>
+
+              <div
+                style={{
+                  color: "#067647",
+                  fontSize: "12px",
+                  lineHeight: "1.5",
+                }}
+              >
+                Bu kartın banka, hesap sahibi ve IBAN bilgileri
+                doğrulama sonrasında kilitlenmiştir ve normal
+                yönetim işlemleriyle değiştirilemez.
+              </div>
+
+              {card.locked_at && (
+                <div
+                  style={{
+                    color: "#067647",
+                    fontSize: "12px",
+                    fontWeight: "700",
+                    marginTop: "8px",
+                  }}
+                >
+                  Doğrulama tarihi:{" "}
+                  {new Date(
+                    card.locked_at
+                  ).toLocaleDateString(
+                    "tr-TR",
+                    {
+                      timeZone:
+                        "Europe/Istanbul",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -243,38 +331,39 @@ async function getCard() {
           Ödeme yapmadan önce hesap sahibi ve IBAN bilgilerini
           kontrol ediniz.
         </p>
-            <div
-  style={{
-    textAlign: "center",
-    marginTop: "22px",
-    paddingTop: "20px",
-    borderTop: "1px solid #e4e7ec",
-  }}
->
-  <div
-    style={{
-      color: "#667085",
-      fontSize: "11px",
-      marginBottom: "7px",
-    }}
-  >
-    Bu NFC kart DOKUNUVER altyapısıyla çalışmaktadır.
-  </div>
 
-  <a
-    href="https://dokunuver.com.tr"
-    target="_blank"
-    rel="noreferrer"
-    style={{
-      color: "#087cf0",
-      fontSize: "13px",
-      fontWeight: "700",
-      textDecoration: "none",
-    }}
-  >
-    NFC çözümlerini incele →
-  </a>
-</div>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "22px",
+            paddingTop: "20px",
+            borderTop: "1px solid #e4e7ec",
+          }}
+        >
+          <div
+            style={{
+              color: "#667085",
+              fontSize: "11px",
+              marginBottom: "7px",
+            }}
+          >
+            Bu NFC kart DOKUNUVER altyapısıyla çalışmaktadır.
+          </div>
+
+          <a
+            href="https://dokunuver.com.tr"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              color: "#087cf0",
+              fontSize: "13px",
+              fontWeight: "700",
+              textDecoration: "none",
+            }}
+          >
+            NFC çözümlerini incele →
+          </a>
+        </div>
       </div>
     </main>
   );
@@ -283,7 +372,10 @@ async function getCard() {
 function Info({ label, value }) {
   return (
     <>
-      <p style={styles.label}>{label}</p>
+      <p style={styles.label}>
+        {label}
+      </p>
+
       <p
         style={{
           color: "#101828",
@@ -314,7 +406,8 @@ const styles = {
     background: "#ffffff",
     borderRadius: "26px",
     padding: "30px 22px",
-    boxShadow: "0 12px 40px rgba(16,24,40,0.08)",
+    boxShadow:
+      "0 12px 40px rgba(16,24,40,0.08)",
   },
 
   label: {
