@@ -452,11 +452,12 @@ const productionBatches = Object.values(
     return groups;
   }, {})
 ).sort((a, b) =>
-  {visibleProductionBatches.map((batch) => (
+  b.batchCode.localeCompare(a.batchCode)
 );
+
 const visibleProductionBatches = showAllBatches
   ? productionBatches
-  : productionBatches.slice(0, 5);  
+  : productionBatches.slice(0, 5);
   return (
     <main style={styles.page}>
       <div style={styles.container}>
