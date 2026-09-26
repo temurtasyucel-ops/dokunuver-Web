@@ -1,3 +1,66 @@
+export const metadata = {
+  title: "DOKUNUVER | NFC Kart ve Dijital Bağlantı Çözümleri",
+  description:
+    "Google Yorum, Instagram, WhatsApp, IBAN, İlan ve Duo NFC kartlarıyla işletmenizin dijital bağlantılarını müşterilerinize NFC ve QR üzerinden ulaştırın.",
+};
+
+const products = [
+  {
+    href: "/urunler/google-yorum",
+    image: "/images/google-yorum-nfc.png",
+    title: "Google Yorum Kartı",
+    description:
+      "Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca yönlendirin.",
+    price: "249 TL",
+    detail: "10 × 10 cm • NFC + QR",
+  },
+  {
+    href: "/urunler/instagram",
+    image: "/images/instagram-nfc.png",
+    title: "Instagram Kartı",
+    description:
+      "Instagram profilinizi müşterilerinizle NFC veya QR üzerinden kolayca paylaşın.",
+    price: "249 TL",
+    detail: "10 × 10 cm • NFC + QR",
+  },
+  {
+    href: "/urunler/whatsapp",
+    image: "/images/whatsapp-nfc.png",
+    title: "WhatsApp Kartı",
+    description:
+      "Müşterilerinizin numaranızı kaydetmeden WhatsApp bağlantınıza ulaşmasını kolaylaştırın.",
+    price: "249 TL",
+    detail: "10 × 10 cm • NFC + QR",
+  },
+  {
+    href: "/urunler/iban",
+    image: "/images/iban-nfc.png",
+    title: "IBAN Kartı",
+    description:
+      "Doğrulanmış banka, hesap sahibi ve IBAN bilgilerinizi NFC veya QR üzerinden kolayca paylaşın.",
+    price: "249 TL",
+    detail: "10 × 10 cm • NFC + QR",
+  },
+  {
+    href: "/urunler/ilan",
+    image: "/images/ilan-nfc.png",
+    title: "İlan Kartı",
+    description:
+      "İlan bağlantınızı NFC veya QR ile müşterilerinize doğrudan ulaştırın.",
+    price: "249 TL",
+    detail: "10 × 10 cm • NFC + QR",
+  },
+  {
+    href: "/urunler/duo",
+    image: "/images/duo-nfc.png",
+    title: "Duo NFC Kartı",
+    description:
+      "Google + Instagram veya WhatsApp + IBAN seçeneklerinden ikisini tek kartta bir araya getirin.",
+    price: "349 TL",
+    detail: "10 × 10 cm • 2 NFC + 2 QR",
+  },
+];
+
 export default function Home() {
   return (
     <main
@@ -8,8 +71,100 @@ export default function Home() {
         color: "#101828",
       }}
     >
+      <style>{`
+        html {
+          scroll-behavior: smooth;
+        }
+
+        .product-card {
+          transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+        }
+
+        .product-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 16px 40px rgba(16, 24, 40, 0.08);
+          border-color: #d0d5dd !important;
+        }
+
+        @media (max-width: 900px) {
+          .products-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .site-header {
+            padding: 18px 18px !important;
+          }
+
+          .header-button {
+            padding: 10px 13px !important;
+            font-size: 13px !important;
+          }
+
+          .hero-section {
+            padding: 64px 18px 70px !important;
+          }
+
+          .hero-section h1 {
+            letter-spacing: -2px !important;
+          }
+
+          .products-section,
+          .how-section,
+          .benefits-section,
+          .contact-section {
+            padding: 72px 18px !important;
+          }
+
+          .products-grid {
+            grid-template-columns: 1fr !important;
+          }
+
+          .benefits-grid {
+            grid-template-columns: 1fr !important;
+          }
+
+          .contact-box {
+            padding: 48px 22px !important;
+            border-radius: 22px !important;
+          }
+
+          .product-image-area {
+            padding: 24px !important;
+          }
+
+          .product-content {
+            padding: 22px !important;
+          }
+
+          .site-footer-inner {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          html {
+            scroll-behavior: auto;
+          }
+
+          .product-card {
+            transition: none;
+          }
+
+          .product-card:hover {
+            transform: none;
+          }
+        }
+      `}</style>
+
       {/* HEADER */}
       <header
+        className="site-header"
         style={{
           maxWidth: "1180px",
           margin: "0 auto",
@@ -17,9 +172,16 @@ export default function Home() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          gap: "18px",
         }}
       >
-        <div>
+        <a
+          href="/"
+          style={{
+            textDecoration: "none",
+            color: "#101828",
+          }}
+        >
           <div
             style={{
               fontSize: "24px",
@@ -40,9 +202,10 @@ export default function Home() {
           >
             Dokun. Bağlan.
           </div>
-        </div>
+        </a>
 
         <a
+          className="header-button"
           href="#urunler"
           style={{
             textDecoration: "none",
@@ -52,13 +215,14 @@ export default function Home() {
             borderRadius: "12px",
             fontSize: "14px",
             fontWeight: "700",
+            whiteSpace: "nowrap",
           }}
         >
           Ürünleri İncele
         </a>
       </header>
 
-            {/* HERO */}
+      {/* HERO */}
       <section
         className="hero-section"
         style={{
@@ -107,8 +271,8 @@ export default function Home() {
           }}
         >
           Google yorumlarından Instagram ve WhatsApp&apos;a, ödeme
-          bilgilerinden ilanlarınıza kadar dijital bağlantılarınızı NFC ve QR
-          ile müşterilerinize ulaştırın.
+          bilgilerinden ilanlarınıza kadar dijital bağlantılarınızı NFC
+          ve QR ile müşterilerinize ulaştırın.
         </p>
 
         <div
@@ -169,489 +333,463 @@ export default function Home() {
           <span>✓ Stand veya yapışkanlı kullanım</span>
         </div>
       </section>
-              {/* ÜRÜNLER */}
-<section
-  id="urunler"
-  className="products-section"
-  style={{
-    background: "#ffffff",
-    padding: "100px 24px",
-  }}
->
-  <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-    }}
-  >
-    <div
-      style={{
-        maxWidth: "650px",
-        marginBottom: "50px",
-      }}
-    >
-      <div
+
+      {/* ÜRÜNLER */}
+      <section
+        id="urunler"
+        className="products-section"
         style={{
-          color: "#087cf0",
-          fontSize: "13px",
-          fontWeight: "800",
-          marginBottom: "12px",
+          background: "#ffffff",
+          padding: "100px 24px",
         }}
       >
-        DOKUNUVER ÜRÜNLERİ
-      </div>
+        <div
+          style={{
+            maxWidth: "1180px",
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "650px",
+              marginBottom: "50px",
+            }}
+          >
+            <div
+              style={{
+                color: "#087cf0",
+                fontSize: "13px",
+                fontWeight: "800",
+                marginBottom: "12px",
+              }}
+            >
+              DOKUNUVER ÜRÜNLERİ
+            </div>
 
-      <h2
+            <h2
+              style={{
+                margin: 0,
+                fontSize: "clamp(32px, 5vw, 48px)",
+                lineHeight: "1.1",
+                letterSpacing: "-1.5px",
+              }}
+            >
+              Bir dokunuş,
+              <br />
+              birçok çözüm.
+            </h2>
+
+            <p
+              style={{
+                marginTop: "18px",
+                color: "#667085",
+                fontSize: "17px",
+                lineHeight: "1.7",
+              }}
+            >
+              İşletmenizin ihtiyaç duyduğu dijital bağlantıları NFC
+              teknolojisiyle müşterilerinize hızlı ve kolay şekilde
+              ulaştırın.
+            </p>
+          </div>
+
+          <div
+            className="products-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+              gap: "18px",
+            }}
+          >
+            {products.map((product) => (
+              <a
+                key={product.href}
+                href={product.href}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                }}
+              >
+                <ProductCard
+                  image={product.image}
+                  title={product.title}
+                  description={product.description}
+                  price={product.price}
+                  detail={product.detail}
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NASIL ÇALIŞIR */}
+      <section
+        id="nasil-calisir"
+        className="how-section"
         style={{
-          margin: "0",
-          fontSize: "clamp(32px, 5vw, 48px)",
-          letterSpacing: "-1.5px",
+          background: "#f8fafc",
+          padding: "100px 24px",
         }}
       >
-        Bir dokunuş,
-        <br />
-        birçok çözüm.
-      </h2>
+        <div
+          style={{
+            maxWidth: "1180px",
+            margin: "0 auto",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              color: "#087cf0",
+              fontSize: "13px",
+              fontWeight: "800",
+              marginBottom: "12px",
+            }}
+          >
+            NASIL ÇALIŞIR?
+          </div>
 
-      <p
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "clamp(32px, 5vw, 48px)",
+              lineHeight: "1.1",
+              letterSpacing: "-1.5px",
+            }}
+          >
+            Üç adımda kullanıma hazır.
+          </h2>
+
+          <p
+            style={{
+              maxWidth: "600px",
+              margin: "18px auto 50px",
+              color: "#667085",
+              fontSize: "17px",
+              lineHeight: "1.7",
+            }}
+          >
+            Ürününüzü seçin, bilgilerinizi iletin. DOKUNUVER kartınızı
+            işletmenize özel hazırlayalım.
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(240px, 1fr))",
+              gap: "20px",
+              textAlign: "left",
+            }}
+          >
+            <StepCard
+              number="01"
+              title="Ürününü Seç"
+              description="Google, Instagram, WhatsApp, IBAN, İlan veya Duo ürünlerinden ihtiyacınıza uygun olanı seçin."
+            />
+
+            <StepCard
+              number="02"
+              title="Bilgilerini İlet"
+              description="Ürününüzde kullanılacak bağlantı veya bilgileri WhatsApp üzerinden bize iletin."
+            />
+
+            <StepCard
+              number="03"
+              title="Dokun ve Bağlan"
+              description="Size özel hazırlanan DOKUNUVER ürününü NFC veya QR ile kullanmaya başlayın."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* NEDEN DOKUNUVER */}
+      <section
+        className="benefits-section"
         style={{
-          marginTop: "18px",
-          color: "#667085",
-          fontSize: "17px",
-          lineHeight: "1.7",
+          background: "#ffffff",
+          padding: "90px 24px",
         }}
       >
-        İşletmenizin ihtiyaç duyduğu dijital bağlantıları NFC teknolojisiyle
-        müşterilerinize hızlı ve kolay şekilde ulaştırın.
-      </p>
-    </div>
+        <div
+          style={{
+            maxWidth: "1180px",
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "680px",
+              marginBottom: "48px",
+            }}
+          >
+            <div
+              style={{
+                color: "#087cf0",
+                fontSize: "13px",
+                fontWeight: "900",
+                letterSpacing: "1px",
+                marginBottom: "14px",
+              }}
+            >
+              NEDEN DOKUNUVER?
+            </div>
 
- <div
-  className="products-grid"
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-    gap: "18px",
-  }}
->
-      <a
-  href="/urunler/google-yorum"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/google-yorum-nfc.png"
-    title="Google Yorum Kartı"
-    description="Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca yönlendirin."
-    price="249 TL"
-  />
-</a>
+            <h2
+              style={{
+                margin: "0 0 16px",
+                fontSize: "clamp(32px, 5vw, 48px)",
+                lineHeight: "1.1",
+                letterSpacing: "-1.5px",
+              }}
+            >
+              Dijital bağlantıları
+              <br />
+              daha kolay hale getirin.
+            </h2>
 
-<a
-  href="/urunler/instagram"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/instagram-nfc.png"
-    title="Instagram Kartı"
-    description="Instagram profilinizi müşterilerinizle NFC veya QR üzerinden kolayca paylaşın."
-    price="249 TL"
-  />
-</a>
+            <p
+              style={{
+                margin: 0,
+                color: "#667085",
+                fontSize: "17px",
+                lineHeight: "1.7",
+              }}
+            >
+              Google, Instagram, WhatsApp, IBAN ve ilan
+              bağlantılarınızı fiziksel DOKUNUVER ürünleriyle
+              müşterilerinizin erişimine sunun.
+            </p>
+          </div>
 
-<a
-  href="/urunler/whatsapp"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/whatsapp-nfc.png"
-    title="WhatsApp Kartı"
-    description="Müşterilerinizin sizinle WhatsApp üzerinden hızlıca iletişime geçmesini sağlayın."
-    price="249 TL"
-  />
-</a>
+          <div
+            className="benefits-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: "18px",
+            }}
+          >
+            <BenefitCard
+              number="01"
+              title="NFC + QR"
+              description="Müşterileriniz bağlantınıza ister telefonunu yaklaştırarak ister QR kodu okutarak ulaşabilir."
+            />
 
-<a
-  href="/urunler/iban"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/iban-nfc.png"
-    title="IBAN Kartı"
-    description="Ödeme bilgilerinizi yazma hatası olmadan NFC veya QR ile kolayca paylaşın."
-    price="249 TL"
-  />
-</a>
+            <BenefitCard
+              number="02"
+              title="Uygulama Gerektirmez"
+              description="Desteklenen telefonlarda ekstra bir uygulama indirmeden NFC bağlantısına ulaşılabilir."
+            />
 
-<a
-  href="/urunler/ilan"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/ilan-nfc.png"
-    title="İlan Kartı"
-    description="İlan bağlantınızı NFC veya QR ile müşterilerinize doğrudan ulaştırın."
-    price="249 TL"
-  />
-</a>
+            <BenefitCard
+              number="03"
+              title="İşletmenize Özel"
+              description="DOKUNUVER ürününüz işletmenizin kullanmak istediği dijital bağlantı veya bilgilere özel hazırlanır."
+            />
 
-<a
-  href="/urunler/duo"
-  style={{ textDecoration: "none", color: "inherit" }}
->
-  <ProductCard
-    image="/images/duo-nfc.png"
-    title="Duo NFC Kartı"
-    description="İki farklı dijital bağlantıyı tek DOKUNUVER ürününde bir araya getirin."
-    price="349 TL"
-  />
-</a>
-      
-    </div>
-  </div>
-</section>
+            <BenefitCard
+              number="04"
+              title="Kullanıma Hazır"
+              description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; ürününüzü doğrudan kullanmaya başlayabilirsiniz."
+            />
+          </div>
+        </div>
+      </section>
 
-
-
-
-          {/* NASIL ÇALIŞIR */}
-<section
-  id="nasil-calisir"
-  className="how-section"
-  style={{
-    background: "#f8fafc",
-    padding: "100px 24px",
-  }}
->
-  <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-      textAlign: "center",
-    }}
-  >
-    <div
-      style={{
-        color: "#087cf0",
-        fontSize: "13px",
-        fontWeight: "800",
-        marginBottom: "12px",
-      }}
-    >
-      NASIL ÇALIŞIR?
-    </div>
-
-    <h2
-      style={{
-        margin: "0",
-        fontSize: "clamp(32px, 5vw, 48px)",
-        letterSpacing: "-1.5px",
-      }}
-    >
-      Üç adımda kullanıma hazır.
-    </h2>
-
-    <p
-      style={{
-        maxWidth: "600px",
-        margin: "18px auto 50px",
-        color: "#667085",
-        fontSize: "17px",
-        lineHeight: "1.7",
-      }}
-    >
-      Ürününüzü seçin, bilgilerinizi iletin.
-DOKUNUVER kartınızı işletmenize özel hazırlayalım.
-    </p>
-
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-        gap: "20px",
-        textAlign: "left",
-      }}
-    >
-      <StepCard
-  number="01"
-  title="Ürününü Seç"
-  description="Google, Instagram, WhatsApp, IBAN, İlan veya Duo ürünlerinden ihtiyacınıza uygun olanı seçin."
-/>
-
-<StepCard
-  number="02"
-  title="Bilgilerini İlet"
-  description="Kartınızda kullanılacak bağlantı veya bilgileri sipariş sırasında bize iletin."
-/>
-
-<StepCard
-  number="03"
-  title="Dokun ve Bağlan"
-  description="Size özel hazırlanan DOKUNUVER ürününü NFC veya QR ile kullanmaya başlayın."
-/>
-    </div>
-  </div>
-</section>
-{/* NEDEN DOKUNUVER */}
-<section
-  className="benefits-section"
-  style={{
-    background: "#ffffff",
-    padding: "90px 24px",
-  }}
->
-  <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-    }}
-  >
-    <div
-      style={{
-        maxWidth: "650px",
-        marginBottom: "48px",
-      }}
-    >
-      <div
+      {/* SİPARİŞ */}
+      <section
+        className="contact-section"
         style={{
-          color: "#087cf0",
-          fontSize: "13px",
-          fontWeight: "900",
-          letterSpacing: "1px",
-          marginBottom: "14px",
+          background: "#ffffff",
+          padding: "100px 24px",
         }}
       >
-        NEDEN DOKUNUVER?
-      </div>
+        <div
+          className="contact-box"
+          style={{
+            maxWidth: "1180px",
+            margin: "0 auto",
+            background: "#101828",
+            borderRadius: "28px",
+            padding: "70px 32px",
+            textAlign: "center",
+            color: "#ffffff",
+          }}
+        >
+          <div
+            style={{
+              color: "#53b1fd",
+              fontSize: "13px",
+              fontWeight: "800",
+              marginBottom: "14px",
+            }}
+          >
+            DOKUNUVER
+          </div>
 
-      <h2
+          <h2
+            style={{
+              maxWidth: "700px",
+              margin: "0 auto",
+              fontSize: "clamp(32px, 5vw, 50px)",
+              lineHeight: "1.1",
+              letterSpacing: "-1.5px",
+            }}
+          >
+            DOKUNUVER&apos;ınızı seçin,
+            <br />
+            siparişinizi oluşturalım.
+          </h2>
+
+          <p
+            style={{
+              maxWidth: "620px",
+              margin: "20px auto 32px",
+              color: "#98a2b3",
+              fontSize: "17px",
+              lineHeight: "1.7",
+            }}
+          >
+            Ürününüzü seçtikten sonra WhatsApp üzerinden bize ulaşın.
+            İşletmenize özel bilgileri birlikte hazırlayalım ve
+            DOKUNUVER ürününüzü kullanıma hazır hale getirelim.
+          </p>
+
+          <a
+            href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20NFC%20%C3%BCr%C3%BCnlerinizden%20sipari%C5%9F%20vermek%20istiyorum."
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: "inline-block",
+              textDecoration: "none",
+              background: "#25D366",
+              color: "#ffffff",
+              padding: "16px 26px",
+              borderRadius: "13px",
+              fontSize: "15px",
+              fontWeight: "800",
+            }}
+          >
+            WhatsApp&apos;tan Sipariş Ver
+          </a>
+
+          <div
+            style={{
+              marginTop: "18px",
+              color: "#98a2b3",
+              fontSize: "12px",
+            }}
+          >
+            Tekli kartlar 249 TL • Duo NFC 349 TL • Kargo alıcıya aittir.
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer
         style={{
-          margin: "0 0 16px",
-          fontSize: "clamp(32px, 5vw, 48px)",
-          lineHeight: "1.1",
-          letterSpacing: "-1.5px",
+          background: "#ffffff",
+          borderTop: "1px solid #eaecf0",
+          padding: "32px 24px",
         }}
       >
-        Dijital bağlantıları
-        <br />
-        daha kolay hale getirin.
-      </h2>
+        <div
+          className="site-footer-inner"
+          style={{
+            maxWidth: "1180px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "20px",
+            flexWrap: "wrap",
+          }}
+        >
+          <a
+            href="/"
+            style={{
+              textDecoration: "none",
+            }}
+          >
+            <div
+              style={{
+                fontSize: "18px",
+                fontWeight: "900",
+                color: "#101828",
+              }}
+            >
+              DOKUNUVER
+            </div>
 
-      <p
-        style={{
-          margin: 0,
-          color: "#667085",
-          fontSize: "17px",
-          lineHeight: "1.7",
-        }}
-      >
-        Google, Instagram, WhatsApp, IBAN ve ilan bağlantılarınızı
-fiziksel DOKUNUVER ürünleriyle müşterilerinizin erişimine sunun.
-      </p>
-    </div>
+            <div
+              style={{
+                marginTop: "4px",
+                fontSize: "12px",
+                fontWeight: "700",
+                color: "#087cf0",
+              }}
+            >
+              Dokun. Bağlan.
+            </div>
+          </a>
 
-   <div
-  className="benefits-grid"
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "18px",
-  }}
->
-      <BenefitCard
-  number="01"
-  title="NFC + QR"
-  description="Müşterileriniz bağlantınıza ister telefonunu yaklaştırarak ister QR kodu okutarak ulaşabilir."
-/>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "20px",
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href="/iletisim"
+              style={{
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#475467",
+                textDecoration: "none",
+              }}
+            >
+              İletişim
+            </a>
 
-<BenefitCard
-  number="02"
-  title="Uygulama Gerektirmez"
-  description="Ekstra bir uygulama indirmeden desteklenen telefonlarla bağlantınıza hızlıca ulaşılabilir."
-/>
+            <a
+              href="/gizlilik"
+              style={{
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#475467",
+                textDecoration: "none",
+              }}
+            >
+              Gizlilik
+            </a>
+          </div>
 
-<BenefitCard
-  number="03"
-  title="İşletmenize Özel"
-  description="DOKUNUVER ürününüz işletmenizin kullanmak istediği dijital bağlantıya özel hazırlanır."
-/>
-
-<BenefitCard
-  number="04"
-  title="Kullanıma Hazır"
-  description="Ürününüz bağlantınız tanımlanmış ve kullanıma hazır şekilde size ulaştırılır."
-/>
-    </div>
-  </div>
-</section>
-<section
-  className="contact-section"
-  style={{
-    background: "#ffffff",
-    padding: "100px 24px",
-  }}
->
-  <div
-  className="contact-box"
-  style={{
-    maxWidth: "1180px",
-    margin: "0 auto",
-    background: "#101828",
-      borderRadius: "28px",
-      padding: "70px 32px",
-      textAlign: "center",
-      color: "#ffffff",
-    }}
-  >
-    <div
-      style={{
-        color: "#53b1fd",
-        fontSize: "13px",
-        fontWeight: "800",
-        marginBottom: "14px",
-      }}
-    >
-      DOKUNUVER
-    </div>
-
-    <h2
-      style={{
-        maxWidth: "700px",
-        margin: "0 auto",
-        fontSize: "clamp(32px, 5vw, 50px)",
-        lineHeight: "1.1",
-        letterSpacing: "-1.5px",
-      }}
-    >
-      DOKUNUVER'ınızı seçin,
-siparişinizi oluşturalım.
-    </h2>
-
-    <p
-      style={{
-        maxWidth: "600px",
-        margin: "20px auto 32px",
-        color: "#98a2b3",
-        fontSize: "17px",
-        lineHeight: "1.7",
-      }}
-    >
-      Ürününüzü seçtikten sonra WhatsApp üzerinden bize ulaşın.
-İşletmenize özel bilgileri birlikte hazırlayalım ve
-DOKUNUVER ürününüzü kullanıma hazır hale getirelim.
-    </p>
-
-    <a
-      href="https://wa.me/905075738349?text=Merhaba%20DOKUNUVER%2C%20NFC%20%C3%BCr%C3%BCnlerinizden%20sipari%C5%9F%20vermek%20istiyorum."
-      target="_blank"
-      rel="noreferrer"
-      style={{
-        display: "inline-block",
-        textDecoration: "none",
-        background: "#25D366",
-        color: "#ffffff",
-        padding: "16px 26px",
-        borderRadius: "13px",
-        fontSize: "15px",
-        fontWeight: "800",
-      }}
-    >
-      WhatsApp'tan Sipariş Ver
-    </a>
-
-  </div>
-</section>
-        {/* FOOTER */}
-<footer
-  style={{
-    background: "#ffffff",
-    borderTop: "1px solid #eaecf0",
-    padding: "32px 24px",
-  }}
->
-  <div
-    style={{
-      maxWidth: "1180px",
-      margin: "0 auto",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: "20px",
-      flexWrap: "wrap",
-    }}
-  >
-    <div>
-      <div
-        style={{
-          fontSize: "18px",
-          fontWeight: "900",
-          color: "#101828",
-        }}
-      >
-        DOKUNUVER
-      </div>
-
-      <div
-        style={{
-          marginTop: "4px",
-          fontSize: "12px",
-          fontWeight: "700",
-          color: "#087cf0",
-        }}
-      >
-        Dokun. Bağlan.
-      </div>
-    </div>
-
-    <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "20px",
-    flexWrap: "wrap",
-  }}
->
-  <a
-    href="/iletisim"
-    style={{
-      fontSize: "14px",
-      fontWeight: "600",
-      color: "#475467",
-      textDecoration: "none",
-    }}
-  >
-    İletişim
-  </a>
-
-  <a
-    href="/gizlilik"
-    style={{
-      fontSize: "14px",
-      fontWeight: "600",
-      color: "#475467",
-      textDecoration: "none",
-    }}
-  >
-    Gizlilik
-  </a>
-</div>
-          
-    <div
-      style={{
-        fontSize: "13px",
-        color: "#667085",
-      }}
-    >
-      © 2026 DOKUNUVER. Tüm hakları saklıdır.
-    </div>
-  </div>
-</footer>
-
-
-
+          <div
+            style={{
+              fontSize: "13px",
+              color: "#667085",
+            }}
+          >
+            © 2026 DOKUNUVER. Tüm hakları saklıdır.
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
-function ProductCard({ image, title, description, price = "249 TL" }) {
+
+function ProductCard({
+  image,
+  title,
+  description,
+  price,
+  detail,
+}) {
   return (
     <div
       className="product-card"
@@ -666,6 +804,7 @@ function ProductCard({ image, title, description, price = "249 TL" }) {
       }}
     >
       <div
+        className="product-image-area"
         style={{
           background: "#f8fafc",
           padding: "32px",
@@ -678,6 +817,7 @@ function ProductCard({ image, title, description, price = "249 TL" }) {
         <img
           src={image}
           alt={`DOKUNUVER ${title}`}
+          loading="lazy"
           style={{
             width: "100%",
             height: "100%",
@@ -688,6 +828,7 @@ function ProductCard({ image, title, description, price = "249 TL" }) {
       </div>
 
       <div
+        className="product-content"
         style={{
           padding: "24px",
           display: "flex",
@@ -707,7 +848,7 @@ function ProductCard({ image, title, description, price = "249 TL" }) {
 
         <p
           style={{
-            margin: "0",
+            margin: 0,
             color: "#667085",
             lineHeight: "1.6",
             fontSize: "14px",
@@ -735,36 +876,53 @@ function ProductCard({ image, title, description, price = "249 TL" }) {
             fontWeight: "600",
           }}
         >
-          NFC + QR • Stand veya yapışkanlı kullanım
+          {detail}
         </div>
 
         <div
           style={{
-            marginTop: "22px",
-            paddingTop: "18px",
-            borderTop: "1px solid #eaecf0",
-            color: "#087cf0",
-            fontSize: "14px",
-            fontWeight: "800",
+            marginTop: "5px",
+            color: "#98a2b3",
+            fontSize: "12px",
           }}
         >
-          Ürünü İncele →
+          Stand veya yapışkanlı kullanım • Kargo alıcıya aittir.
+        </div>
+
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: "22px",
+          }}
+        >
+          <div
+            style={{
+              paddingTop: "18px",
+              borderTop: "1px solid #eaecf0",
+              color: "#087cf0",
+              fontSize: "14px",
+              fontWeight: "800",
+            }}
+          >
+            Ürünü İncele →
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 function StepCard({ number, title, description }) {
   return (
     <div
-  className="step-card"
-  style={{
-    background: "#ffffff",
-    border: "1px solid #eaecf0",
-    borderRadius: "20px",
-    padding: "32px",
-  }}
->
+      className="step-card"
+      style={{
+        background: "#ffffff",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+        padding: "32px",
+      }}
+    >
       <div
         style={{
           color: "#087cf0",
@@ -787,7 +945,7 @@ function StepCard({ number, title, description }) {
 
       <p
         style={{
-          margin: "0",
+          margin: 0,
           color: "#667085",
           fontSize: "14px",
           lineHeight: "1.7",
@@ -798,12 +956,13 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+
 function BenefitCard({ number, title, description }) {
   return (
     <div
-  className="benefit-card"
-  style={{
-    padding: "28px",
+      className="benefit-card"
+      style={{
+        padding: "28px",
         background: "#f8fafc",
         border: "1px solid #eaecf0",
         borderRadius: "20px",
