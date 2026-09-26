@@ -603,6 +603,55 @@ return (
     flexWrap: "wrap",
   }}
 >
+  <div
+    style={{
+      padding: "7px 11px",
+      borderRadius: "999px",
+      background: "#fff7ed",
+      color: "#c2410c",
+      border: "1px solid #fed7aa",
+      fontSize: "12px",
+      fontWeight: "800",
+    }}
+  >
+    Üretim Partisi
+  </div>
+
+  <button
+    type="button"
+    onClick={() => {
+      setSelectedBatch(batch.batchCode);
+      setFilter("all");
+      setSearch("");
+
+      setTimeout(() => {
+        document
+          .getElementById("smart-link-list")
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+      }, 50);
+    }}
+    style={{
+      border: "1px solid #d0d5dd",
+      padding: "10px 16px",
+      background: "#ffffff",
+      color: "#344054",
+      borderRadius: "10px",
+      fontSize: "13px",
+      fontWeight: "800",
+      cursor: "pointer",
+    }}
+  >
+    Kartları Gör
+  </button>
+
+  <BulkQRCodeButton
+    links={batch.links}
+    batchCode={batch.batchCode}
+  />
+</div>
   <button
   type="button"
   onClick={() => {
