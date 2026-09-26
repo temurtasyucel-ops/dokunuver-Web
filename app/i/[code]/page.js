@@ -15,41 +15,35 @@ export default function IbanCardPage() {
   useEffect(() => {
     if (!code) return;
 
-    async function getCard() {
-      try {
-        const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-        const response = await fetch(
-          `${url}/rest/v1/iban_cards?code=eq.${encodeURIComponent(
-            code
-          )}&active=eq.true&select=*`,
-          {
-            headers: {
-              apikey: key,
-              Authorization: `Bearer ${key}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Supabase request failed");
-        }
-
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
-          setError(true);
-        } else {
-          setCard(data[0]);
-        }
-      } catch (err) {
-        console.error(err);
-        setError(true);
-      } finally {
-        setLoading(false);
+async function getCard() {
+  try {
+    const response = await fetch(
+      `/api/public-iban/${encodeURIComponent(code)}`,
+      {
+        cache: "no-store",
       }
+    );
+
+    if (!response.ok) {
+      setError(true);
+      return;
     }
+
+    const data = await response.json();
+
+    if (!data) {
+      setError(true);
+      return;
+    }
+
+    setCard(data);
+  } catch (err) {
+    console.error(err);
+    setError(true);
+  } finally {
+    setLoading(false);
+  }
+}
 
     getCard();
   }, [code]);
