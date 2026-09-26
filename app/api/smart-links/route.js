@@ -1,80 +1,62 @@
 export const dynamic = "force-dynamic";
 
 async function verifyAdmin(request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  const authHeader = request.headers.get("authorization");
+  const publishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  const authHeader =
+    request.headers.get("authorization");
+
+  if (
+    !authHeader ||
+    !authHeader.startsWith("Bearer ")
+  ) {
     return false;
   }
 
-  const token = authHeader.replace("Bearer ", "");
+  const token =
+    authHeader.replace("Bearer ", "");
 
-  const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: {
-      apikey: publishableKey,
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
+  const response = await fetch(
+    `${supabaseUrl}/auth/v1/user`,
+    {
+      headers: {
+        apikey: publishableKey,
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    }
+  );
 
   return response.ok;
 }
 
+
 export async function GET(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const isAdmin =
+      await verifyAdmin(request);
 
     if (!isAdmin) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
       );
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const secretKey = process.env.SUPABASE_SECRET_KEY;
-const checkResponse = await fetch(
-  `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
-    code
-  )}&select=code,status`,
-  {
-    headers: {
-      apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
-    },
-    cache: "no-store",
-  }
-);
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-if (!checkResponse.ok) {
-  return Response.json(
-    { error: "Smart Link durumu kontrol edilemedi." },
-    { status: 500 }
-  );
-}
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
 
-const existingLinks = await checkResponse.json();
-const existingLink = existingLinks?.[0];
-
-if (!existingLink) {
-  return Response.json(
-    { error: "Smart Link bulunamadı." },
-    { status: 404 }
-  );
-}
-
-if (existingLink.status === "cancelled") {
-  return Response.json(
-    {
-      error:
-        "İptal edilmiş Smart Link yeniden müşteriye atanamaz.",
-    },
-    { status: 409 }
-  );
-}
     const response = await fetch(
       `${supabaseUrl}/rest/v1/smart_links?select=id,code,product_type,business_name,target_url,status,active,batch_code,created_at&order=created_at.desc`,
       {
@@ -87,61 +69,110 @@ if (existingLink.status === "cancelled") {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
-      console.error("Smart Links Supabase error:", errorText);
+      console.error(
+        "Smart Links Supabase error:",
+        errorText
+      );
 
       return Response.json(
-        { error: "Smart Link kayıtları alınamadı." },
-        { status: 500 }
+        {
+          error:
+            "Smart Link kayıtları alınamadı.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
     return Response.json(data);
   } catch (error) {
-    console.error("Smart Links GET error:", error);
+    console.error(
+      "Smart Links GET error:",
+      error
+    );
 
     return Response.json(
-      { error: "Sunucu hatası." },
-      { status: 500 }
+      {
+        error: "Sunucu hatası.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
+
 function generateCode(length = 6) {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
   let code = "";
 
-  for (let i = 0; i < length; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  for (
+    let i = 0;
+    i < length;
+    i++
+  ) {
+    code += chars.charAt(
+      Math.floor(
+        Math.random() * chars.length
+      )
+    );
   }
 
   return code;
 }
 
+
 export async function POST(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const isAdmin =
+      await verifyAdmin(request);
 
     if (!isAdmin) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
       );
     }
 
-    const body = await request.json();
+    const body =
+      await request.json();
 
-    const businessName = body.business_name?.trim();
-    const productType = body.product_type?.trim();
-    const targetUrl = body.target_url?.trim();
+    const businessName =
+      body.business_name?.trim();
 
-    if (!businessName || !productType || !targetUrl) {
+    const productType =
+      body.product_type?.trim();
+
+    const targetUrl =
+      body.target_url?.trim();
+
+    if (
+      !businessName ||
+      !productType ||
+      !targetUrl
+    ) {
       return Response.json(
-        { error: "Tüm alanları doldurun." },
-        { status: 400 }
+        {
+          error:
+            "Tüm alanları doldurun.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -153,36 +184,68 @@ export async function POST(request) {
       "diger",
     ];
 
-    if (!allowedProductTypes.includes(productType)) {
+    if (
+      !allowedProductTypes.includes(
+        productType
+      )
+    ) {
       return Response.json(
-        { error: "Geçersiz ürün tipi." },
-        { status: 400 }
+        {
+          error:
+            "Geçersiz ürün tipi.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
     let parsedUrl;
 
     try {
-      parsedUrl = new URL(targetUrl);
+      parsedUrl =
+        new URL(targetUrl);
     } catch {
       return Response.json(
-        { error: "Geçerli bir hedef bağlantı girin." },
-        { status: 400 }
+        {
+          error:
+            "Geçerli bir hedef bağlantı girin.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    if (
+      !["http:", "https:"].includes(
+        parsedUrl.protocol
+      )
+    ) {
       return Response.json(
-        { error: "Hedef bağlantı http veya https olmalıdır." },
-        { status: 400 }
+        {
+          error:
+            "Hedef bağlantı http veya https olmalıdır.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const secretKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-    for (let attempt = 0; attempt < 5; attempt++) {
-      const code = generateCode();
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
+
+    for (
+      let attempt = 0;
+      attempt < 5;
+      attempt++
+    ) {
+      const code =
+        generateCode();
 
       const response = await fetch(
         `${supabaseUrl}/rest/v1/smart_links`,
@@ -190,71 +253,115 @@ export async function POST(request) {
           method: "POST",
           headers: {
             apikey: secretKey,
-            Authorization: `Bearer ${secretKey}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
+            Authorization:
+              `Bearer ${secretKey}`,
+            "Content-Type":
+              "application/json",
+            Prefer:
+              "return=representation",
           },
           body: JSON.stringify({
-  business_name: businessName,
-  product_type: productType,
-  target_url: parsedUrl.toString(),
-  status: "assigned",
-  updated_at: new Date().toISOString(),
-}),
+            business_name:
+              businessName,
+            product_type:
+              productType,
+            target_url:
+              parsedUrl.toString(),
+            status: "assigned",
+            updated_at:
+              new Date().toISOString(),
+          }),
           cache: "no-store",
         }
       );
 
       if (response.ok) {
-        const data = await response.json();
+        const data =
+          await response.json();
 
-        return Response.json(data[0], { status: 201 });
+        return Response.json(
+          data[0],
+          {
+            status: 201,
+          }
+        );
       }
 
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
-      // 23505 = PostgreSQL unique violation.
-      // Çok düşük ihtimalle aynı kod üretilirse tekrar dener.
-      if (errorText.includes("23505")) {
+      if (
+        errorText.includes("23505")
+      ) {
         continue;
       }
 
-      console.error("Smart Link POST Supabase error:", errorText);
+      console.error(
+        "Smart Link POST Supabase error:",
+        errorText
+      );
 
       return Response.json(
-        { error: "Smart Link oluşturulamadı." },
-        { status: 500 }
+        {
+          error:
+            "Smart Link oluşturulamadı.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
     return Response.json(
-      { error: "Benzersiz Smart Link kodu oluşturulamadı." },
-      { status: 500 }
+      {
+        error:
+          "Benzersiz Smart Link kodu oluşturulamadı.",
+      },
+      {
+        status: 500,
+      }
     );
   } catch (error) {
-    console.error("Smart Link POST error:", error);
+    console.error(
+      "Smart Link POST error:",
+      error
+    );
 
     return Response.json(
-      { error: "Sunucu hatası." },
-      { status: 500 }
+      {
+        error: "Sunucu hatası.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
+
 export async function PATCH(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const isAdmin =
+      await verifyAdmin(request);
 
     if (!isAdmin) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
       );
     }
 
-    const body = await request.json();
+    const body =
+      await request.json();
 
     const code =
-      body.code?.trim().toUpperCase();
+      body.code
+        ?.trim()
+        .toUpperCase();
 
     const businessName =
       body.business_name?.trim();
@@ -272,8 +379,13 @@ export async function PATCH(request) {
       !targetUrl
     ) {
       return Response.json(
-        { error: "Tüm alanları doldurun." },
-        { status: 400 }
+        {
+          error:
+            "Tüm alanları doldurun.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -285,24 +397,36 @@ export async function PATCH(request) {
       "diger",
     ];
 
-    if (!allowedProductTypes.includes(productType)) {
+    if (
+      !allowedProductTypes.includes(
+        productType
+      )
+    ) {
       return Response.json(
-        { error: "Geçersiz ürün tipi." },
-        { status: 400 }
+        {
+          error:
+            "Geçersiz ürün tipi.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
     let parsedUrl;
 
     try {
-      parsedUrl = new URL(targetUrl);
+      parsedUrl =
+        new URL(targetUrl);
     } catch {
       return Response.json(
         {
           error:
             "Geçerli bir hedef bağlantı girin.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
@@ -316,7 +440,9 @@ export async function PATCH(request) {
           error:
             "Hedef bağlantı http veya https olmalıdır.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
@@ -326,19 +452,21 @@ export async function PATCH(request) {
     const secretKey =
       process.env.SUPABASE_SECRET_KEY;
 
-    // Kartın mevcut durumunu kontrol et.
-    const checkResponse = await fetch(
-      `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
-        code
-      )}&select=code,status`,
-      {
-        headers: {
-          apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-        },
-        cache: "no-store",
-      }
-    );
+    // Mevcut kart durumunu kontrol et
+    const checkResponse =
+      await fetch(
+        `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+          code
+        )}&select=code,status`,
+        {
+          headers: {
+            apikey: secretKey,
+            Authorization:
+              `Bearer ${secretKey}`,
+          },
+          cache: "no-store",
+        }
+      );
 
     if (!checkResponse.ok) {
       const errorText =
@@ -354,7 +482,9 @@ export async function PATCH(request) {
           error:
             "Smart Link durumu kontrol edilemedi.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
@@ -366,19 +496,29 @@ export async function PATCH(request) {
 
     if (!existingLink) {
       return Response.json(
-        { error: "Smart Link bulunamadı." },
-        { status: 404 }
+        {
+          error:
+            "Smart Link bulunamadı.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
-    // İptal edilmiş kart tekrar atanamaz.
-    if (existingLink.status === "cancelled") {
+    // İptal edilmiş kart yeniden atanamaz
+    if (
+      existingLink.status ===
+      "cancelled"
+    ) {
       return Response.json(
         {
           error:
             "İptal edilmiş Smart Link yeniden müşteriye atanamaz.",
         },
-        { status: 409 }
+        {
+          status: 409,
+        }
       );
     }
 
@@ -390,23 +530,31 @@ export async function PATCH(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
+          Authorization:
+            `Bearer ${secretKey}`,
+          "Content-Type":
+            "application/json",
+          Prefer:
+            "return=representation",
         },
         body: JSON.stringify({
-          business_name: businessName,
-          product_type: productType,
-          target_url: parsedUrl.toString(),
+          business_name:
+            businessName,
+          product_type:
+            productType,
+          target_url:
+            parsedUrl.toString(),
           status: "assigned",
-          updated_at: new Date().toISOString(),
+          updated_at:
+            new Date().toISOString(),
         }),
         cache: "no-store",
       }
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
       console.error(
         "Smart Link PATCH Supabase error:",
@@ -414,24 +562,37 @@ export async function PATCH(request) {
       );
 
       return Response.json(
-        { error: "Smart Link güncellenemedi." },
-        { status: 500 }
+        {
+          error:
+            "Smart Link güncellenemedi.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
       return Response.json(
         {
           error:
             "Smart Link artık düzenlenebilir durumda değil.",
         },
-        { status: 409 }
+        {
+          status: 409,
+        }
       );
     }
 
-    return Response.json(data[0]);
+    return Response.json(
+      data[0]
+    );
   } catch (error) {
     console.error(
       "Smart Link PATCH error:",
@@ -439,36 +600,56 @@ export async function PATCH(request) {
     );
 
     return Response.json(
-      { error: "Sunucu hatası." },
-      { status: 500 }
+      {
+        error: "Sunucu hatası.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
+
 export async function PUT(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const isAdmin =
+      await verifyAdmin(request);
 
     if (!isAdmin) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
       );
     }
 
-    const body = await request.json();
+    const body =
+      await request.json();
 
     const code =
-      body.code?.trim().toUpperCase();
+      body.code
+        ?.trim()
+        .toUpperCase();
 
-    const active = body.active;
+    const active =
+      body.active;
 
     if (
       !code ||
       typeof active !== "boolean"
     ) {
       return Response.json(
-        { error: "Geçersiz istek." },
-        { status: 400 }
+        {
+          error:
+            "Geçersiz istek.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -478,19 +659,21 @@ export async function PUT(request) {
     const secretKey =
       process.env.SUPABASE_SECRET_KEY;
 
-    // Önce kartın mevcut durumunu kontrol et.
-    const checkResponse = await fetch(
-      `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
-        code
-      )}&select=code,status,active`,
-      {
-        headers: {
-          apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-        },
-        cache: "no-store",
-      }
-    );
+    // Mevcut kart durumunu kontrol et
+    const checkResponse =
+      await fetch(
+        `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+          code
+        )}&select=code,status,active`,
+        {
+          headers: {
+            apikey: secretKey,
+            Authorization:
+              `Bearer ${secretKey}`,
+          },
+          cache: "no-store",
+        }
+      );
 
     if (!checkResponse.ok) {
       const errorText =
@@ -506,7 +689,9 @@ export async function PUT(request) {
           error:
             "Smart Link durumu kontrol edilemedi.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
@@ -518,20 +703,33 @@ export async function PUT(request) {
 
     if (!existingLink) {
       return Response.json(
-        { error: "Smart Link bulunamadı." },
-        { status: 404 }
+        {
+          error:
+            "Smart Link bulunamadı.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
-    if (existingLink.status !== "assigned") {
+    // Yalnızca assigned kartlar
+    // aktif/pasif yapılabilir
+    if (
+      existingLink.status !==
+      "assigned"
+    ) {
       return Response.json(
         {
           error:
-            existingLink.status === "stock"
+            existingLink.status ===
+            "stock"
               ? "Stok kartları müşteriye atanmadan aktifleştirilemez."
               : "İptal edilmiş Smart Linklerin durumu değiştirilemez.",
         },
-        { status: 409 }
+        {
+          status: 409,
+        }
       );
     }
 
@@ -543,13 +741,17 @@ export async function PUT(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
+          Authorization:
+            `Bearer ${secretKey}`,
+          "Content-Type":
+            "application/json",
+          Prefer:
+            "return=representation",
         },
         body: JSON.stringify({
           active,
-          updated_at: new Date().toISOString(),
+          updated_at:
+            new Date().toISOString(),
         }),
         cache: "no-store",
       }
@@ -569,23 +771,33 @@ export async function PUT(request) {
           error:
             "Smart Link durumu değiştirilemedi.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
       return Response.json(
         {
           error:
             "Smart Link artık aktif/pasif değiştirilebilir durumda değil.",
         },
-        { status: 409 }
+        {
+          status: 409,
+        }
       );
     }
 
-    return Response.json(data[0]);
+    return Response.json(
+      data[0]
+    );
   } catch (error) {
     console.error(
       "Smart Link PUT error:",
@@ -593,34 +805,58 @@ export async function PUT(request) {
     );
 
     return Response.json(
-      { error: "Sunucu hatası." },
-      { status: 500 }
+      {
+        error: "Sunucu hatası.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
+
 export async function DELETE(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const isAdmin =
+      await verifyAdmin(request);
 
     if (!isAdmin) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
       );
     }
 
-    const body = await request.json();
-    const code = body.code?.trim().toUpperCase();
+    const body =
+      await request.json();
+
+    const code =
+      body.code
+        ?.trim()
+        .toUpperCase();
 
     if (!code) {
       return Response.json(
-        { error: "Geçersiz istek." },
-        { status: 400 }
+        {
+          error:
+            "Geçersiz istek.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const secretKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
 
     const response = await fetch(
       `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
@@ -630,46 +866,77 @@ export async function DELETE(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
-          Authorization: `Bearer ${secretKey}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
+          Authorization:
+            `Bearer ${secretKey}`,
+          "Content-Type":
+            "application/json",
+          Prefer:
+            "return=representation",
         },
         body: JSON.stringify({
           status: "cancelled",
           active: false,
-          updated_at: new Date().toISOString(),
+          updated_at:
+            new Date().toISOString(),
         }),
         cache: "no-store",
       }
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
+      const errorText =
+        await response.text();
 
-      console.error("Smart Link cancel error:", errorText);
+      console.error(
+        "Smart Link cancel error:",
+        errorText
+      );
 
       return Response.json(
-        { error: "Stok kartı iptal edilemedi." },
-        { status: 500 }
+        {
+          error:
+            "Stok kartı iptal edilemedi.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    const data = await response.json();
+    const data =
+      await response.json();
 
-    if (!data || data.length === 0) {
+    if (
+      !data ||
+      data.length === 0
+    ) {
       return Response.json(
-        { error: "İptal edilebilir stok kartı bulunamadı." },
-        { status: 404 }
+        {
+          error:
+            "İptal edilebilir stok kartı bulunamadı.",
+        },
+        {
+          status: 404,
+        }
       );
     }
-
-    return Response.json(data[0]);
-  } catch (error) {
-    console.error("Smart Link DELETE error:", error);
 
     return Response.json(
-      { error: "Sunucu hatası." },
-      { status: 500 }
+      data[0]
+    );
+  } catch (error) {
+    console.error(
+      "Smart Link DELETE error:",
+      error
+    );
+
+    return Response.json(
+      {
+        error: "Sunucu hatası.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
