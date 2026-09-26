@@ -36,7 +36,45 @@ export async function GET(request) {
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const secretKey = process.env.SUPABASE_SECRET_KEY;
+const checkResponse = await fetch(
+  `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+    code
+  )}&select=code,status`,
+  {
+    headers: {
+      apikey: secretKey,
+      Authorization: `Bearer ${secretKey}`,
+    },
+    cache: "no-store",
+  }
+);
 
+if (!checkResponse.ok) {
+  return Response.json(
+    { error: "Smart Link durumu kontrol edilemedi." },
+    { status: 500 }
+  );
+}
+
+const existingLinks = await checkResponse.json();
+const existingLink = existingLinks?.[0];
+
+if (!existingLink) {
+  return Response.json(
+    { error: "Smart Link bulunamadı." },
+    { status: 404 }
+  );
+}
+
+if (existingLink.status === "cancelled") {
+  return Response.json(
+    {
+      error:
+        "İptal edilmiş Smart Link yeniden müşteriye atanamaz.",
+    },
+    { status: 409 }
+  );
+}
     const response = await fetch(
       `${supabaseUrl}/rest/v1/smart_links?select=id,code,product_type,business_name,target_url,status,active,batch_code,created_at&order=created_at.desc`,
       {
