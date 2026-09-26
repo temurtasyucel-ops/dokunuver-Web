@@ -555,8 +555,13 @@ export default function EditIbanCardPage() {
                       </span>
 
                       <strong style={styles.verificationIban}>
-                        {form.iban || "-"}
-                      </strong>
+  {form.iban
+    ? form.iban
+        .replace(/\s+/g, "")
+        .replace(/(.{4})/g, "$1 ")
+        .trim()
+    : "-"}
+</strong>
                     </div>
                   </div>
 
