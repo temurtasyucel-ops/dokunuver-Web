@@ -14,6 +14,7 @@ export default function AdminPanel() {
   const [creatingStock, setCreatingStock] = useState(false);
   const [creatingBulkStock, setCreatingBulkStock] = useState(false);
   const [downloadingStockQr, setDownloadingStockQr] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState(null);
   
 
   const cardsPerPage = 20;
@@ -381,6 +382,12 @@ alert(
   }
 
   const filteredCards = cards.filter((card) => {
+    if (
+  selectedBatch &&
+  card.batch_code !== selectedBatch
+) {
+  return false;
+}
   if (filter === "active" && !card.active) return false;
 
   if (
@@ -629,7 +636,26 @@ const productionBatches = Object.values(
   <div style={styles.stock}>
     Üretim Partisi
   </div>
+<button
+  type="button"
+  onClick={() => {
+    setSelectedBatch(batch.batchCode);
+    setFilter("all");
+    setCurrentPage(1);
 
+    setTimeout(() => {
+      document
+        .getElementById("iban-kartlari")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 50);
+  }}
+  style={styles.filterButton}
+>
+  Kartları Gör
+</button>
   <button
     type="button"
     onClick={() => downloadBatchQrZip(batch)}
@@ -653,9 +679,10 @@ const productionBatches = Object.values(
         <section style={styles.section}>
           <div style={styles.sectionHeader}>
             <div>
-              <h2 style={styles.sectionTitle}>
-                IBAN Kartları
-              </h2>
+              <section
+  id="iban-kartlari"
+  style={styles.section}
+>
 
               <p style={styles.sectionDescription}>
                 Oluşturulan müşteri kartlarını görüntüleyin.
@@ -674,9 +701,10 @@ const productionBatches = Object.values(
             <button
               type="button"
               onClick={() => {
-                setFilter("all");
-                setCurrentPage(1);
-              }}
+  setFilter("all");
+  setSelectedBatch(null);
+  setCurrentPage(1);
+}}
               style={{
                 ...styles.filterButton,
                 ...(filter === "all"
