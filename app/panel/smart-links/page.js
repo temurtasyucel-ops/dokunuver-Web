@@ -504,9 +504,11 @@ return (
                   dokunuver.com.tr/x/{link.code}
                 </div>
 
-                <div>
-                  <strong>Hedef:</strong> {link.target_url}
-                </div>
+                {link.status === "assigned" && link.target_url && (
+  <div>
+    <strong>Hedef:</strong> {link.target_url}
+  </div>
+)}
 
                 {link.status !== "cancelled" && (
   <div
