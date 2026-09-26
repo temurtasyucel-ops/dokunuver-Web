@@ -691,7 +691,44 @@ const productionBatches = Object.values(
       </p>
     </div>
   </div>
+{selectedBatch && (
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "12px",
+      flexWrap: "wrap",
+      marginBottom: "20px",
+      padding: "14px 16px",
+      background: "#eff8ff",
+      border: "1px solid #b2ddff",
+      borderRadius: "12px",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "14px",
+        fontWeight: "800",
+        color: "#175cd3",
+      }}
+    >
+      📦 Seçili Parti: {selectedBatch}
+    </div>
 
+    <button
+      type="button"
+      onClick={() => {
+        setSelectedBatch(null);
+        setFilter("all");
+        setCurrentPage(1);
+      }}
+      style={styles.filterButton}
+    >
+      Filtreyi Temizle
+    </button>
+  </div>
+)}
           <div
             style={{
               display: "flex",
@@ -709,9 +746,9 @@ const productionBatches = Object.values(
 }}
               style={{
                 ...styles.filterButton,
-                ...(filter === "all"
-                  ? styles.filterButtonActive
-                  : {}),
+                ...(filter === "all" && !selectedBatch
+  ? styles.filterButtonActive
+  : {}),
               }}
             >
               Tümü ({cards.length})
