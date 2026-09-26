@@ -12,32 +12,25 @@ const productNames = {
   diger: "Diğer",
 };
 
-export default function BulkQRCodeButton({ links }) {
+export default function BulkQRCodeButton({
+  links,
+  batchCode = "",
+}) {
   const [loadingType, setLoadingType] = useState("");
   const [error, setError] = useState("");
 
-  const stockLinks = links.filter(
-    (link) => link.status === "stock"
-  );
-
-  const stockGroups = Object.keys(productNames)
-    .map((type) => ({
-      type,
-      name: productNames[type],
-      links: stockLinks.filter(
-        (link) => link.product_type === type
-      ),
-    }))
-    .filter((group) => group.links.length > 0);
-
-  async function downloadBulkQR(group) {
+  async function createZip(
+    selectedLinks,
+    loadingKey,
+    fileName
+  ) {
     try {
-      setLoadingType(group.type);
+      setLoadingType(loadingKey);
       setError("");
 
       const zip = new JSZip();
 
-      for (const link of group.links) {
+      for (const link of selectedLinks) {
         const smartLink =
           `https://dokunuver.com.tr/x/${link.code}`;
 
@@ -64,8 +57,7 @@ export default function BulkQRCodeButton({ links }) {
 
       const a = document.createElement("a");
       a.href = downloadUrl;
-      a.download =
-        `DOKUNUVER-${group.type.toUpperCase()}-STOK-QR.zip`;
+      a.download = fileName;
 
       document.body.appendChild(a);
       a.click();
@@ -79,6 +71,73 @@ export default function BulkQRCodeButton({ links }) {
       setLoadingType("");
     }
   }
+
+  // ÜRETİM PARTİSİ MODU
+  if (batchCode) {
+    if (!links || links.length === 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={() =>
+            createZip(
+              links,
+              batchCode,
+              `DOKUNUVER-${batchCode}-${links.length}-ADET-QR.zip`
+            )
+          }
+          disabled={Boolean(loadingType)}
+          style={{
+            border: "1px solid #d0d5dd",
+            padding: "10px 16px",
+            background: "#ffffff",
+            color: "#344054",
+            borderRadius: "10px",
+            fontSize: "13px",
+            fontWeight: "800",
+            cursor: loadingType
+              ? "not-allowed"
+              : "pointer",
+            opacity: loadingType ? 0.6 : 1,
+          }}
+        >
+          {loadingType === batchCode
+            ? "QR'lar Hazırlanıyor..."
+            : "↓ QR'ları İndir"}
+        </button>
+
+        {error && (
+          <div
+            style={{
+              marginTop: "8px",
+              color: "#b42318",
+              fontSize: "12px",
+            }}
+          >
+            {error}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // MEVCUT STOK QR MODU
+  const stockLinks = links.filter(
+    (link) => link.status === "stock"
+  );
+
+  const stockGroups = Object.keys(productNames)
+    .map((type) => ({
+      type,
+      name: productNames[type],
+      links: stockLinks.filter(
+        (link) => link.product_type === type
+      ),
+    }))
+    .filter((group) => group.links.length > 0);
 
   if (stockGroups.length === 0) {
     return null;
@@ -97,7 +156,13 @@ export default function BulkQRCodeButton({ links }) {
           <button
             key={group.type}
             type="button"
-            onClick={() => downloadBulkQR(group)}
+            onClick={() =>
+              createZip(
+                group.links,
+                group.type,
+                `DOKUNUVER-${group.type.toUpperCase()}-STOK-QR.zip`
+              )
+            }
             disabled={Boolean(loadingType)}
             style={{
               border: "1px solid #d0d5dd",
