@@ -703,8 +703,9 @@ const productionBatches = Object.values(
             >
               Pasif (
               {
-                cards.filter((card) => !card.active)
-                  .length
+                cards.filter(
+  (card) => !card.active && card.status !== "stock"
+).length
               }
               )
             </button>
