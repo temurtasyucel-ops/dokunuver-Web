@@ -151,14 +151,14 @@ export async function POST(request) {
               Prefer: "return=representation",
             },
             body: JSON.stringify({
-              code,
-              product_type: productType,
-              business_name: null,
-              target_url: null,
-              status: "stock",
-              active: true,
-              batch_code: batchCode,
-            }),
+  code,
+  product_type: productType,
+  business_name: null,
+  target_url: null,
+  status: "stock",
+  active: false,
+  batch_code: batchCode,
+}),
             cache: "no-store",
           }
         );
