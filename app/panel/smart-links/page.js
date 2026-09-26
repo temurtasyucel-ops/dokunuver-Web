@@ -25,6 +25,7 @@ export default function SmartLinksPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [showAllBatches, setShowAllBatches] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 const linksPerPage = 20;
 
@@ -275,6 +276,9 @@ const paginatedLinks = filteredLinks.slice(
 ).sort((a, b) =>
   b.batchCode.localeCompare(a.batchCode)
 );
+  const visibleProductionBatches = showAllBatches
+  ? productionBatches
+  : productionBatches.slice(0, 5);
 return (
     <main
       style={{
@@ -560,7 +564,7 @@ return (
         gap: "12px",
       }}
     >
-      {productionBatches.map((batch) => (
+      {visibleProductionBatches.map((batch) => (
         <div
           key={batch.batchCode}
           style={{
@@ -680,7 +684,30 @@ return (
           </div>
         </div>
       ))}
-
+{productionBatches.length > 5 && (
+  <button
+    type="button"
+    onClick={() =>
+      setShowAllBatches((current) => !current)
+    }
+    style={{
+      width: "100%",
+      marginTop: "4px",
+      border: "1px solid #d0d5dd",
+      padding: "12px 16px",
+      background: "#f8fafc",
+      color: "#344054",
+      borderRadius: "10px",
+      fontSize: "13px",
+      fontWeight: "800",
+      cursor: "pointer",
+    }}
+  >
+    {showAllBatches
+      ? "Son 5 Üretim Partisini Göster"
+      : `Tüm Üretim Partilerini Gör (${productionBatches.length})`}
+  </button>
+)}
       <div id="smart-link-list" />
 
       {selectedBatch && (
