@@ -86,6 +86,52 @@ export async function POST(request) {
     const secretKey =
       process.env.SUPABASE_SECRET_KEY;
 
+    // Bu toplu üretim için tek bir kalıcı parti kodu oluştur.
+    const batchResponse = await fetch(
+      `${supabaseUrl}/rest/v1/rpc/next_smart_link_batch_code`,
+      {
+        method: "POST",
+        headers: {
+          apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+        cache: "no-store",
+      }
+    );
+
+    if (!batchResponse.ok) {
+      const errorText = await batchResponse.text();
+
+      console.error(
+        "Smart Link batch code error:",
+        errorText
+      );
+
+      return Response.json(
+        { error: "Üretim parti kodu oluşturulamadı." },
+        { status: 500 }
+      );
+    }
+
+    const batchCode = await batchResponse.json();
+
+    if (
+      typeof batchCode !== "string" ||
+      !batchCode.startsWith("SMART-")
+    ) {
+      console.error(
+        "Geçersiz Smart Link parti kodu:",
+        batchCode
+      );
+
+      return Response.json(
+        { error: "Geçerli üretim parti kodu alınamadı." },
+        { status: 500 }
+      );
+    }
+
     const createdLinks = [];
 
     for (let i = 0; i < quantity; i++) {
@@ -111,6 +157,7 @@ export async function POST(request) {
               target_url: null,
               status: "stock",
               active: true,
+              batch_code: batchCode,
             }),
             cache: "no-store",
           }
@@ -138,6 +185,8 @@ export async function POST(request) {
         return Response.json(
           {
             error: "Stok Smart Linkleri oluşturulamadı.",
+            batch_code: batchCode,
+            created_count: createdLinks.length,
           },
           { status: 500 }
         );
@@ -148,6 +197,8 @@ export async function POST(request) {
           {
             error:
               "Benzersiz Smart Link kodu oluşturulamadı.",
+            batch_code: batchCode,
+            created_count: createdLinks.length,
           },
           { status: 500 }
         );
@@ -158,6 +209,7 @@ export async function POST(request) {
       {
         success: true,
         count: createdLinks.length,
+        batch_code: batchCode,
         links: createdLinks,
       },
       { status: 201 }
