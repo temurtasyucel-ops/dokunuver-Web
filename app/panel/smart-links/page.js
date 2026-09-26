@@ -213,10 +213,11 @@ const filteredLinks = links.filter((link) => {
   const searchText = search.toLowerCase().trim();
 
   const matchesSearch =
-    !searchText ||
-    (link.business_name || "").toLowerCase().includes(searchText) ||
-    (link.code || "").toLowerCase().includes(searchText) ||
-    (link.product_type || "").toLowerCase().includes(searchText);
+  !searchText ||
+  (link.business_name || "").toLowerCase().includes(searchText) ||
+  (link.code || "").toLowerCase().includes(searchText) ||
+  (link.product_type || "").toLowerCase().includes(searchText) ||
+  (link.batch_code || "").toLowerCase().includes(searchText);
 
  const matchesFilter =
   filter === "all" ||
@@ -724,7 +725,7 @@ return (
     type="text"
     value={search}
     onChange={(e) => setSearch(e.target.value)}
-    placeholder="İşletme adı veya kod ara..."
+    placeholder="İşletme, kod, ürün veya parti ara..."
     style={{
       flex: "1 1 280px",
       padding: "12px 14px",
