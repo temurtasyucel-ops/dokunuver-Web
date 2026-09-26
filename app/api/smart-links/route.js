@@ -38,7 +38,7 @@ export async function GET(request) {
     const secretKey = process.env.SUPABASE_SECRET_KEY;
 
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/smart_links?select=id,code,product_type,business_name,target_url,status,active,created_at&order=created_at.desc`,
+      `${supabaseUrl}/rest/v1/smart_links?select=id,code,product_type,business_name,target_url,status,active,batch_code,created_at&order=created_at.desc`,
       {
         headers: {
           apikey: secretKey,
