@@ -617,35 +617,6 @@ return (
     Üretim Partisi
   </div>
 
-  <button
-    type="button"
-    onClick={() => {
-      setSelectedBatch(batch.batchCode);
-      setFilter("all");
-      setSearch("");
-
-      setTimeout(() => {
-        document
-          .getElementById("smart-link-list")
-          ?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-      }, 50);
-    }}
-    style={{
-      border: "1px solid #d0d5dd",
-      padding: "10px 16px",
-      background: "#ffffff",
-      color: "#344054",
-      borderRadius: "10px",
-      fontSize: "13px",
-      fontWeight: "800",
-      cursor: "pointer",
-    }}
-  >
-    Kartları Gör
-  </button>
 
   <BulkQRCodeButton
     links={batch.links}
