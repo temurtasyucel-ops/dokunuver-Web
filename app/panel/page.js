@@ -404,17 +404,22 @@ alert(
     if (!searchText) return true;
 
     return (
-      card.business_name
-        ?.toLocaleLowerCase("tr-TR")
-        .includes(searchText) ||
-      card.code?.toLocaleLowerCase("tr-TR").includes(searchText) ||
-      card.account_holder
-        ?.toLocaleLowerCase("tr-TR")
-        .includes(searchText) ||
-      card.bank_name
-        ?.toLocaleLowerCase("tr-TR")
-        .includes(searchText)
-    );
+  card.business_name
+    ?.toLocaleLowerCase("tr-TR")
+    .includes(searchText) ||
+  card.code
+    ?.toLocaleLowerCase("tr-TR")
+    .includes(searchText) ||
+  card.account_holder
+    ?.toLocaleLowerCase("tr-TR")
+    .includes(searchText) ||
+  card.bank_name
+    ?.toLocaleLowerCase("tr-TR")
+    .includes(searchText) ||
+  card.batch_code
+    ?.toLocaleLowerCase("tr-TR")
+    .includes(searchText)
+);
   });
 
   const totalPages = Math.ceil(
@@ -862,7 +867,7 @@ const productionBatches = Object.values(
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              placeholder="İşletme, kart kodu, hesap sahibi veya banka ara..."
+              placeholder="İşletme, kart kodu, parti, hesap sahibi veya banka ara..."
               style={styles.searchInput}
             />
           </div>
