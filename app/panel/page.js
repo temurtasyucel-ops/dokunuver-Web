@@ -574,6 +574,14 @@ const productionBatches = Object.values(
 ).length
             }
           />
+            <Stat
+  label="Stok Kartı"
+  value={
+    cards.filter(
+      (card) => card.status === "stock"
+    ).length
+  }
+/>
         </section>
             {productionBatches.length > 0 && (
   <section style={styles.section}>
