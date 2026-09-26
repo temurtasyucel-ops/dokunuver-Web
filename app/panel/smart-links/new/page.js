@@ -141,17 +141,16 @@ export default function NewSmartLinkPage() {
           Ürün Tipi
 
           <select
-            value={productType}
-            onChange={(e) => setProductType(e.target.value)}
-            style={inputStyle}
-          >
-            <option value="google">Google Yorum</option>
-            <option value="instagram">Instagram</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="ilan">İlan</option>
-            <option value="konum">Google Maps / Konum</option>
-            <option value="diger">Diğer</option>
-          </select>
+  value={productType}
+  onChange={(e) => setProductType(e.target.value)}
+  style={inputStyle}
+>
+  <option value="google">Google Yorum</option>
+  <option value="instagram">Instagram</option>
+  <option value="whatsapp">WhatsApp</option>
+  <option value="ilan">İlan</option>
+  <option value="diger">Diğer</option>
+</select>
         </label>
 
         <label style={labelStyle}>
