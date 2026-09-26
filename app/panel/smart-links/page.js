@@ -686,13 +686,26 @@ return (
                   </div>
 
                   <div
-                    style={{
-                      color: "#667085",
-                      fontSize: "14px",
-                    }}
-                  >
-                    Kod: {link.code}
-                  </div>
+  style={{
+    color: "#667085",
+    fontSize: "14px",
+  }}
+>
+  Kod: {link.code}
+</div>
+
+{link.batch_code && (
+  <div
+    style={{
+      marginTop: "5px",
+      color: "#667085",
+      fontSize: "12px",
+      fontWeight: "700",
+    }}
+  >
+    Parti: {link.batch_code}
+  </div>
+)}
                 </div>
 
                 <div
