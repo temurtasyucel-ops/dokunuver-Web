@@ -1213,7 +1213,7 @@ const styles = {
   stats: {
   display: "grid",
   gridTemplateColumns:
-    "repeat(2, minmax(0, 1fr))",
+  "repeat(auto-fit, minmax(150px, 1fr))",
   gap: "16px",
   marginTop: "20px",
 },
