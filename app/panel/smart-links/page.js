@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
 import BulkQRCodeButton from "./BulkQRCodeButton";
+import LogoutButton from "../LogoutButton";
+
 function formatSmartBatchDate(batchCode) {
   const match =
     /^SMART-(\d{2})(\d{2})(\d{2})-\d+$/.exec(
@@ -260,94 +262,148 @@ return (
         color: "#101828",
       }}
     >
-      <div style={{ marginBottom: "40px" }}>
-        <div
-          style={{
-            color: "#087cf0",
-            fontSize: "13px",
-            fontWeight: "900",
-            letterSpacing: "1px",
-            marginBottom: "12px",
-          }}
-        >
-          DOKUNUVER PANEL
-        </div>
-
-            <a
-  href="/panel"
-  style={{
-    display: "inline-block",
-    marginBottom: "24px",
-    color: "#087cf0",
-    textDecoration: "none",
-    fontSize: "14px",
-    fontWeight: "700",
-  }}
->
-  ← IBAN Kart Yönetimi
-</a>
-        <h1
-          style={{
-            margin: "0 0 12px",
-            fontSize: "clamp(32px, 5vw, 46px)",
-          }}
-        >
-          Smart Links
-        </h1>
-
-        <p
-          style={{
-            margin: 0,
-            color: "#667085",
-            fontSize: "16px",
-          }}
-        >
-          NFC ve QR ürünlerinin dinamik yönlendirme bağlantılarını yönetin.
-        </p>
-            <div
-  style={{
-    display: "flex",
-    gap: "10px",
-    flexWrap: "wrap",
-    marginTop: "22px",
-  }}
->
-  <a
-    href="/panel/smart-links/new"
+      <>
+  <header
     style={{
-      display: "inline-block",
-      padding: "12px 18px",
-      background: "#087cf0",
-      color: "#ffffff",
-      textDecoration: "none",
-      borderRadius: "10px",
-      fontSize: "14px",
-      fontWeight: "800",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "20px",
+      marginBottom: "38px",
     }}
   >
-    + Yeni Smart Link
-  </a>
+    <div>
+      <div
+        style={{
+          fontSize: "22px",
+          fontWeight: "900",
+          letterSpacing: "0.3px",
+          color: "#101828",
+        }}
+      >
+        DOKUNUVER
+      </div>
 
-  <a
-    href="/panel/smart-links/bulk"
+      <div
+        style={{
+          marginTop: "4px",
+          color: "#087cf0",
+          fontSize: "12px",
+          fontWeight: "800",
+        }}
+      >
+        Dokun. Bağlan.
+      </div>
+    </div>
+
+    <LogoutButton />
+  </header>
+
+  <section
     style={{
-      display: "inline-block",
-      padding: "12px 18px",
       background: "#101828",
       color: "#ffffff",
-      textDecoration: "none",
-      borderRadius: "10px",
-      fontSize: "14px",
-      fontWeight: "800",
+      borderRadius: "22px",
+      padding: "34px",
+      marginBottom: "20px",
     }}
   >
-    + Toplu Stok Oluştur
-  </a>
-</div>
-      <div style={{ marginTop: "12px" }}>
-  <BulkQRCodeButton links={links} />
-</div>
-      </div>
+    <div
+      style={{
+        color: "#53b1fd",
+        fontSize: "12px",
+        fontWeight: "900",
+        letterSpacing: "1px",
+        marginBottom: "10px",
+      }}
+    >
+      DOKUNUVER PANEL
+    </div>
+
+    <h1
+      style={{
+        margin: "0 0 12px",
+        fontSize: "clamp(28px, 4vw, 34px)",
+        color: "#ffffff",
+      }}
+    >
+      Smart Links Yönetimi
+    </h1>
+
+    <p
+      style={{
+        margin: 0,
+        color: "#d0d5dd",
+        fontSize: "15px",
+        lineHeight: "1.6",
+      }}
+    >
+      NFC ve QR ürünlerinin dinamik yönlendirme bağlantılarını
+      tek noktadan yönetin.
+    </p>
+
+    <div
+      style={{
+        display: "flex",
+        gap: "10px",
+        flexWrap: "wrap",
+        marginTop: "24px",
+      }}
+    >
+      <a
+        href="/panel/smart-links/new"
+        style={{
+          display: "inline-block",
+          padding: "12px 18px",
+          background: "#087cf0",
+          color: "#ffffff",
+          textDecoration: "none",
+          borderRadius: "10px",
+          fontSize: "14px",
+          fontWeight: "800",
+        }}
+      >
+        + Yeni Smart Link
+      </a>
+
+      <a
+        href="/panel/smart-links/bulk"
+        style={{
+          display: "inline-block",
+          padding: "12px 18px",
+          background: "#ffffff",
+          color: "#101828",
+          textDecoration: "none",
+          borderRadius: "10px",
+          fontSize: "14px",
+          fontWeight: "800",
+        }}
+      >
+        + Toplu Stok Oluştur
+      </a>
+
+      <a
+        href="/panel"
+        style={{
+          display: "inline-block",
+          padding: "12px 18px",
+          background: "#ffffff",
+          color: "#101828",
+          textDecoration: "none",
+          borderRadius: "10px",
+          fontSize: "14px",
+          fontWeight: "800",
+        }}
+      >
+        IBAN Kart Yönetimi
+      </a>
+    </div>
+
+    <div style={{ marginTop: "12px" }}>
+      <BulkQRCodeButton links={links} />
+    </div>
+  </section>
+</>
       <div
   style={{
     display: "flex",
