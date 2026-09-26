@@ -632,7 +632,7 @@ const visibleProductionBatches = showAllBatches
     </div>
 
     <div style={styles.cardList}>
-      {productionBatches.map((batch) => (
+      {visibleProductionBatches.map((batch) => (
         <div
           key={batch.batchCode}
           style={styles.customerCard}
