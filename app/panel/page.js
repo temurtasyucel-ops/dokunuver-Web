@@ -460,7 +460,46 @@ const productionBatches = Object.values(
 
           <LogoutButton />
         </header>
+<div
+  style={{
+    display: "flex",
+    gap: "8px",
+    marginBottom: "16px",
+    flexWrap: "wrap",
+  }}
+>
+  <a
+    href="/panel"
+    style={{
+      padding: "10px 16px",
+      border: "1px solid #087cf0",
+      borderRadius: "10px",
+      background: "#087cf0",
+      color: "#ffffff",
+      textDecoration: "none",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    IBAN Kartları
+  </a>
 
+  <a
+    href="/panel/smart-links"
+    style={{
+      padding: "10px 16px",
+      border: "1px solid #d0d5dd",
+      borderRadius: "10px",
+      background: "#ffffff",
+      color: "#344054",
+      textDecoration: "none",
+      fontSize: "14px",
+      fontWeight: "800",
+    }}
+  >
+    Smart Links
+  </a>
+</div>
         <section style={styles.hero}>
           <div>
             <p style={styles.eyebrow}>DOKUNUVER PANEL</p>
@@ -536,19 +575,7 @@ const productionBatches = Object.values(
     ? "QR ZIP Hazırlanıyor..."
     : "↓ Stok QR'larını İndir (.ZIP)"}
 </button>
-            <button
-              type="button"
-              onClick={() =>
-                (window.location.href =
-                  "/panel/smart-links")
-              }
-              style={{
-                ...styles.newButton,
-                background: "#101828",
-              }}
-            >
-              Smart Links Yönetimi →
-            </button>
+            
           </div>
         </section>
 
