@@ -9,7 +9,8 @@ export default function SmartLinksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
-const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("all");
+  const [selectedBatch, setSelectedBatch] = useState(null);
 
   useEffect(() => {
     loadLinks();
@@ -166,6 +167,13 @@ const stockCounts = {
   ).length,
 };
 const filteredLinks = links.filter((link) => {
+  if (
+    selectedBatch &&
+    link.batch_code !== selectedBatch
+  ) {
+    return false;
+  }
+
   const searchText = search.toLowerCase().trim();
 
   const matchesSearch =
@@ -446,6 +454,35 @@ return (
     flexWrap: "wrap",
   }}
 >
+  <button
+  type="button"
+  onClick={() => {
+    setSelectedBatch(batch.batchCode);
+    setFilter("all");
+    setSearch("");
+
+    setTimeout(() => {
+      document
+        .getElementById("smart-link-list")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 50);
+  }}
+  style={{
+    border: "1px solid #d0d5dd",
+    padding: "10px 16px",
+    background: "#ffffff",
+    color: "#344054",
+    borderRadius: "10px",
+    fontSize: "13px",
+    fontWeight: "800",
+    cursor: "pointer",
+  }}
+>
+  Kartları Gör
+</button>
   <div
     style={{
       padding: "7px 11px",
@@ -467,6 +504,55 @@ return (
 </div>
         </div>
       ))}
+        <div id="smart-link-list" />
+
+{selectedBatch && (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      gap: "12px",
+      flexWrap: "wrap",
+      marginBottom: "18px",
+      padding: "14px 16px",
+      background: "#eff8ff",
+      border: "1px solid #b2ddff",
+      borderRadius: "12px",
+    }}
+  >
+    <div
+      style={{
+        color: "#175cd3",
+        fontSize: "14px",
+        fontWeight: "800",
+      }}
+    >
+      📦 Seçili Parti: {selectedBatch}
+    </div>
+
+    <button
+      type="button"
+      onClick={() => {
+        setSelectedBatch(null);
+        setFilter("all");
+        setSearch("");
+      }}
+      style={{
+        border: "1px solid #d0d5dd",
+        padding: "9px 14px",
+        background: "#ffffff",
+        color: "#344054",
+        borderRadius: "9px",
+        fontSize: "13px",
+        fontWeight: "800",
+        cursor: "pointer",
+      }}
+    >
+      Filtreyi Temizle
+    </button>
+  </div>
+)}
     </div>
   </section>
 )}
