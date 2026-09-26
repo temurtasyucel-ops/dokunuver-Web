@@ -25,6 +25,8 @@ export default function SmartLinksPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [selectedBatch, setSelectedBatch] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+const linksPerPage = 20;
 
   useEffect(() => {
     loadLinks();
@@ -232,6 +234,26 @@ const filteredLinks = links.filter((link) => {
 
 return matchesSearch && matchesFilter;
 });
+  useEffect(() => {
+  setCurrentPage(1);
+}, [search, filter, selectedBatch]);
+
+const totalPages = Math.ceil(
+  filteredLinks.length / linksPerPage
+);
+
+const safeCurrentPage = Math.min(
+  currentPage,
+  Math.max(totalPages, 1)
+);
+
+const startIndex =
+  (safeCurrentPage - 1) * linksPerPage;
+
+const paginatedLinks = filteredLinks.slice(
+  startIndex,
+  startIndex + linksPerPage
+);
   const productionBatches = Object.values(
   links.reduce((groups, link) => {
     if (!link.batch_code) {
@@ -811,7 +833,7 @@ return (
             gap: "16px",
           }}
         >
-          {filteredLinks.map((link) => (
+          {paginatedLinks.map((link) => (
             <div
               key={link.id}
               style={{
@@ -1002,6 +1024,99 @@ return (
               </div>
             </div>
           ))}
+                      ))}
+
+          {totalPages > 1 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "12px",
+                flexWrap: "wrap",
+                marginTop: "8px",
+                padding: "16px",
+                background: "#f8fafc",
+                border: "1px solid #eaecf0",
+                borderRadius: "14px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((page) =>
+                    Math.max(page - 1, 1)
+                  )
+                }
+                disabled={safeCurrentPage === 1}
+                style={{
+                  border: "1px solid #d0d5dd",
+                  padding: "10px 16px",
+                  background: "#ffffff",
+                  color: "#344054",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: "800",
+                  cursor:
+                    safeCurrentPage === 1
+                      ? "not-allowed"
+                      : "pointer",
+                  opacity:
+                    safeCurrentPage === 1
+                      ? 0.5
+                      : 1,
+                }}
+              >
+                ← Önceki
+              </button>
+
+              <div
+                style={{
+                  color: "#667085",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  textAlign: "center",
+                }}
+              >
+                Sayfa {safeCurrentPage} / {totalPages}
+                {" • "}
+                {filteredLinks.length} kayıt
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentPage((page) =>
+                    Math.min(page + 1, totalPages)
+                  )
+                }
+                disabled={
+                  safeCurrentPage === totalPages
+                }
+                style={{
+                  border: "1px solid #d0d5dd",
+                  padding: "10px 16px",
+                  background: "#ffffff",
+                  color: "#344054",
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  fontWeight: "800",
+                  cursor:
+                    safeCurrentPage === totalPages
+                      ? "not-allowed"
+                      : "pointer",
+                  opacity:
+                    safeCurrentPage === totalPages
+                      ? 0.5
+                      : 1,
+                }}
+              >
+                Sonraki →
+              </button>
+            </div>
+          )}
+        </div>
+      )}
         </div>
       )}
     </main>
