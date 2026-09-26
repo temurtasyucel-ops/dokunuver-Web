@@ -134,8 +134,9 @@ export default function Home() {
           }
 
           .product-image-area {
-            padding: 24px !important;
-          }
+  padding: 20px !important;
+  height: 300px !important;
+}
 
           .product-content {
             padding: 22px !important;
@@ -790,6 +791,131 @@ function ProductCard({
   price,
   detail,
 }) {
+  return (
+    <div
+      className="product-card"
+      style={{
+        height: "100%",
+        border: "1px solid #eaecf0",
+        borderRadius: "20px",
+        background: "#ffffff",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        className="product-image-area"
+        style={{
+          background: "#f8fafc",
+          padding: "28px",
+          height: "330px",
+          boxSizing: "border-box",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+        }}
+      >
+        <img
+          src={image}
+          alt={`DOKUNUVER ${title}`}
+          style={{
+            display: "block",
+            width: "auto",
+            height: "auto",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+            borderRadius: "14px",
+          }}
+        />
+      </div>
+
+      <div
+        className="product-content"
+        style={{
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+        }}
+      >
+        <h3
+          style={{
+            margin: "0 0 10px",
+            fontSize: "20px",
+            color: "#101828",
+          }}
+        >
+          {title}
+        </h3>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#667085",
+            lineHeight: "1.6",
+            fontSize: "14px",
+          }}
+        >
+          {description}
+        </p>
+
+        <div
+          style={{
+            marginTop: "22px",
+            fontSize: "26px",
+            fontWeight: "900",
+            color: "#101828",
+          }}
+        >
+          {price}
+        </div>
+
+        <div
+          style={{
+            marginTop: "6px",
+            color: "#667085",
+            fontSize: "13px",
+            fontWeight: "600",
+          }}
+        >
+          {detail}
+        </div>
+
+        <div
+          style={{
+            marginTop: "5px",
+            color: "#98a2b3",
+            fontSize: "12px",
+          }}
+        >
+          Stand veya yapışkanlı kullanım • Kargo alıcıya aittir.
+        </div>
+
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: "22px",
+          }}
+        >
+          <div
+            style={{
+              paddingTop: "18px",
+              borderTop: "1px solid #eaecf0",
+              color: "#087cf0",
+              fontSize: "14px",
+              fontWeight: "800",
+            }}
+          >
+            Ürünü İncele →
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
   return (
     <div
       className="product-card"
