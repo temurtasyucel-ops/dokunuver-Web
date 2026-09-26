@@ -1200,15 +1200,17 @@ const styles = {
   },
 
   newButton: {
-    border: 0,
-    background: "#087cf0",
-    color: "#ffffff",
-    padding: "15px 20px",
-    borderRadius: "12px",
-    fontWeight: "800",
-    fontSize: "14px",
-    cursor: "pointer",
-  },
+  border: 0,
+  background: "#087cf0",
+  color: "#ffffff",
+  padding: "15px 20px",
+  borderRadius: "12px",
+  fontWeight: "800",
+  fontSize: "14px",
+  cursor: "pointer",
+  flex: "1 1 210px",
+  textAlign: "center",
+},
 
   stats: {
   display: "grid",
