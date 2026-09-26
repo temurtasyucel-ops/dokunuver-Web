@@ -322,11 +322,16 @@ if (productType === "instagram") {
           <label style={labelStyle}>
             Ürün Tipi
 
-            <select
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
-              style={inputStyle}
-            >
+           <select
+  value={productType}
+  disabled
+  style={{
+    ...inputStyle,
+    background: "#f2f4f7",
+    color: "#667085",
+    cursor: "not-allowed",
+  }}
+>
               <option value="google">Google Yorum</option>
               <option value="instagram">Instagram</option>
               <option value="whatsapp">WhatsApp</option>
