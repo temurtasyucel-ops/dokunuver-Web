@@ -592,7 +592,9 @@ const productionBatches = Object.values(
                 📦 {batch.batchCode}
               </div>
 
-              <div style={styles.code}>
+             <div style={styles.code}>
+  {formatBatchDate(batch.batchCode)}
+  {" • "}
   Toplam: {batch.cards.length}
   {" • "}
   Stokta: {
@@ -994,7 +996,17 @@ function Info({ label, value }) {
     </div>
   );
 }
+function formatBatchDate(batchCode) {
+  const match = /^IBAN-(\d{2})(\d{2})(\d{2})-\d+$/.exec(
+    batchCode
+  );
 
+  if (!match) return "";
+
+  const [, year, month, day] = match;
+
+  return `${day}.${month}.20${year}`;
+}
 const styles = {
   page: {
     minHeight: "100vh",
