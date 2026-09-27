@@ -352,6 +352,17 @@ export default function IletisimPage() {
             >
               Gizlilik
             </a>
+                <a
+  href="/kvkk"
+  style={{
+    color: "#475467",
+    textDecoration: "none",
+    fontSize: "14px",
+    fontWeight: "600",
+  }}
+>
+  KVKK
+</a>
           </div>
 
           <div
