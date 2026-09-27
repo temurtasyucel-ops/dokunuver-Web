@@ -768,6 +768,17 @@ export default function Home() {
             >
               Gizlilik
             </a>
+                <a
+  href="/kvkk"
+  style={{
+    fontSize: "14px",
+    fontWeight: "600",
+    color: "#475467",
+    textDecoration: "none",
+  }}
+>
+  KVKK
+</a>
           </div>
 
           <div
