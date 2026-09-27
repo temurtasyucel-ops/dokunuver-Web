@@ -750,22 +750,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-function MiniTag({ label }) {
-  return (
-    <div
-      style={{
-        padding: "9px 10px",
-        background: "#f2f7ff",
-        borderRadius: "10px",
-        color: "#087cf0",
-        fontSize: "11px",
-        fontWeight: "800",
-      }}
-    >
-      {label}
-    </div>
-  );
-}
+
       {/* SİPARİŞ */}
       <section
         className="contact-section"
@@ -1187,6 +1172,22 @@ function BenefitCard({ number, title, description }) {
       >
         {description}
       </p>
+    </div>
+  );
+}
+function MiniTag({ label }) {
+  return (
+    <div
+      style={{
+        padding: "9px 10px",
+        background: "#f2f7ff",
+        borderRadius: "10px",
+        color: "#087cf0",
+        fontSize: "11px",
+        fontWeight: "800",
+      }}
+    >
+      {label}
     </div>
   );
 }
