@@ -99,7 +99,9 @@ export default function Home() {
           .site-header {
             padding: 18px 18px !important;
           }
-
+.hero-visual {
+  display: none !important;
+}
           .header-button {
             padding: 10px 13px !important;
             font-size: 13px !important;
@@ -344,14 +346,15 @@ export default function Home() {
 
     {/* SAĞ TARAF */}
     <div
-      style={{
-        position: "relative",
-        minHeight: "480px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
+  className="hero-visual"
+  style={{
+    position: "relative",
+    minHeight: "480px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  }}
+>
       {/* ARKA GRADYAN */}
       <div
         style={{
