@@ -223,117 +223,268 @@ export default function Home() {
         </a>
       </header>
 
-      {/* HERO */}
-      <section
-        className="hero-section"
+     {/* HERO */}
+<section
+  className="hero-section"
+  style={{
+    maxWidth: "1180px",
+    margin: "0 auto",
+    padding: "80px 24px 95px",
+  }}
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+      gap: "56px",
+      alignItems: "center",
+    }}
+  >
+    {/* SOL TARAF */}
+    <div>
+      <div
         style={{
-          maxWidth: "1180px",
-          margin: "0 auto",
-          padding: "90px 24px 95px",
-          textAlign: "center",
+          display: "inline-block",
+          padding: "8px 14px",
+          borderRadius: "999px",
+          background: "#eaf4ff",
+          color: "#087cf0",
+          fontSize: "13px",
+          fontWeight: "800",
+          marginBottom: "24px",
         }}
       >
+        NFC ÇÖZÜMLERİ
+      </div>
+
+      <h1
+        style={{
+          margin: 0,
+          fontSize: "clamp(42px, 6vw, 68px)",
+          lineHeight: "1.03",
+          letterSpacing: "-3px",
+          maxWidth: "620px",
+        }}
+      >
+        İşletmenizi
+        <br />
+        tek dokunuşla bağlayın.
+      </h1>
+
+      <p
+        style={{
+          maxWidth: "620px",
+          margin: "26px 0 0",
+          color: "#667085",
+          fontSize: "18px",
+          lineHeight: "1.7",
+        }}
+      >
+        Google yorumlarından Instagram ve WhatsApp&apos;a, ödeme
+        bilgilerinden ilanlarınıza kadar dijital bağlantılarınızı NFC
+        ve QR ile müşterilerinize ulaştırın.
+      </p>
+
+      <div
+        style={{
+          marginTop: "34px",
+          display: "flex",
+          gap: "12px",
+          flexWrap: "wrap",
+        }}
+      >
+        <a
+          href="#urunler"
+          style={{
+            textDecoration: "none",
+            background: "#087cf0",
+            color: "#ffffff",
+            padding: "15px 24px",
+            borderRadius: "13px",
+            fontWeight: "800",
+            fontSize: "15px",
+          }}
+        >
+          Ürünleri İncele
+        </a>
+
+        <a
+          href="#nasil-calisir"
+          style={{
+            textDecoration: "none",
+            background: "#ffffff",
+            color: "#344054",
+            padding: "15px 24px",
+            borderRadius: "13px",
+            border: "1px solid #d0d5dd",
+            fontWeight: "800",
+            fontSize: "15px",
+          }}
+        >
+          Nasıl Çalışır?
+        </a>
+      </div>
+
+      <div
+        style={{
+          marginTop: "36px",
+          display: "flex",
+          gap: "22px",
+          flexWrap: "wrap",
+          color: "#667085",
+          fontSize: "13px",
+          fontWeight: "700",
+        }}
+      >
+        <span>✓ NFC + QR</span>
+        <span>✓ İşletmenize özel hazırlanır</span>
+        <span>✓ Stand veya yapışkanlı kullanım</span>
+      </div>
+    </div>
+
+    {/* SAĞ TARAF */}
+    <div
+      style={{
+        position: "relative",
+        minHeight: "480px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {/* ARKA GRADYAN */}
+      <div
+        style={{
+          position: "absolute",
+          width: "420px",
+          height: "420px",
+          maxWidth: "90%",
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(8,124,240,0.16) 0%, rgba(127,86,217,0.10) 48%, rgba(255,255,255,0) 72%)",
+        }}
+      />
+
+      {/* ANA NFC KARTI */}
+      <div
+        style={{
+          position: "relative",
+          width: "320px",
+          maxWidth: "88%",
+          background: "#ffffff",
+          border: "1px solid #e4e7ec",
+          borderRadius: "28px",
+          padding: "34px 28px",
+          boxShadow: "0 28px 70px rgba(16,24,40,0.14)",
+          textAlign: "center",
+          zIndex: 2,
+        }}
+      >
+        <img
+          src="/images/dokunuver-icon.png"
+          alt="DOKUNUVER NFC"
+          style={{
+            width: "112px",
+            height: "112px",
+            objectFit: "contain",
+            display: "block",
+            margin: "0 auto 22px",
+          }}
+        />
+
         <div
           style={{
-            display: "inline-block",
-            padding: "8px 14px",
-            borderRadius: "999px",
-            background: "#eaf4ff",
+            fontSize: "22px",
+            fontWeight: "900",
+            color: "#101828",
+            letterSpacing: "-0.5px",
+          }}
+        >
+          DOKUNUVER
+        </div>
+
+        <div
+          style={{
+            marginTop: "5px",
             color: "#087cf0",
             fontSize: "13px",
             fontWeight: "800",
-            marginBottom: "24px",
           }}
         >
-          NFC ÇÖZÜMLERİ
-        </div>
-
-        <h1
-          style={{
-            maxWidth: "900px",
-            margin: "0 auto",
-            fontSize: "clamp(42px, 7vw, 76px)",
-            lineHeight: "1.03",
-            letterSpacing: "-3px",
-          }}
-        >
-          İşletmenizi
-          <br />
-          tek dokunuşla bağlayın.
-        </h1>
-
-        <p
-          style={{
-            maxWidth: "720px",
-            margin: "28px auto 0",
-            color: "#667085",
-            fontSize: "18px",
-            lineHeight: "1.7",
-          }}
-        >
-          Google yorumlarından Instagram ve WhatsApp&apos;a, ödeme
-          bilgilerinden ilanlarınıza kadar dijital bağlantılarınızı NFC
-          ve QR ile müşterilerinize ulaştırın.
-        </p>
-
-        <div
-          style={{
-            marginTop: "36px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "12px",
-            flexWrap: "wrap",
-          }}
-        >
-          <a
-            href="#urunler"
-            style={{
-              textDecoration: "none",
-              background: "#087cf0",
-              color: "#ffffff",
-              padding: "15px 24px",
-              borderRadius: "13px",
-              fontWeight: "800",
-              fontSize: "15px",
-            }}
-          >
-            Ürünleri İncele
-          </a>
-
-          <a
-            href="#nasil-calisir"
-            style={{
-              textDecoration: "none",
-              background: "#ffffff",
-              color: "#344054",
-              padding: "15px 24px",
-              borderRadius: "13px",
-              border: "1px solid #d0d5dd",
-              fontWeight: "800",
-              fontSize: "15px",
-            }}
-          >
-            Nasıl Çalışır?
-          </a>
+          Dokun. Bağlan.
         </div>
 
         <div
           style={{
-            marginTop: "42px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "24px",
-            flexWrap: "wrap",
-            color: "#667085",
-            fontSize: "13px",
+            marginTop: "24px",
+            padding: "14px 16px",
+            background: "#f8fafc",
+            borderRadius: "14px",
+            color: "#475467",
+            fontSize: "14px",
             fontWeight: "700",
+            lineHeight: "1.5",
           }}
         >
-          <span>✓ NFC + QR</span>
-          <span>✓ İşletmenize özel hazırlanır</span>
-          <span>✓ Stand veya yapışkanlı kullanım</span>
+          Telefonunuzu buraya yaklaştırın.
         </div>
-      </section>
+
+        <div
+          style={{
+            marginTop: "22px",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "9px",
+          }}
+        >
+          <MiniTag label="Google Yorum" />
+          <MiniTag label="Instagram" />
+          <MiniTag label="WhatsApp" />
+          <MiniTag label="IBAN" />
+        </div>
+      </div>
+
+      {/* SOL ALT ETİKET */}
+      <div
+        style={{
+          position: "absolute",
+          left: "2%",
+          bottom: "46px",
+          background: "#ffffff",
+          border: "1px solid #eaecf0",
+          borderRadius: "16px",
+          padding: "13px 16px",
+          boxShadow: "0 12px 30px rgba(16,24,40,0.09)",
+          fontSize: "13px",
+          fontWeight: "800",
+          color: "#101828",
+          zIndex: 3,
+        }}
+      >
+        NFC + QR
+      </div>
+
+      {/* SAĞ ÜST ETİKET */}
+      <div
+        style={{
+          position: "absolute",
+          right: "1%",
+          top: "56px",
+          background: "#101828",
+          color: "#ffffff",
+          borderRadius: "16px",
+          padding: "13px 16px",
+          boxShadow: "0 12px 30px rgba(16,24,40,0.12)",
+          fontSize: "13px",
+          fontWeight: "800",
+          zIndex: 3,
+        }}
+      >
+        Tek dokunuş
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ÜRÜNLER */}
       <section
@@ -599,7 +750,22 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+function MiniTag({ label }) {
+  return (
+    <div
+      style={{
+        padding: "9px 10px",
+        background: "#f2f7ff",
+        borderRadius: "10px",
+        color: "#087cf0",
+        fontSize: "11px",
+        fontWeight: "800",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
       {/* SİPARİŞ */}
       <section
         className="contact-section"
