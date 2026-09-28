@@ -159,7 +159,7 @@ export default function InstagramPage() {
                 color: "#101828",
               }}
             >
-              249 TL
+              250 TL
             </div>
 
             <div
@@ -169,7 +169,7 @@ export default function InstagramPage() {
                 fontSize: "13px",
               }}
             >
-              Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -189,9 +189,8 @@ export default function InstagramPage() {
               <div>✓ 10 × 10 cm</div>
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ Instagram profilinize özel hazırlanır</div>
-              <div>
-                ✓ Masaüstü stand veya çift taraflı bant seçeneği
-              </div>
+             <div>✓ Hazır yapışkanlı arka yüz</div>
+<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
               <div>
                 ✓ Profil bağlantısı kart değiştirilmeden güncellenebilir
               </div>
@@ -325,10 +324,10 @@ export default function InstagramPage() {
             />
 
             <FeatureCard
-              number="04"
-              title="Kullanıma Hazır"
-              description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; işletmenizde doğrudan kullanmaya başlayabilirsiniz."
-            />
+  number="04"
+  title="Kullanıma Hazır"
+  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+/>
           </div>
         </div>
       </section>
