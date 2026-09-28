@@ -11,7 +11,7 @@ const products = [
     title: "Google Yorum Kartı",
     description:
       "Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca yönlendirin.",
-    price: "249 TL",
+    price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
   {
@@ -20,7 +20,7 @@ const products = [
     title: "Instagram Kartı",
     description:
       "Instagram profilinizi müşterilerinizle NFC veya QR üzerinden kolayca paylaşın.",
-    price: "249 TL",
+    price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
   {
@@ -29,7 +29,7 @@ const products = [
     title: "WhatsApp Kartı",
     description:
       "Müşterilerinizin numaranızı kaydetmeden WhatsApp bağlantınıza ulaşmasını kolaylaştırın.",
-    price: "249 TL",
+    price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
   {
@@ -38,7 +38,7 @@ const products = [
     title: "IBAN Kartı",
     description:
       "Doğrulanmış banka, hesap sahibi ve IBAN bilgilerinizi NFC veya QR üzerinden kolayca paylaşın.",
-    price: "249 TL",
+    price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
   {
@@ -47,7 +47,7 @@ const products = [
     title: "İlan Kartı",
     description:
       "İlan bağlantınızı NFC veya QR ile müşterilerinize doğrudan ulaştırın.",
-    price: "249 TL",
+    price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
   {
@@ -56,7 +56,7 @@ const products = [
     title: "Duo NFC Kartı",
     description:
       "Google + Instagram veya WhatsApp + IBAN seçeneklerinden ikisini tek kartta bir araya getirin.",
-    price: "349 TL",
+    price: "350 TL",
     detail: "10 × 10 cm • 2 NFC + 2 QR",
   },
 ];
@@ -340,7 +340,7 @@ export default function Home() {
       >
         <span>✓ NFC + QR</span>
         <span>✓ İşletmenize özel hazırlanır</span>
-        <span>✓ Stand veya yapışkanlı kullanım</span>
+        <span>✓ Hazır yapışkanlı arka yüz</span>
       </div>
     </div>
 
@@ -746,10 +746,10 @@ export default function Home() {
             />
 
             <BenefitCard
-              number="04"
-              title="Kullanıma Hazır"
-              description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; ürününüzü doğrudan kullanmaya başlayabilirsiniz."
-            />
+  number="04"
+  title="Kullanıma Hazır"
+  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+/>
           </div>
         </div>
       </section>
@@ -838,7 +838,7 @@ export default function Home() {
               fontSize: "12px",
             }}
           >
-            Tekli kartlar 249 TL • Duo NFC 349 TL • Kargo alıcıya aittir.
+            Tekli kartlar 250 TL • Duo NFC 350 TL • Masaüstü stand +50 TL • Kargo alıcıya aittir.
           </div>
         </div>
       </section>
@@ -1056,7 +1056,7 @@ function ProductCard({
             fontSize: "12px",
           }}
         >
-          Stand veya yapışkanlı kullanım • Kargo alıcıya aittir.
+          Hazır yapışkanlı arka yüz • Masaüstü stand +50 TL • Kargo alıcıya aittir.
         </div>
 
         <div
