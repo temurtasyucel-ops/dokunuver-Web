@@ -161,7 +161,7 @@ export default function IbanPage() {
                 color: "#101828",
               }}
             >
-              249 TL
+              250 TL
             </div>
 
             <div
@@ -171,7 +171,7 @@ export default function IbanPage() {
                 fontSize: "13px",
               }}
             >
-              Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -193,9 +193,8 @@ export default function IbanPage() {
               <div>✓ Banka ve IBAN bilgilerinize özel hazırlanır</div>
               <div>✓ Hesap sahibi ve IBAN kolayca kopyalanabilir</div>
               <div>✓ Doğrulama sonrasında bilgiler kilitlenir</div>
-              <div>
-                ✓ Masaüstü stand veya çift taraflı bant seçeneği
-              </div>
+              <div>✓ Hazır yapışkanlı arka yüz</div>
+<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
             </div>
 
             {/* BUTONLAR */}
