@@ -160,7 +160,7 @@ export default function DuoPage() {
                 color: "#101828",
               }}
             >
-              349 TL
+              350 TL
             </div>
 
             <div
@@ -170,7 +170,7 @@ export default function DuoPage() {
                 fontSize: "13px",
               }}
             >
-              Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -194,9 +194,8 @@ export default function DuoPage() {
               <div>
                 ✓ Google + Instagram veya WhatsApp + IBAN
               </div>
-              <div>
-                ✓ Masaüstü stand veya çift taraflı bant seçeneği
-              </div>
+              <div>✓ Hazır yapışkanlı arka yüz</div>
+<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
             </div>
 
             {/* BUTONLAR */}
@@ -410,10 +409,10 @@ export default function DuoPage() {
             />
 
             <FeatureCard
-              number="04"
-              title="Kullanıma Hazır"
-              description="NFC ve QR bağlantıları hazırlanmış şekilde teslim edilir; işletmenizde doğrudan kullanmaya başlayabilirsiniz."
-            />
+  number="04"
+  title="Kullanıma Hazır"
+  description="İki NFC alanı ve iki QR bağlantısı hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+/>
           </div>
         </div>
       </section>
