@@ -220,7 +220,7 @@ async function downloadPrintCard(link) {
     downloadLink.href = downloadUrl;
 
     downloadLink.download =
-      `DOKUNUVER-GOOGLE-${link.code}.png`;
+  `DOKUNUVER-${link.product_type.toUpperCase()}-${link.code}.png`;
 
     document.body.appendChild(
       downloadLink
@@ -1130,7 +1130,7 @@ return (
     </button>
 
 <QRCodeButton code={link.code} />
-        {link.product_type === "google" && (
+        {["google", "instagram"].includes(link.product_type) && (
   <button
     type="button"
     onClick={() =>
