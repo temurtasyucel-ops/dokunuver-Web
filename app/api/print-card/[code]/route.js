@@ -248,20 +248,55 @@ export async function GET(
       );
 
     // 6) Gerçek QR'ı tasarıma yerleştir
-    const printBuffer =
-      await sharp(templateBuffer)
-        .composite([
-          {
-            input: qrBuffer,
-            left: template.qrLeft,
-            top: template.qrTop,
-          },
-        ])
-        .withMetadata({
-          density: 300,
-        })
-        .png()
-        .toBuffer();
+    const clearPadding =
+  smartLink.product_type === "instagram"
+    ? 4
+    : 0;
+
+const clearSize =
+  template.qrSize +
+  clearPadding * 2;
+
+const clearBuffer =
+  await sharp({
+    create: {
+      width: clearSize,
+      height: clearSize,
+      channels: 4,
+      background: {
+        r: 255,
+        g: 255,
+        b: 255,
+        alpha: 1,
+      },
+    },
+  })
+    .png()
+    .toBuffer();
+
+const printBuffer =
+  await sharp(templateBuffer)
+    .composite([
+      {
+        input: clearBuffer,
+        left:
+          template.qrLeft -
+          clearPadding,
+        top:
+          template.qrTop -
+          clearPadding,
+      },
+      {
+        input: qrBuffer,
+        left: template.qrLeft,
+        top: template.qrTop,
+      },
+    ])
+    .withMetadata({
+      density: 300,
+    })
+    .png()
+    .toBuffer();
 
     // 7) PNG indir
     return new Response(
