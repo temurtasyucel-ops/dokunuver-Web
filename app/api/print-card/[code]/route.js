@@ -207,7 +207,7 @@ export async function GET(
         {
           type: "png",
           width: template.qrSize,
-          margin: 2,
+          margin: template.qrMargin ?? 2,
           errorCorrectionLevel: "H",
           color: {
             dark: "#000000",
