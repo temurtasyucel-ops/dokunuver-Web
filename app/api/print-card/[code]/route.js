@@ -40,19 +40,33 @@ async function verifyAdmin(request) {
 
 const TEMPLATE_CONFIG = {
   google: {
-    fileName: "google.png",
-    qrLeft: 914,
-    qrTop: 646,
-    qrSize: 180,
-    fileLabel: "GOOGLE",
+    templatePath: path.join(process.cwd(), "public/templates/google.png"),
+    qr: {
+      left: 919,
+      top: 648,
+      size: 166,
+      clearPadding: 4,
+    },
   },
 
   instagram: {
-    fileName: "instagram.png",
-    qrLeft: 920,
-    qrTop: 653,
-    qrSize: 165,
-    fileLabel: "INSTAGRAM",
+    templatePath: path.join(process.cwd(), "public/templates/instagram.png"),
+    qr: {
+      left: 921,
+      top: 650,
+      size: 165,
+      clearPadding: 4,
+    },
+  },
+
+  whatsapp: {
+    templatePath: path.join(process.cwd(), "public/templates/whatsapp.png"),
+    qr: {
+      left: 921,
+      top: 650,
+      size: 165,
+      clearPadding: 4,
+    },
   },
 };
 
