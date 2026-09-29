@@ -235,16 +235,19 @@ export async function GET(
     // Sol: 914 px
     // Üst: 646 px
     const printBuffer =
-      await sharp(templateBuffer)
-        .composite([
-          {
-            input: qrBuffer,
-            left: 914,
-            top: 646,
-          },
-        ])
-        .png()
-        .toBuffer();
+  await sharp(templateBuffer)
+    .composite([
+      {
+        input: qrBuffer,
+        left: 914,
+        top: 646,
+      },
+    ])
+    .withMetadata({
+      density: 300,
+    })
+    .png()
+    .toBuffer();
 
     // 7) Baskı dosyasını indir
     return new Response(
