@@ -55,13 +55,14 @@ const TEMPLATE_CONFIG = {
     fileLabel: "INSTAGRAM",
   },
 
-  whatsapp: {
-    fileName: "whatsapp.png",
-    qrLeft: 921,
-    qrTop: 650,
-    qrSize: 165,
-    fileLabel: "WHATSAPP",
-  },
+whatsapp: {
+  fileName: "whatsapp.png",
+  qrLeft: 922,
+  qrTop: 651,
+  qrSize: 165,
+  qrMargin: 0,
+  fileLabel: "WHATSAPP",
+},
 };
 
 export async function GET(
