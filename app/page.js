@@ -1,7 +1,7 @@
 export const metadata = {
   title: "DOKUNUVER | NFC Kart ve Dijital Bağlantı Çözümleri",
   description:
-    "Google Yorum, Instagram, WhatsApp, IBAN, İlan ve Duo NFC kartlarıyla işletmenizin dijital bağlantılarını müşterilerinize NFC ve QR üzerinden ulaştırın.",
+  "Google Yorum, Instagram, WhatsApp, IBAN ve İlan NFC kartlarıyla işletmenizin dijital bağlantılarını müşterilerinize NFC ve QR üzerinden ulaştırın.",
 };
 
 const products = [
@@ -50,15 +50,7 @@ const products = [
     price: "250 TL",
     detail: "10 × 10 cm • NFC + QR",
   },
-  {
-    href: "/urunler/duo",
-    image: "/images/duo-nfc.png",
-    title: "Duo NFC Kartı",
-    description:
-      "Google + Instagram veya WhatsApp + IBAN seçeneklerinden ikisini tek kartta bir araya getirin.",
-    price: "350 TL",
-    detail: "10 × 10 cm • 2 NFC + 2 QR",
-  },
+  
 ];
 
 export default function Home() {
@@ -641,7 +633,7 @@ export default function Home() {
             <StepCard
               number="01"
               title="Ürününü Seç"
-              description="Google, Instagram, WhatsApp, IBAN, İlan veya Duo ürünlerinden ihtiyacınıza uygun olanı seçin."
+              description="Google, Instagram, WhatsApp, IBAN veya İlan ürünlerinden ihtiyacınıza uygun olanı seçin."
             />
 
             <StepCard
@@ -838,7 +830,7 @@ export default function Home() {
               fontSize: "12px",
             }}
           >
-            Tekli kartlar 250 TL • Duo NFC 350 TL • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+            Tekli kartlar 250 TL • Masaüstü stand +50 TL • Kargo alıcıya aittir.
           </div>
         </div>
       </section>
