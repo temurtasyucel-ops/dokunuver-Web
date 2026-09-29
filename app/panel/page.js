@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import JSZip from "jszip";
-import QRCode from "qrcode";
 import LogoutButton from "./LogoutButton";
 
 export default function AdminPanel() {
@@ -13,7 +12,7 @@ export default function AdminPanel() {
   const [currentPage, setCurrentPage] = useState(1);
   const [creatingStock, setCreatingStock] = useState(false);
   const [creatingBulkStock, setCreatingBulkStock] = useState(false);
-  const [downloadingStockQr, setDownloadingStockQr] = useState(false);
+  const [downloadingPrintZip, setDownloadingPrintZip] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [showAllBatches, setShowAllBatches] = useState(false);
   
@@ -195,104 +194,78 @@ alert(
     setCreatingBulkStock(false);
   }
 }
-  async function downloadStockQrZip() {
-  const stockCards = cards.filter(
-    (card) => card.status === "stock"
-  );
-
-  if (stockCards.length === 0) {
-    alert("İndirilecek stok IBAN kartı bulunmuyor.");
-    return;
-  }
-
-  const confirmed = window.confirm(
-    `${stockCards.length} adet stok IBAN kartının QR kodları ZIP olarak indirilecek.\n\nDevam etmek istiyor musunuz?`
-  );
-
-  if (!confirmed) return;
-
-  try {
-    setDownloadingStockQr(true);
-
-    const zip = new JSZip();
-
-    for (const card of stockCards) {
-      const url = `https://dokunuver.com.tr/i/${card.code}`;
-
-      const qrDataUrl = await QRCode.toDataURL(url, {
-        width: 1000,
-        margin: 2,
-        errorCorrectionLevel: "H",
-      });
-
-      const base64Data = qrDataUrl.split(",")[1];
-
-      zip.file(
-        `DOKUNUVER-IBAN-${card.code}-QR.png`,
-        base64Data,
-        { base64: true }
-      );
-    }
-
-    const zipBlob = await zip.generateAsync({
-      type: "blob",
-    });
-
-    const downloadUrl = URL.createObjectURL(zipBlob);
-
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download =
-      `DOKUNUVER-IBAN-STOK-QR-${stockCards.length}-ADET.zip`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(downloadUrl);
-  } catch (error) {
-    console.error("Toplu QR ZIP oluşturma hatası:", error);
-    alert("QR ZIP dosyası oluşturulamadı.");
-  } finally {
-    setDownloadingStockQr(false);
-  }
-}
-
-
-
-
-  async function downloadBatchQrZip(batch) {
+  async function downloadBatchPrintZip(batch) {
   if (!batch?.cards?.length) {
     alert("Bu üretim partisinde kart bulunamadı.");
     return;
   }
 
   const confirmed = window.confirm(
-    `${batch.batchCode} partisindeki ${batch.cards.length} kartın QR kodları ZIP olarak indirilecek.\n\nDevam etmek istiyor musunuz?`
+    `${batch.batchCode} partisindeki ${batch.cards.length} kartın baskı görselleri ZIP olarak indirilecek.\n\nDevam etmek istiyor musunuz?`
   );
 
   if (!confirmed) return;
 
   try {
-    setDownloadingStockQr(true);
+    setDownloadingPrintZip(true);
+
+    const token = localStorage.getItem(
+      "dokunuver_access_token"
+    );
+
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
+    }
 
     const zip = new JSZip();
 
     for (const card of batch.cards) {
-      const url = `https://dokunuver.com.tr/i/${card.code}`;
+      const response = await fetch(
+        `/api/print-iban/${encodeURIComponent(card.code)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        }
+      );
 
-      const qrDataUrl = await QRCode.toDataURL(url, {
-        width: 1000,
-        margin: 2,
-        errorCorrectionLevel: "H",
-      });
+      if (response.status === 401) {
+        localStorage.removeItem(
+          "dokunuver_access_token"
+        );
 
-      const base64Data = qrDataUrl.split(",")[1];
+        localStorage.removeItem(
+          "dokunuver_refresh_token"
+        );
+
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      if (!response.ok) {
+        let message =
+          `${card.code} kartının baskı görseli oluşturulamadı.`;
+
+        try {
+          const data = await response.json();
+
+          if (data?.error) {
+            message = data.error;
+          }
+        } catch {
+          // JSON dönmezse varsayılan mesaj kullanılır.
+        }
+
+        throw new Error(message);
+      }
+
+      const blob = await response.blob();
 
       zip.file(
-        `DOKUNUVER-IBAN-${card.code}-QR.png`,
-        base64Data,
-        { base64: true }
+        `DOKUNUVER-IBAN-${card.code}.png`,
+        blob
       );
     }
 
@@ -300,23 +273,36 @@ alert(
       type: "blob",
     });
 
-    const downloadUrl = URL.createObjectURL(zipBlob);
+    const downloadUrl =
+      URL.createObjectURL(zipBlob);
 
-    const link = document.createElement("a");
-    link.href = downloadUrl;
-    link.download =
-      `DOKUNUVER-${batch.batchCode}-${batch.cards.length}-ADET.zip`;
+    const downloadLink =
+      document.createElement("a");
 
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadLink.href = downloadUrl;
+
+    downloadLink.download =
+      `DOKUNUVER-${batch.batchCode}-BASKI.zip`;
+
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+
+    document.body.removeChild(downloadLink);
 
     URL.revokeObjectURL(downloadUrl);
   } catch (error) {
-    console.error("Üretim partisi QR ZIP hatası:", error);
-    alert("Üretim partisi QR ZIP dosyası oluşturulamadı.");
+    console.error(
+      "Toplu baskı ZIP indirme hatası:",
+      error
+    );
+
+    alert(
+      error.message ||
+        "Baskı görselleri ZIP dosyası oluşturulamadı."
+    );
   } finally {
-    setDownloadingStockQr(false);
+    setDownloadingPrintZip(false);
   }
 }
   async function downloadPrintIban(card) {
@@ -654,21 +640,7 @@ const visibleProductionBatches = showAllBatches
   : "+ Toplu Stok Oluştur"}
 </button>
 
-<button
-  type="button"
-  onClick={downloadStockQrZip}
-  disabled={downloadingStockQr}
-  style={{
-    ...styles.newButton,
-    background: "#ffffff",
-    color: "#101828",
-    opacity: downloadingStockQr ? 0.6 : 1,
-  }}
->
-  {downloadingStockQr
-    ? "QR ZIP Hazırlanıyor..."
-    : "↓ Stok QR'larını İndir (.ZIP)"}
-</button>
+
             
           </div>
         </section>
@@ -786,16 +758,18 @@ const visibleProductionBatches = showAllBatches
   Kartları Gör
 </button>
   <button
-    type="button"
-    onClick={() => downloadBatchQrZip(batch)}
-    disabled={downloadingStockQr}
-    style={{
-      ...styles.filterButton,
-      opacity: downloadingStockQr ? 0.6 : 1,
-    }}
-  >
-        ↓ QR'ları İndir
-  </button>
+  type="button"
+  onClick={() => downloadBatchPrintZip(batch)}
+  disabled={downloadingPrintZip}
+  style={{
+    ...styles.filterButton,
+    opacity: downloadingPrintZip ? 0.6 : 1,
+  }}
+>
+  {downloadingPrintZip
+    ? "Baskılar Hazırlanıyor..."
+    : "↓ Baskı Görsellerini İndir"}
+</button>
 </div>
           </div>
         </div>
