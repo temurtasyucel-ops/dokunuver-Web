@@ -1130,7 +1130,7 @@ return (
     </button>
 
 <QRCodeButton code={link.code} />
-        {["google", "instagram", "whatsapp"].includes(
+        {["google", "instagram", "whatsapp", "ilan"].includes(
   link.product_type
 ) && (
   <button
