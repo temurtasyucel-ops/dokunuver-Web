@@ -597,6 +597,7 @@ const visibleProductionBatches = showAllBatches
               display: "flex",
               gap: "10px",
               flexWrap: "wrap",
+              width: "100%",
             }}
           >
             <button
