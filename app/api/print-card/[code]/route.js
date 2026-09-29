@@ -63,6 +63,14 @@ whatsapp: {
   qrMargin: 0,
   fileLabel: "WHATSAPP",
 },
+  ilan: {
+  fileName: "ilan.png",
+  qrLeft: 921,
+  qrTop: 653,
+  qrSize: 163,
+  qrMargin: 0,
+  fileLabel: "ILAN",
+},
 };
 
 export async function GET(
@@ -258,7 +266,7 @@ export async function GET(
 
     // 6) Gerçek QR'ı tasarıma yerleştir
     const clearPadding =
-  ["instagram", "whatsapp"].includes(
+  ["instagram", "whatsapp", "ilan"].includes(
     smartLink.product_type
   )
     ? 4
