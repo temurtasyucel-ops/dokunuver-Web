@@ -1,118 +1,302 @@
-import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import QRCode from "qrcode";
 import sharp from "sharp";
-import fs from "fs/promises";
-import path from "path";
 
+export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+async function verifyAdmin(request) {
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  const publishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+  const authHeader =
+    request.headers.get("authorization");
+
+  if (
+    !authHeader ||
+    !authHeader.startsWith("Bearer ")
+  ) {
+    return false;
+  }
+
+  const token =
+    authHeader.replace("Bearer ", "");
+
+  const response = await fetch(
+    `${supabaseUrl}/auth/v1/user`,
+    {
+      headers: {
+        apikey: publishableKey,
+        Authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    }
+  );
+
+  return response.ok;
+}
 
 const TEMPLATE_CONFIG = {
   google: {
     fileName: "google.png",
     qrLeft: 914,
-    qrTop: 624,
-    qrSize: 162,
+    qrTop: 646,
+    qrSize: 180,
+    fileLabel: "GOOGLE",
   },
+
   instagram: {
     fileName: "instagram.png",
-    qrLeft: 914,
-    qrTop: 624,
-    qrSize: 162,
+    qrLeft: 920,
+    qrTop: 653,
+    qrSize: 165,
+    fileLabel: "INSTAGRAM",
   },
 };
 
-export async function GET(request, { params }) {
+export async function GET(
+  request,
+  { params }
+) {
   try {
-    const code = params?.code;
+    // 1) Admin kontrolü
+    const isAdmin =
+      await verifyAdmin(request);
+
+    if (!isAdmin) {
+      return Response.json(
+        {
+          error: "Yetkisiz erişim.",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    // Next.js 15
+    const resolvedParams =
+      await params;
+
+    const code =
+      resolvedParams?.code
+        ?.trim()
+        .toUpperCase();
 
     if (!code) {
-      return NextResponse.json(
-        { error: "Kart kodu gerekli." },
-        { status: 400 }
+      return Response.json(
+        {
+          error: "Kart kodu bulunamadı.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const { data: link, error } = await supabase
-      .from("smart_links")
-      .select("code, active, product_type")
-      .eq("code", code)
-      .single();
+    const supabaseUrl =
+      process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-    if (error || !link) {
-      return NextResponse.json(
-        { error: "Kart bulunamadı." },
-        { status: 404 }
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
+
+    // 2) Smart Link bilgisini al
+    const smartLinkResponse =
+      await fetch(
+        `${supabaseUrl}/rest/v1/smart_links?code=eq.${encodeURIComponent(
+          code
+        )}&select=code,product_type,status&limit=1`,
+        {
+          headers: {
+            apikey: secretKey,
+            Authorization:
+              `Bearer ${secretKey}`,
+          },
+          cache: "no-store",
+        }
+      );
+
+    if (!smartLinkResponse.ok) {
+      const errorText =
+        await smartLinkResponse.text();
+
+      console.error(
+        "Print Card Smart Link error:",
+        errorText
+      );
+
+      return Response.json(
+        {
+          error:
+            "Smart Link bilgisi alınamadı.",
+        },
+        {
+          status: 500,
+        }
       );
     }
 
-    if (!link.active) {
-      return NextResponse.json(
-        { error: "Kart aktif değil." },
-        { status: 400 }
+    const smartLinks =
+      await smartLinkResponse.json();
+
+    const smartLink =
+      smartLinks?.[0];
+
+    if (!smartLink) {
+      return Response.json(
+        {
+          error:
+            "Smart Link bulunamadı.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
-    const template = TEMPLATE_CONFIG[link.product_type];
+    if (
+      smartLink.status === "cancelled"
+    ) {
+      return Response.json(
+        {
+          error:
+            "İptal edilmiş kart için baskı oluşturulamaz.",
+        },
+        {
+          status: 409,
+        }
+      );
+    }
+
+    // 3) Ürün şablonunu seç
+    const template =
+      TEMPLATE_CONFIG[
+        smartLink.product_type
+      ];
 
     if (!template) {
-      return NextResponse.json(
-        { error: "Bu ürün tipi için baskı şablonu tanımlı değil." },
-        { status: 400 }
+      return Response.json(
+        {
+          error:
+            "Bu ürün tipi için baskı şablonu henüz tanımlı değil.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const printUrl = `https://dokunuver.com.tr/x/${link.code}`;
+    // 4) QR'da kullanılacak sabit DOKUNUVER adresi
+    const publicUrl =
+      `https://dokunuver.com.tr/x/${code}`;
 
-    const qrBuffer = await QRCode.toBuffer(printUrl, {
-      errorCorrectionLevel: "H",
-      margin: 0,
-      width: template.qrSize,
-      color: {
-        dark: "#000000",
-        light: "#FFFFFF",
-      },
-    });
+    const qrBuffer =
+      await QRCode.toBuffer(
+        publicUrl,
+        {
+          type: "png",
+          width: template.qrSize,
+          margin: 2,
+          errorCorrectionLevel: "H",
+          color: {
+            dark: "#000000",
+            light: "#ffffff",
+          },
+        }
+      );
 
-    const templatePath = path.join(
-      process.cwd(),
-      "public",
-      "templates",
-      template.fileName
+    // 5) Ürün şablonunu yükle
+    const templateUrl =
+      new URL(
+        `/templates/${template.fileName}`,
+        request.url
+      );
+
+    const templateResponse =
+      await fetch(
+        templateUrl,
+        {
+          cache: "no-store",
+        }
+      );
+
+    if (!templateResponse.ok) {
+      console.error(
+        "Print template not found:",
+        templateUrl.toString()
+      );
+
+      return Response.json(
+        {
+          error:
+            "Baskı şablonu bulunamadı.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
+
+    const templateArrayBuffer =
+      await templateResponse.arrayBuffer();
+
+    const templateBuffer =
+      Buffer.from(
+        templateArrayBuffer
+      );
+
+    // 6) Gerçek QR'ı tasarıma yerleştir
+    const printBuffer =
+      await sharp(templateBuffer)
+        .composite([
+          {
+            input: qrBuffer,
+            left: template.qrLeft,
+            top: template.qrTop,
+          },
+        ])
+        .withMetadata({
+          density: 300,
+        })
+        .png()
+        .toBuffer();
+
+    // 7) PNG indir
+    return new Response(
+      printBuffer,
+      {
+        status: 200,
+        headers: {
+          "Content-Type":
+            "image/png",
+
+          "Content-Disposition":
+            `attachment; filename="DOKUNUVER-${template.fileLabel}-${code}.png"`,
+
+          "Cache-Control":
+            "no-store",
+
+          "X-Content-Type-Options":
+            "nosniff",
+        },
+      }
+    );
+  } catch (error) {
+    console.error(
+      "Print Card GET error:",
+      error
     );
 
-    const templateBuffer = await fs.readFile(templatePath);
-
-    const finalImageBuffer = await sharp(templateBuffer)
-      .composite([
-        {
-          input: qrBuffer,
-          left: template.qrLeft,
-          top: template.qrTop,
-        },
-      ])
-      .png()
-      .toBuffer();
-
-    return new NextResponse(finalImageBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "image/png",
-        "Content-Disposition": `attachment; filename="${link.product_type}-${link.code}.png"`,
-        "Cache-Control": "no-store",
+    return Response.json(
+      {
+        error:
+          "Baskı görseli oluşturulurken sunucu hatası oluştu.",
       },
-    });
-  } catch (err) {
-    console.error("print-card route hatası:", err);
-
-    return NextResponse.json(
-      { error: "Görsel oluşturulurken hata oluştu." },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
