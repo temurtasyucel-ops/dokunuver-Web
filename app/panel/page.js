@@ -319,7 +319,92 @@ alert(
     setDownloadingStockQr(false);
   }
 }
-  
+  async function downloadPrintIban(card) {
+  try {
+    const token = localStorage.getItem(
+      "dokunuver_access_token"
+    );
+
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    const response = await fetch(
+      `/api/print-iban/${encodeURIComponent(card.code)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status === 401) {
+      localStorage.removeItem(
+        "dokunuver_access_token"
+      );
+
+      localStorage.removeItem(
+        "dokunuver_refresh_token"
+      );
+
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    if (!response.ok) {
+      let message =
+        "IBAN baskı görseli oluşturulamadı.";
+
+      try {
+        const data = await response.json();
+
+        if (data?.error) {
+          message = data.error;
+        }
+      } catch {
+        // JSON dönmezse varsayılan mesaj kullanılır.
+      }
+
+      throw new Error(message);
+    }
+
+    const blob = await response.blob();
+
+    const downloadUrl =
+      URL.createObjectURL(blob);
+
+    const downloadLink =
+      document.createElement("a");
+
+    downloadLink.href = downloadUrl;
+
+    downloadLink.download =
+      `DOKUNUVER-IBAN-${card.code}.png`;
+
+    document.body.appendChild(
+      downloadLink
+    );
+
+    downloadLink.click();
+
+    document.body.removeChild(
+      downloadLink
+    );
+
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error(
+      "IBAN baskı görseli indirme hatası:",
+      error
+    );
+
+    alert(
+      error.message ||
+        "IBAN baskı görseli oluşturulamadı."
+    );
+  }
+}
   async function toggleCardStatus(card) {
     const action = card.active ? "pasife almak" : "aktif etmek";
 
@@ -1026,6 +1111,24 @@ const visibleProductionBatches = showAllBatches
                         ? "Müşteriye Ata"
                         : "Düzenle"}
                     </a>
+<button
+  type="button"
+  onClick={() =>
+    downloadPrintIban(card)
+  }
+  style={{
+    border: "1px solid #fca5a5",
+    padding: "10px 16px",
+    background: "#fff1f2",
+    color: "#b42318",
+    borderRadius: "10px",
+    fontSize: "14px",
+    fontWeight: "800",
+    cursor: "pointer",
+  }}
+>
+  ↓ Baskı Görseli İndir
+</button>
 
                     {card.status !== "stock" && (
                       <button
