@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
-import BulkQRCodeButton from "./BulkQRCodeButton";
+import JSZip from "jszip";
 import LogoutButton from "../LogoutButton";
 
 function formatSmartBatchDate(batchCode) {
@@ -26,8 +26,9 @@ export default function SmartLinksPage() {
   const [filter, setFilter] = useState("all");
   const [selectedBatch, setSelectedBatch] = useState(null);
   const [showAllBatches, setShowAllBatches] = useState(false);
+  const [downloadingPrintZip, setDownloadingPrintZip] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-const linksPerPage = 20;
+  const linksPerPage = 20;
 
   useEffect(() => {
     loadLinks();
@@ -243,6 +244,132 @@ async function downloadPrintCard(link) {
       error.message ||
         "Baskı görseli oluşturulamadı."
     );
+  }
+}
+  async function downloadBatchPrintZip(batch) {
+  const supportedProductTypes = [
+    "google",
+    "instagram",
+    "whatsapp",
+    "ilan",
+  ];
+
+  const printableLinks = batch.links.filter(
+    (link) =>
+      link.status !== "cancelled" &&
+      supportedProductTypes.includes(link.product_type)
+  );
+
+  if (printableLinks.length === 0) {
+    alert(
+      "Bu üretim partisinde indirilebilecek baskı görseli bulunmuyor."
+    );
+    return;
+  }
+
+  const confirmed = window.confirm(
+    `${batch.batchCode} partisindeki ${printableLinks.length} kartın baskı görselleri ZIP olarak indirilecek.\n\nDevam etmek istiyor musunuz?`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    setDownloadingPrintZip(true);
+
+    const token = localStorage.getItem(
+      "dokunuver_access_token"
+    );
+
+    if (!token) {
+      window.location.href = "/panel/login";
+      return;
+    }
+
+    const zip = new JSZip();
+
+    for (const link of printableLinks) {
+      const response = await fetch(
+        `/api/print-card/${encodeURIComponent(link.code)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        }
+      );
+
+      if (response.status === 401) {
+        localStorage.removeItem(
+          "dokunuver_access_token"
+        );
+
+        localStorage.removeItem(
+          "dokunuver_refresh_token"
+        );
+
+        window.location.href = "/panel/login";
+        return;
+      }
+
+      if (!response.ok) {
+        let message =
+          `${link.code} kodlu kartın baskı görseli oluşturulamadı.`;
+
+        try {
+          const data = await response.json();
+
+          if (data?.error) {
+            message = data.error;
+          }
+        } catch {
+          // JSON dönmezse varsayılan mesaj kullanılır.
+        }
+
+        throw new Error(message);
+      }
+
+      const blob = await response.blob();
+
+      zip.file(
+        `DOKUNUVER-${link.product_type.toUpperCase()}-${link.code}.png`,
+        blob
+      );
+    }
+
+    const zipBlob = await zip.generateAsync({
+      type: "blob",
+    });
+
+    const downloadUrl =
+      URL.createObjectURL(zipBlob);
+
+    const downloadLink =
+      document.createElement("a");
+
+    downloadLink.href = downloadUrl;
+
+    downloadLink.download =
+      `DOKUNUVER-${batch.batchCode}-${batch.productType.toUpperCase()}-BASKI.zip`;
+
+    document.body.appendChild(downloadLink);
+
+    downloadLink.click();
+
+    document.body.removeChild(downloadLink);
+
+    URL.revokeObjectURL(downloadUrl);
+  } catch (error) {
+    console.error(
+      "Smart Link toplu baskı ZIP hatası:",
+      error
+    );
+
+    alert(
+      error.message ||
+        "Baskı görselleri ZIP dosyası oluşturulamadı."
+    );
+  } finally {
+    setDownloadingPrintZip(false);
   }
 }
 const stockLinks = links.filter(
@@ -533,9 +660,7 @@ return (
       </a>
     </div>
 
-    <div style={{ marginTop: "12px" }}>
-      <BulkQRCodeButton links={links} />
-    </div>
+    
   </section>
 </>
       <div
@@ -761,10 +886,30 @@ return (
               Kartları Gör
             </button>
 
-            <BulkQRCodeButton
-              links={batch.links}
-              batchCode={batch.batchCode}
-            />
+            <button
+  type="button"
+  onClick={() =>
+    downloadBatchPrintZip(batch)
+  }
+  disabled={downloadingPrintZip}
+  style={{
+    border: "1px solid #d0d5dd",
+    padding: "10px 16px",
+    background: "#ffffff",
+    color: "#344054",
+    borderRadius: "10px",
+    fontSize: "13px",
+    fontWeight: "800",
+    cursor: downloadingPrintZip
+      ? "not-allowed"
+      : "pointer",
+    opacity: downloadingPrintZip ? 0.6 : 1,
+  }}
+>
+  {downloadingPrintZip
+    ? "Baskılar Hazırlanıyor..."
+    : "↓ Baskı Görsellerini İndir"}
+</button>
           </div>
         </div>
       ))}
