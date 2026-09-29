@@ -82,10 +82,14 @@ export default function Home() {
         }
 
         @media (max-width: 900px) {
-          .products-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-          }
-        }
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .products-grid > a {
+    grid-column: auto !important;
+  }
+}
 
         @media (max-width: 640px) {
           .site-header {
@@ -544,19 +548,25 @@ export default function Home() {
             className="products-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+              gridTemplateColumns: "repeat(6, minmax(0, 1fr))",
               gap: "18px",
             }}
           >
-            {products.map((product) => (
-              <a
-                key={product.href}
-                href={product.href}
-                style={{
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
+            {products.map((product, index) => (
+  <a
+    key={product.href}
+    href={product.href}
+    style={{
+      textDecoration: "none",
+      color: "inherit",
+      gridColumn:
+        index === 3
+          ? "2 / span 2"
+          : index === 4
+          ? "4 / span 2"
+          : "span 2",
+    }}
+  >
                 <ProductCard
                   image={product.image}
                   title={product.title}
