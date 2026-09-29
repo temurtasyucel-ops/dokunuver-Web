@@ -40,33 +40,27 @@ async function verifyAdmin(request) {
 
 const TEMPLATE_CONFIG = {
   google: {
-    templatePath: path.join(process.cwd(), "public/templates/google.png"),
-    qr: {
-      left: 919,
-      top: 648,
-      size: 166,
-      clearPadding: 4,
-    },
+    fileName: "google.png",
+    qrLeft: 914,
+    qrTop: 646,
+    qrSize: 180,
+    fileLabel: "GOOGLE",
   },
 
   instagram: {
-    templatePath: path.join(process.cwd(), "public/templates/instagram.png"),
-    qr: {
-      left: 921,
-      top: 650,
-      size: 165,
-      clearPadding: 4,
-    },
+    fileName: "instagram.png",
+    qrLeft: 920,
+    qrTop: 653,
+    qrSize: 165,
+    fileLabel: "INSTAGRAM",
   },
 
   whatsapp: {
-    templatePath: path.join(process.cwd(), "public/templates/whatsapp.png"),
-    qr: {
-      left: 921,
-      top: 650,
-      size: 165,
-      clearPadding: 4,
-    },
+    fileName: "whatsapp.png",
+    qrLeft: 921,
+    qrTop: 650,
+    qrSize: 165,
+    fileLabel: "WHATSAPP",
   },
 };
 
@@ -263,7 +257,9 @@ export async function GET(
 
     // 6) Gerçek QR'ı tasarıma yerleştir
     const clearPadding =
-  smartLink.product_type === "instagram"
+  ["instagram", "whatsapp"].includes(
+    smartLink.product_type
+  )
     ? 4
     : 0;
 
