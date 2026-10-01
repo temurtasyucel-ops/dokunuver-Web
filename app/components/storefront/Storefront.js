@@ -1,7 +1,9 @@
+import { notFound } from "next/navigation";
+import ProductOrder from "./ProductOrder";
 import Link from "next/link";
-import { effectivePrice, isLive, money } from "../../../lib/site-content.mjs";
+import { effectivePrice, isLive, standSummary, visibleProducts } from "../../../lib/site-content.mjs";
 import { ProductPrice } from "../SiteCommerce";
-import { FAQS, PRODUCT_STORIES, orderLink } from "./catalog";
+import { FAQS, productStory, orderLink } from "./catalog";
 import styles from "./storefront.module.css";
 
 export function Icon({ name = "arrow", className }) {
@@ -47,7 +49,7 @@ export function Banner({ banner }) {
 }
 
 export function ProductCard({ product, compact = false }) {
-  const story = PRODUCT_STORIES[product.id];
+  const story = productStory(product);
   return <Link href={`/urunler/${product.id}`} className={`${styles.productCard} ${compact ? styles.compactCard : ""}`} style={{ "--accent": story.accent }}>
     <div className={styles.productVisual}><span>{story.label}</span><img src={product.image} alt={`DOKUNUVER ${product.title}`} loading="lazy" width="1181" height="1181" /><div className={styles.productArrow}><Icon /></div></div>
     <div className={styles.productInfo}><span className={styles.productCategory}>{story.category}</span><h3>{product.title}</h3><p>{product.description}</p>
@@ -63,24 +65,26 @@ export function HowItWorks() {
 
 export function FAQ({ settings }) {
   return <section className={`${styles.section} ${styles.faqSection}`} id="sorular"><div><span className={styles.eyebrow}>AKLINIZDA SORU KALMASIN</span><h2>Küçük kart.<br />Net cevaplar.</h2><p>Başka bir sorunuz varsa<br />bize yazabilirsiniz.</p><a href={orderLink()} className={styles.textLink} target="_blank" rel="noreferrer">WhatsApp’tan sorun <Icon /></a></div>
-    <div className={styles.faqList}>{FAQS.map(([question, answer], index) => <details key={question}><summary><span>{question}</span><span className={styles.faqPlus}>＋</span></summary><p>{index === 3 ? `${answer} Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.` : answer}</p></details>)}</div>
+    <div className={styles.faqList}>{FAQS.map(([question, answer], index) => <details key={question}><summary><span>{question}</span><span className={styles.faqPlus}>＋</span></summary><p>{index === 3 ? `${answer} ${standSummary(settings)} seçenekleri sunulur.` : answer}</p></details>)}</div>
   </section>;
 }
 
 export function OrderCTA({ settings }) {
-  return <section className={styles.orderCTA}><div><span className={styles.eyebrow}>SİZİN İÇİN HAZIRLAYALIM</span><h2>Bir sonraki bağlantınız,<br />bir dokunuş uzağınızda.</h2><p>Kartınızı seçin. Bağlantınızı paylaşın.<br />Gerisini birlikte hazırlayalım.</p><Button href={orderLink()} external>WhatsApp’tan sipariş ver</Button><small>Hazır yapışkanlı arka yüz · Stand +{money(settings.stand_price)} · {settings.shipping_text}</small></div><div className={styles.ctaMark} aria-hidden="true"><img src="/images/dokunuver-icon.png" alt="" width="1280" height="1280" /></div></section>;
+  return <section className={styles.orderCTA}><div><span className={styles.eyebrow}>SİZİN İÇİN HAZIRLAYALIM</span><h2>Bir sonraki bağlantınız,<br />bir dokunuş uzağınızda.</h2><p>Kartınızı seçin. Bağlantınızı paylaşın.<br />Gerisini birlikte hazırlayalım.</p><Button href={orderLink()} external>WhatsApp’tan sipariş ver</Button><small>Hazır yapışkanlı arka yüz · {standSummary(settings)} · {settings.shipping_text}</small></div><div className={styles.ctaMark} aria-hidden="true"><img src="/images/dokunuver-icon.png" alt="" width="1280" height="1280" /></div></section>;
 }
 
 export function ProductPage({ content, id }) {
-  const product = content.products.find(p => p.id === id), story = PRODUCT_STORIES[id], { settings } = content;
+  const product = visibleProducts(content).find(p => p.id === id);
+  if (!product) notFound();
+  const story = productStory(product), { settings } = content;
   return <Shell><Banner banner={content.banner} /><section className={styles.detailSection} style={{ "--accent": story.accent }}>
     <div className={styles.breadcrumb}><Link href="/">Ana sayfa</Link><span>/</span><Link href="/#urunler">Kartlar</Link><span>/</span><span>{product.title}</span></div>
     <div className={styles.detailGrid}><div className={styles.detailVisual}><span className={styles.eyebrow}>{story.label}</span><img src={product.image} alt={`DOKUNUVER ${product.title}`} width="1181" height="1181" fetchPriority="high" /><div><Icon name="nfc" /> NFC <span>+</span><Icon name="qr" /> QR</div></div>
       <div className={styles.detailInfo}><span className={styles.eyebrow}>{story.category}</span><h1>{product.title}</h1><p className={styles.detailLead}>{story.benefit}</p><p>{product.description}</p><div className={styles.detailPrice}><ProductPrice product={product} /></div>
         <div className={styles.detailTerms}><span>10 × 10 cm</span><span>Hazır yapışkanlı</span><span>NFC + QR</span></div>
-        <Button href={orderLink(product)} external>Bu kartı sipariş ver</Button><small>Masaüstü stand +{money(settings.stand_price)} · {settings.shipping_text}</small>
+        <ProductOrder product={product} settings={settings} cardPrice={effectivePrice(product)} />
         <ul className={styles.benefitList}>{story.benefits.map(text => <li key={text}><Icon name="check" />{text}</li>)}</ul>
       </div></div>
   </section><section className={`${styles.section} ${styles.productStory}`}><span className={styles.eyebrow}>GÜNLÜK HAYATTA DOKUNUVER</span><h2>{story.headline.split("\n").map((line,i) => <span key={line}>{i > 0 && <br />}{line}</span>)}</h2><p>{story.audience}</p>{story.note && <div className={styles.productNote}><Icon name={id === "iban" ? "check" : "chat"} /><p>{story.note}</p></div>}</section>
-    <HowItWorks /><section className={styles.section}><div className={styles.sectionHeading}><div><span className={styles.eyebrow}>KOLEKSİYONU KEŞFEDİN</span><h2>Diğer bağlantılarınız<br />için de bir kart var.</h2></div><Link href="/#urunler" className={styles.textLink}>Tüm kartlar <Icon /></Link></div><div className={styles.relatedGrid}>{content.products.filter(p => p.id !== id).slice(0,3).map(p => <ProductCard product={p} compact key={p.id} />)}</div></section><FAQ settings={settings} /><OrderCTA settings={settings} /></Shell>;
+    <HowItWorks /><section className={styles.section}><div className={styles.sectionHeading}><div><span className={styles.eyebrow}>KOLEKSİYONU KEŞFEDİN</span><h2>Diğer bağlantılarınız<br />için de bir kart var.</h2></div><Link href="/#urunler" className={styles.textLink}>Tüm kartlar <Icon /></Link></div><div className={styles.relatedGrid}>{visibleProducts(content).filter(p => p.id !== id).slice(0,3).map(p => <ProductCard product={p} compact key={p.id} />)}</div></section><FAQ settings={settings} /><OrderCTA settings={settings} /></Shell>;
 }

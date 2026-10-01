@@ -26,6 +26,13 @@ export const FAQS = [
   ["Siparişi nasıl verebilirim?", "İstediğiniz kartı seçip WhatsApp üzerinden bize ulaşın. İlgili bağlantı veya hesap bilgilerini paylaşın; kartınız size özel, NFC ve QR bağlantıları hazırlanmış şekilde üretilsin."],
 ];
 
-export function orderLink(product) {
-  return `https://wa.me/905075738349?text=${encodeURIComponent(product ? `Merhaba, DOKUNUVER ${product.title} için sipariş vermek istiyorum.` : "Merhaba, DOKUNUVER kartları hakkında bilgi almak istiyorum.")}`;
+export function productStory(product) {
+  return PRODUCT_STORIES[product.id] || { label: product.title, accent: "#2563eb", category: "NFC kartlar", headline: "Yeni bağlantınız,\nbir dokunuş uzağınızda.",
+    benefit: "NFC ve QR ile kolay erişim.", audience: product.description,
+    benefits: ["NFC ve QR birlikte", "Size özel hazırlanan bağlantı", "Hazır yapışkanlı arka yüz"] };
+}
+
+export function orderLink(product, stand, total) {
+  const selection = total === undefined ? "" : `\nStand tercihi: ${stand?.title || "Standsız"}\nKart ve stand toplamı: ${total} TL (kargo hariç).`;
+  return `https://wa.me/905075738349?text=${encodeURIComponent(product ? `Merhaba, DOKUNUVER ${product.title} için sipariş vermek istiyorum.${selection}` : "Merhaba, DOKUNUVER kartları hakkında bilgi almak istiyorum.")}`;
 }
