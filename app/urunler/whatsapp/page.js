@@ -1,9 +1,6 @@
 import { getSiteContent } from "../../../lib/site-content-server";
+import { productMetadata } from "../../../lib/product-page";
 import { ProductPage } from "../../components/storefront/Storefront";
 export const dynamic = "force-dynamic";
-export const metadata = {
-  title: "WhatsApp NFC Kartı | DOKUNUVER",
-  description:
-    "DOKUNUVER WhatsApp NFC Kartı ile müşterilerinizin işletmenizle WhatsApp üzerinden NFC veya QR ile kolayca iletişime geçmesini sağlayın.",
-};
+export async function generateMetadata() { return productMetadata("whatsapp"); }
 export default async function Page() { return <ProductPage content={await getSiteContent()} id="whatsapp" />; }

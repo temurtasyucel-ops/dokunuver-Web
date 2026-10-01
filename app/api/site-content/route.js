@@ -9,7 +9,7 @@ export async function GET(request) {
   try {
     const auth = await requirePanelAdmin(request);
     if (!auth.ok) return reply({ error: auth.error }, auth.status);
-    return reply(await readSiteContent());
+    return reply({ ...await readSiteContent(), can_publish: process.env.VERCEL_ENV !== "preview" });
   } catch { return reply({ error: "Site yönetimi kurulumunu kontrol edin: tablo ve yönetici tanımı gereklidir." }, 503); }
 }
 
@@ -17,6 +17,7 @@ export async function PUT(request) {
   try {
     const auth = await requirePanelAdmin(request);
     if (!auth.ok) return reply({ error: auth.error }, auth.status);
+    if (process.env.VERCEL_ENV === "preview") return reply({ error: "Önizlemede yayınlama kapalıdır. Değişiklikleri canlı panelden yayınlayabilirsiniz." }, 403);
     let body, content;
     try {
       body = await request.json();
