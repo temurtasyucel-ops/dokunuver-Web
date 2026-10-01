@@ -575,6 +575,7 @@ return (
   >
     Smart Links
   </a>
+  <a href="/panel/site-yonetimi" style={{ padding: "10px 16px", border: "1px solid #d0d5dd", borderRadius: "10px", background: "#ffffff", color: "#344054", textDecoration: "none", fontSize: "14px", fontWeight: "800" }}>Site Yönetimi</a>
 </div>
   <section
     style={{
@@ -1397,3 +1398,4 @@ return (
     </main>
   );
 }
+

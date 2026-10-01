@@ -1,10 +1,18 @@
+import { getSiteContent } from "../../../lib/site-content-server";
+import { money } from "../../../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "../../components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Google Yorum NFC | DOKUNUVER",
   description:
     "DOKUNUVER Google Yorum NFC ile müşterilerinizi NFC veya QR üzerinden işletmenizin Google yorum sayfasına kolayca yönlendirin.",
 };
 
-export default function GoogleYorumPage() {
+export default async function GoogleYorumPage() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const product = content.products.find(p => p.id === "google-yorum");
   return (
     <main
       style={{
@@ -68,6 +76,7 @@ export default function GoogleYorumPage() {
           ← Ürünlere Dön
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
       {/* ÜRÜN */}
       <section
@@ -95,7 +104,7 @@ export default function GoogleYorumPage() {
             }}
           >
             <img
-              src="/images/google-yorum-nfc.png"
+              src={product.image}
               alt="DOKUNUVER Google Yorum NFC Kartı"
               style={{
                 display: "block",
@@ -134,7 +143,7 @@ export default function GoogleYorumPage() {
                 letterSpacing: "-2px",
               }}
             >
-              Google Yorum Kartı
+              {product.title}
             </h1>
 
             <p
@@ -145,10 +154,7 @@ export default function GoogleYorumPage() {
                 lineHeight: "1.7",
               }}
             >
-              Müşterilerinizi işletmenizin Google yorum
-              bağlantısına NFC veya QR ile kolayca yönlendirin.
-              Telefonunu karta yaklaştıran müşteriniz birkaç
-              saniye içinde yorum sayfanıza ulaşsın.
+              {product.description}
             </p>
 
             {/* FİYAT */}
@@ -160,7 +166,7 @@ export default function GoogleYorumPage() {
                 color: "#101828",
               }}
             >
-              250 TL
+              <ProductPrice product={product} />
             </div>
 
             <div
@@ -170,7 +176,7 @@ export default function GoogleYorumPage() {
                 fontSize: "13px",
               }}
             >
-              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -191,7 +197,7 @@ export default function GoogleYorumPage() {
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ İşletmenize özel hazırlanır</div>
               <div>✓ Hazır yapışkanlı arka yüz</div>
-<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
+<div>✓ Masaüstü stand +{money(settings.stand_price)} ile eklenebilir</div>
               <div>
                 ✓ Bağlantı gerektiğinde kart değiştirilmeden
                 güncellenebilir
@@ -327,7 +333,7 @@ export default function GoogleYorumPage() {
             <FeatureCard
   number="04"
   title="Kullanıma Hazır"
-  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+  description={`NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.`}
 />
           </div>
         </div>
@@ -646,3 +652,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+

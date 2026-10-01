@@ -1,10 +1,15 @@
+import { getSiteContent } from "../../lib/site-content-server";
+import { money, priceSummary } from "../../lib/site-content.mjs";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "İletişim | DOKUNUVER",
   description:
     "DOKUNUVER NFC ürünleri, işletmenize özel çözümler ve siparişler hakkında bilgi almak için bizimle iletişime geçin.",
 };
 
-export default function IletisimPage() {
+export default async function IletisimPage() {
+  const content = await getSiteContent();
   return (
     <main
       style={{
@@ -271,7 +276,7 @@ export default function IletisimPage() {
             lineHeight: "1.7",
           }}
         >
-          Tekli kartlar 249 TL • Duo NFC 349 TL • Kargo alıcıya aittir.
+          {priceSummary(content.products)} • Masaüstü stand +{money(content.settings.stand_price)} • {content.settings.shipping_text}
         </div>
       </section>
 
@@ -429,3 +434,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+

@@ -1,10 +1,18 @@
+import { getSiteContent } from "../../../lib/site-content-server";
+import { money } from "../../../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "../../components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "İlan NFC Kartı | DOKUNUVER",
   description:
     "DOKUNUVER İlan NFC Kartı ile ilan bağlantınızı müşterilerinizle NFC veya QR üzerinden kolayca paylaşın.",
 };
 
-export default function IlanPage() {
+export default async function IlanPage() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const product = content.products.find(p => p.id === "ilan");
   return (
     <main
       style={{
@@ -68,6 +76,7 @@ export default function IlanPage() {
           ← Ürünlere Dön
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
       {/* ÜRÜN */}
       <section
@@ -95,7 +104,7 @@ export default function IlanPage() {
             }}
           >
             <img
-              src="/images/ilan-nfc.png"
+              src={product.image}
               alt="DOKUNUVER İlan NFC Kartı"
               style={{
                 display: "block",
@@ -134,7 +143,7 @@ export default function IlanPage() {
                 letterSpacing: "-2px",
               }}
             >
-              İlan Kartı
+              {product.title}
             </h1>
 
             <p
@@ -145,10 +154,7 @@ export default function IlanPage() {
                 lineHeight: "1.7",
               }}
             >
-              Araç, gayrimenkul veya paylaşmak istediğiniz diğer ilan
-              bağlantılarını NFC veya QR üzerinden kolayca ulaştırın.
-              Müşteriniz uzun bağlantıları aramak yerine ilanınıza
-              tek dokunuşla ulaşsın.
+              {product.description}
             </p>
 
             {/* FİYAT */}
@@ -160,7 +166,7 @@ export default function IlanPage() {
                 color: "#101828",
               }}
             >
-              250 TL
+              <ProductPrice product={product} />
             </div>
 
             <div
@@ -170,7 +176,7 @@ export default function IlanPage() {
                 fontSize: "13px",
               }}
             >
-              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -191,7 +197,7 @@ export default function IlanPage() {
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ İlan bağlantınıza özel hazırlanır</div>
               <div>✓ Hazır yapışkanlı arka yüz</div>
-<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
+<div>✓ Masaüstü stand +{money(settings.stand_price)} ile eklenebilir</div>
               <div>
                 ✓ İlan bağlantısı kart değiştirilmeden güncellenebilir
               </div>
@@ -327,7 +333,7 @@ export default function IlanPage() {
             <FeatureCard
   number="04"
   title="Kullanıma Hazır"
-  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+  description={`NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.`}
 />
           </div>
         </div>
@@ -705,3 +711,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+

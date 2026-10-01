@@ -1,59 +1,18 @@
+import { getSiteContent } from "../lib/site-content-server";
+import { money, priceSummary } from "../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "./components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "DOKUNUVER | NFC Kart ve Dijital Bağlantı Çözümleri",
   description:
   "Google Yorum, Instagram, WhatsApp, IBAN ve İlan NFC kartlarıyla işletmenizin dijital bağlantılarını müşterilerinize NFC ve QR üzerinden ulaştırın.",
 };
 
-const products = [
-  {
-    href: "/urunler/google-yorum",
-    image: "/images/google-yorum-nfc.png",
-    title: "Google Yorum Kartı",
-    description:
-      "Müşterilerinizi Google yorum sayfanıza NFC veya QR ile kolayca yönlendirin.",
-    price: "250 TL",
-    detail: "10 × 10 cm • NFC + QR",
-  },
-  {
-    href: "/urunler/instagram",
-    image: "/images/instagram-nfc.png",
-    title: "Instagram Kartı",
-    description:
-      "Instagram profilinizi müşterilerinizle NFC veya QR üzerinden kolayca paylaşın.",
-    price: "250 TL",
-    detail: "10 × 10 cm • NFC + QR",
-  },
-  {
-    href: "/urunler/whatsapp",
-    image: "/images/whatsapp-nfc.png",
-    title: "WhatsApp Kartı",
-    description:
-      "Müşterilerinizin numaranızı kaydetmeden WhatsApp bağlantınıza ulaşmasını kolaylaştırın.",
-    price: "250 TL",
-    detail: "10 × 10 cm • NFC + QR",
-  },
-  {
-    href: "/urunler/iban",
-    image: "/images/iban-nfc.png",
-    title: "IBAN Kartı",
-    description:
-      "Doğrulanmış banka, hesap sahibi ve IBAN bilgilerinizi NFC veya QR üzerinden kolayca paylaşın.",
-    price: "250 TL",
-    detail: "10 × 10 cm • NFC + QR",
-  },
-  {
-    href: "/urunler/ilan",
-    image: "/images/ilan-nfc.png",
-    title: "İlan Kartı",
-    description:
-      "İlan bağlantınızı NFC veya QR ile müşterilerinize doğrudan ulaştırın.",
-    price: "250 TL",
-    detail: "10 × 10 cm • NFC + QR",
-  },
-  
-];
-
-export default function Home() {
+export default async function Home() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const products = content.products.map(p => ({ ...p, href: `/urunler/${p.id}`, detail: "10 × 10 cm • NFC + QR" }));
   return (
     <main
       style={{
@@ -220,6 +179,7 @@ export default function Home() {
           Ürünleri İncele
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
      {/* HERO */}
 <section
@@ -380,7 +340,7 @@ export default function Home() {
         }}
       >
         <img
-          src="/images/dokunuver-icon.png"
+          src={settings.hero_image}
           alt="DOKUNUVER NFC"
           style={{
             width: "112px",
@@ -571,7 +531,8 @@ export default function Home() {
                   image={product.image}
                   title={product.title}
                   description={product.description}
-                  price={product.price}
+                  product={product}
+                  settings={settings}
                   detail={product.detail}
                 />
               </a>
@@ -750,7 +711,7 @@ export default function Home() {
             <BenefitCard
   number="04"
   title="Kullanıma Hazır"
-  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+  description={`NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.`}
 />
           </div>
         </div>
@@ -840,7 +801,7 @@ export default function Home() {
               fontSize: "12px",
             }}
           >
-            Tekli kartlar 250 TL • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+            {priceSummary(content.products)} • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
           </div>
         </div>
       </section>
@@ -955,7 +916,8 @@ function ProductCard({
   image,
   title,
   description,
-  price,
+  product,
+  settings,
   detail,
 }) {
   return (
@@ -1037,7 +999,7 @@ function ProductCard({
             color: "#101828",
           }}
         >
-          {price}
+          <ProductPrice product={product} />
         </div>
 
         <div
@@ -1058,7 +1020,7 @@ function ProductCard({
             fontSize: "12px",
           }}
         >
-          Hazır yapışkanlı arka yüz • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+          Hazır yapışkanlı arka yüz • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
         </div>
 
         <div
@@ -1196,3 +1158,4 @@ function MiniTag({ label }) {
     </div>
   );
 }
+

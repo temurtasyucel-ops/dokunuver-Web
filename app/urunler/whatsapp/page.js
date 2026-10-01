@@ -1,10 +1,18 @@
+import { getSiteContent } from "../../../lib/site-content-server";
+import { money } from "../../../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "../../components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "WhatsApp NFC Kartı | DOKUNUVER",
   description:
     "DOKUNUVER WhatsApp NFC Kartı ile müşterilerinizin işletmenizle WhatsApp üzerinden NFC veya QR ile kolayca iletişime geçmesini sağlayın.",
 };
 
-export default function WhatsAppPage() {
+export default async function WhatsAppPage() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const product = content.products.find(p => p.id === "whatsapp");
   return (
     <main
       style={{
@@ -68,6 +76,7 @@ export default function WhatsAppPage() {
           ← Ürünlere Dön
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
       {/* ÜRÜN */}
       <section
@@ -95,7 +104,7 @@ export default function WhatsAppPage() {
             }}
           >
             <img
-              src="/images/whatsapp-nfc.png"
+              src={product.image}
               alt="DOKUNUVER WhatsApp NFC Kartı"
               style={{
                 display: "block",
@@ -134,7 +143,7 @@ export default function WhatsAppPage() {
                 letterSpacing: "-2px",
               }}
             >
-              WhatsApp Kartı
+              {product.title}
             </h1>
 
             <p
@@ -145,10 +154,7 @@ export default function WhatsAppPage() {
                 lineHeight: "1.7",
               }}
             >
-              Müşterilerinizin işletmenizle WhatsApp üzerinden
-              NFC veya QR ile kolayca iletişime geçmesini sağlayın.
-              Numaranızı yazmalarına veya rehbere kaydetmelerine
-              gerek kalmadan WhatsApp bağlantınıza ulaşsınlar.
+              {product.description}
             </p>
 
             {/* FİYAT */}
@@ -160,7 +166,7 @@ export default function WhatsAppPage() {
                 color: "#101828",
               }}
             >
-              250 TL
+              <ProductPrice product={product} />
             </div>
 
             <div
@@ -170,7 +176,7 @@ export default function WhatsAppPage() {
                 fontSize: "13px",
               }}
             >
-              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -191,7 +197,7 @@ export default function WhatsAppPage() {
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ WhatsApp numaranıza özel hazırlanır</div>
               <div>✓ Hazır yapışkanlı arka yüz</div>
-<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
+<div>✓ Masaüstü stand +{money(settings.stand_price)} ile eklenebilir</div>
               <div>
                 ✓ WhatsApp numarası kart değiştirilmeden güncellenebilir
               </div>
@@ -326,7 +332,7 @@ export default function WhatsAppPage() {
             <FeatureCard
   number="04"
   title="Kullanıma Hazır"
-  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+  description={`NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.`}
 />
           </div>
         </div>
@@ -646,3 +652,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+
