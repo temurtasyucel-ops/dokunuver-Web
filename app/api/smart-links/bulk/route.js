@@ -1,28 +1,7 @@
+import { requirePanelAdmin as verifyAdmin } from "../../../../lib/admin-auth.mjs";
 export const dynamic = "force-dynamic";
 
-async function verifyAdmin(request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  const authHeader = request.headers.get("authorization");
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return false;
-  }
-
-  const token = authHeader.replace("Bearer ", "");
-
-  const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: {
-      apikey: publishableKey,
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
-
-  return response.ok;
-}
 
 function generateCode(length = 6) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -40,12 +19,12 @@ function generateCode(length = 6) {
 
 export async function POST(request) {
   try {
-    const isAdmin = await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
-        { error: "Yetkisiz erişim." },
-        { status: 401 }
+        { error: auth.error },
+        { status: auth.status }
       );
     }
 
@@ -223,3 +202,4 @@ export async function POST(request) {
     );
   }
 }
+

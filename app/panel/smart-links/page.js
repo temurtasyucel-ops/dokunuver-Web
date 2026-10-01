@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
 import JSZip from "jszip";
-import LogoutButton from "../LogoutButton";
+
 
 function formatSmartBatchDate(batchCode) {
   const match =
@@ -501,82 +501,6 @@ return (
       }}
     >
       <>
-  <header
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      gap: "20px",
-      marginBottom: "38px",
-    }}
-  >
-    <div>
-      <div
-        style={{
-          fontSize: "22px",
-          fontWeight: "900",
-          letterSpacing: "0.3px",
-          color: "#101828",
-        }}
-      >
-        DOKUNUVER
-      </div>
-
-      <div
-        style={{
-          marginTop: "4px",
-          color: "#087cf0",
-          fontSize: "12px",
-          fontWeight: "800",
-        }}
-      >
-        Dokun. Bağlan.
-      </div>
-    </div>
-
-    <LogoutButton />
-  </header>
-<div
-  style={{
-    display: "flex",
-    gap: "8px",
-    marginBottom: "16px",
-    flexWrap: "wrap",
-  }}
->
-  <a
-    href="/panel"
-    style={{
-      padding: "10px 16px",
-      border: "1px solid #d0d5dd",
-      borderRadius: "10px",
-      background: "#ffffff",
-      color: "#344054",
-      textDecoration: "none",
-      fontSize: "14px",
-      fontWeight: "800",
-    }}
-  >
-    IBAN Kartları
-  </a>
-
-  <a
-    href="/panel/smart-links"
-    style={{
-      padding: "10px 16px",
-      border: "1px solid #087cf0",
-      borderRadius: "10px",
-      background: "#087cf0",
-      color: "#ffffff",
-      textDecoration: "none",
-      fontSize: "14px",
-      fontWeight: "800",
-    }}
-  >
-    Smart Links
-  </a>
-  <a href="/panel/site-yonetimi" style={{ padding: "10px 16px", border: "1px solid #d0d5dd", borderRadius: "10px", background: "#ffffff", color: "#344054", textDecoration: "none", fontSize: "14px", fontWeight: "800" }}>Site Yönetimi</a>
-</div>
   <section
     style={{
       background: "#101828",
@@ -1049,7 +973,7 @@ return (
             color: "#b42318",
           }}
         >
-          {error}
+          <p role="alert">{error}</p><button type="button" onClick={loadLinks}>Tekrar dene</button>
         </div>
       )}
 

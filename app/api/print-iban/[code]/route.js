@@ -1,58 +1,11 @@
+import { requirePanelAdmin as verifyAdmin } from "../../../../lib/admin-auth.mjs";
 import QRCode from "qrcode";
 import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-async function verifyAdmin(request) {
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  const publishableKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  const authorization =
-    request.headers.get("authorization");
-
-  if (
-    !supabaseUrl ||
-    !publishableKey ||
-    !authorization?.startsWith("Bearer ")
-  ) {
-    return false;
-  }
-
-  const accessToken =
-    authorization.slice(7).trim();
-
-  if (!accessToken) {
-    return false;
-  }
-
-  try {
-    const response = await fetch(
-      `${supabaseUrl}/auth/v1/user`,
-      {
-        method: "GET",
-        headers: {
-          apikey: publishableKey,
-          Authorization:
-            `Bearer ${accessToken}`,
-        },
-        cache: "no-store",
-      }
-    );
-
-    return response.ok;
-  } catch (error) {
-    console.error(
-      "Print IBAN admin verification error:",
-      error
-    );
-
-    return false;
-  }
-}
 
 export async function GET(
   request,
@@ -60,16 +13,15 @@ export async function GET(
 ) {
   try {
     // 1) Admin kontrolü
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -313,3 +265,4 @@ export async function GET(
     );
   }
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LogoutButton from "../LogoutButton";
+
 import { effectivePrice, isLive, money, validateContent } from "../../../lib/site-content.mjs";
 import styles from "./site-management.module.css";
 
@@ -73,8 +73,6 @@ export default function SiteManagement() {
 
   const controlsDisabled = busy || uploading > 0;
   return <main className={styles.page}><div className={styles.container}>
-    <header className={styles.header}><div><strong>DOKUNUVER</strong><p>Dokun. Bağlan.</p></div><LogoutButton /></header>
-    <nav className={styles.nav} aria-label="Panel bölümleri"><a href="/panel">IBAN Kartları</a><a href="/panel/smart-links">Smart Links</a><a href="/panel/site-yonetimi" aria-current="page">Site Yönetimi</a></nav>
     <section className={styles.hero}><p>SİTE YÖNETİMİ</p><h1>Fiyatlar, kampanyalar ve görseller</h1><span>Değişiklikleri burada hazırlayın, önizleyin ve tek seferde yayınlayın.</span></section>
     {error && <div role="alert" className={styles.error}>{error}</div>}
     {notice && <div role="status" className={styles.success}>{notice}</div>}

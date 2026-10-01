@@ -302,10 +302,7 @@ export default function EditIbanCardPage() {
     <main style={styles.page}>
       <div style={styles.container}>
         <header style={styles.header}>
-          <div>
-            <div style={styles.logo}>DOKUNUVER</div>
-            <div style={styles.slogan}>Dokun. Bağlan.</div>
-          </div>
+
 
           <a href="/panel" style={styles.backButton}>
             ← Panele Dön
@@ -1089,3 +1086,4 @@ const styles = {
     marginTop: "28px",
   },
 };
+

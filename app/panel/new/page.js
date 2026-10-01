@@ -67,10 +67,7 @@ export default function NewIbanCardPage() {
     <main style={styles.page}>
       <div style={styles.container}>
         <header style={styles.header}>
-          <div>
-            <div style={styles.logo}>DOKUNUVER</div>
-            <div style={styles.slogan}>Dokun. Bağlan.</div>
-          </div>
+
 
           <button
             type="button"
@@ -351,3 +348,4 @@ securityText: {
   lineHeight: "1.6",
 },
 };
+

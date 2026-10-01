@@ -1,11 +1,13 @@
+import { requirePanelAdmin } from "../../../lib/admin-auth.mjs";
 import { randomUUID } from "node:crypto";
-import { serviceHeaders, verifySiteAdmin } from "../../../lib/site-content-server";
+import { serviceHeaders } from "../../../lib/site-content-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function POST(request) {
   try {
-    if (!await verifySiteAdmin(request)) return Response.json({ error: "Site yönetimi yetkiniz yok." }, { status: 403 });
+    const auth = await requirePanelAdmin(request);
+    if (!auth.ok) return Response.json({ error: auth.error }, { status: auth.status });
     const contentLength = Number(request.headers.get("content-length"));
     if (contentLength > 3 * 1024 * 1024 + 16384) return Response.json({ error: "Görsel en fazla 3 MB olabilir." }, { status: 413 });
     const form = await request.formData(), file = form.get("file");
