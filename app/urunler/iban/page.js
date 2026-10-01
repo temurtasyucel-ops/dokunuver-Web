@@ -1,10 +1,18 @@
+import { getSiteContent } from "../../../lib/site-content-server";
+import { money } from "../../../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "../../components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "IBAN NFC Kartı | DOKUNUVER",
   description:
     "DOKUNUVER IBAN NFC Kartı ile banka, hesap sahibi ve IBAN bilgilerinizi NFC veya QR üzerinden kolayca paylaşın.",
 };
 
-export default function IbanPage() {
+export default async function IbanPage() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const product = content.products.find(p => p.id === "iban");
   return (
     <main
       style={{
@@ -68,6 +76,7 @@ export default function IbanPage() {
           ← Ürünlere Dön
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
       {/* ÜRÜN */}
       <section
@@ -95,7 +104,7 @@ export default function IbanPage() {
             }}
           >
             <img
-              src="/images/iban-nfc.png"
+              src={product.image}
               alt="DOKUNUVER IBAN NFC Kartı"
               style={{
                 display: "block",
@@ -134,7 +143,7 @@ export default function IbanPage() {
                 letterSpacing: "-2px",
               }}
             >
-              IBAN Kartı
+              {product.title}
             </h1>
 
             <p
@@ -145,11 +154,7 @@ export default function IbanPage() {
                 lineHeight: "1.7",
               }}
             >
-              Banka, hesap sahibi ve IBAN bilgilerinizi
-              müşterilerinizle NFC veya QR üzerinden kolayca
-              paylaşın. Müşteriniz ödeme bilgilerinize tek
-              dokunuşla ulaşsın ve gerekli bilgileri kolayca
-              kopyalayabilsin.
+              {product.description}
             </p>
 
             {/* FİYAT */}
@@ -161,7 +166,7 @@ export default function IbanPage() {
                 color: "#101828",
               }}
             >
-              250 TL
+              <ProductPrice product={product} />
             </div>
 
             <div
@@ -171,7 +176,7 @@ export default function IbanPage() {
                 fontSize: "13px",
               }}
             >
-              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -194,7 +199,7 @@ export default function IbanPage() {
               <div>✓ Hesap sahibi ve IBAN kolayca kopyalanabilir</div>
               <div>✓ Doğrulama sonrasında bilgiler kilitlenir</div>
               <div>✓ Hazır yapışkanlı arka yüz</div>
-<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
+<div>✓ Masaüstü stand +{money(settings.stand_price)} ile eklenebilir</div>
             </div>
 
             {/* BUTONLAR */}
@@ -712,3 +717,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+

@@ -1,10 +1,18 @@
+import { getSiteContent } from "../../../lib/site-content-server";
+import { money } from "../../../lib/site-content.mjs";
+import { ProductPrice, CampaignBanner } from "../../components/SiteCommerce";
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Instagram NFC Kartı | DOKUNUVER",
   description:
     "DOKUNUVER Instagram NFC Kartı ile müşterilerinizi Instagram profilinize NFC veya QR üzerinden kolayca yönlendirin.",
 };
 
-export default function InstagramPage() {
+export default async function InstagramPage() {
+  const content = await getSiteContent();
+  const { settings } = content;
+  const product = content.products.find(p => p.id === "instagram");
   return (
     <main
       style={{
@@ -68,6 +76,7 @@ export default function InstagramPage() {
           ← Ürünlere Dön
         </a>
       </header>
+      <CampaignBanner banner={content.banner} />
 
       {/* ÜRÜN */}
       <section
@@ -95,7 +104,7 @@ export default function InstagramPage() {
             }}
           >
             <img
-              src="/images/instagram-nfc.png"
+              src={product.image}
               alt="DOKUNUVER Instagram NFC Kartı"
               style={{
                 display: "block",
@@ -134,7 +143,7 @@ export default function InstagramPage() {
                 letterSpacing: "-2px",
               }}
             >
-              Instagram Kartı
+              {product.title}
             </h1>
 
             <p
@@ -145,9 +154,7 @@ export default function InstagramPage() {
                 lineHeight: "1.7",
               }}
             >
-              Instagram profilinizi müşterilerinizle NFC veya QR
-              üzerinden kolayca paylaşın. Telefonunu karta yaklaştıran
-              müşteriniz profilinize saniyeler içinde ulaşsın.
+              {product.description}
             </p>
 
             {/* FİYAT */}
@@ -159,7 +166,7 @@ export default function InstagramPage() {
                 color: "#101828",
               }}
             >
-              250 TL
+              <ProductPrice product={product} />
             </div>
 
             <div
@@ -169,7 +176,7 @@ export default function InstagramPage() {
                 fontSize: "13px",
               }}
             >
-              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +50 TL • Kargo alıcıya aittir.
+              Hazır yapışkanlı arka yüz dahildir • Masaüstü stand +{money(settings.stand_price)} • {settings.shipping_text}
             </div>
 
             {/* ÜRÜN ÖZELLİKLERİ */}
@@ -190,7 +197,7 @@ export default function InstagramPage() {
               <div>✓ NFC + QR ile kullanım</div>
               <div>✓ Instagram profilinize özel hazırlanır</div>
              <div>✓ Hazır yapışkanlı arka yüz</div>
-<div>✓ Masaüstü stand +50 TL ile eklenebilir</div>
+<div>✓ Masaüstü stand +{money(settings.stand_price)} ile eklenebilir</div>
               <div>
                 ✓ Profil bağlantısı kart değiştirilmeden güncellenebilir
               </div>
@@ -326,7 +333,7 @@ export default function InstagramPage() {
             <FeatureCard
   number="04"
   title="Kullanıma Hazır"
-  description="NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +50 TL ile eklenebilir."
+  description={`NFC ve QR bağlantıları hazırlanmış, arka yüzü hazır yapışkanlı şekilde teslim edilir. Masaüstü stand +${money(settings.stand_price)} ile eklenebilir.`}
 />
           </div>
         </div>
@@ -646,3 +653,4 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+
