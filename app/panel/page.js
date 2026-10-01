@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import JSZip from "jszip";
-import LogoutButton from "./LogoutButton";
+import panelStyles from "./panel-shell.module.css";
+
 
 export default function AdminPanel() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,8 @@ export default function AdminPanel() {
   }, []);
 
   async function loadCards() {
+    setLoading(true);
+    setLoadError("");
     try {
       const token = localStorage.getItem("dokunuver_access_token");
 
@@ -56,7 +60,7 @@ export default function AdminPanel() {
       setCards(Array.isArray(data.cards) ? data.cards : []);
     } catch (error) {
       console.error("Kartlar yüklenirken hata oluştu:", error);
-      setCards([]);
+      setLoadError(error.message || "Kartlar yüklenemedi.");
     } finally {
       setLoading(false);
     }
@@ -498,7 +502,8 @@ alert(
     filteredCards.length / cardsPerPage
   );
 
-  const startIndex = (currentPage - 1) * cardsPerPage;
+  const safeCurrentPage = Math.min(currentPage, Math.max(totalPages, 1));
+  const startIndex = (safeCurrentPage - 1) * cardsPerPage;
   const endIndex = startIndex + cardsPerPage;
 
   const paginatedCards = filteredCards.slice(
@@ -532,56 +537,7 @@ const visibleProductionBatches = showAllBatches
   return (
     <main style={styles.page}>
       <div style={styles.container}>
-        <header style={styles.header}>
-          <div>
-            <div style={styles.brand}>DOKUNUVER</div>
-            <div style={styles.slogan}>Dokun. Bağlan.</div>
-          </div>
-
-          <LogoutButton />
-        </header>
-<div
-  style={{
-    display: "flex",
-    gap: "8px",
-    marginBottom: "16px",
-    flexWrap: "wrap",
-  }}
->
-  <a
-    href="/panel"
-    style={{
-      padding: "10px 16px",
-      border: "1px solid #087cf0",
-      borderRadius: "10px",
-      background: "#087cf0",
-      color: "#ffffff",
-      textDecoration: "none",
-      fontSize: "14px",
-      fontWeight: "800",
-    }}
-  >
-    IBAN Kartları
-  </a>
-
-  <a
-    href="/panel/smart-links"
-    style={{
-      padding: "10px 16px",
-      border: "1px solid #d0d5dd",
-      borderRadius: "10px",
-      background: "#ffffff",
-      color: "#344054",
-      textDecoration: "none",
-      fontSize: "14px",
-      fontWeight: "800",
-    }}
-  >
-    Smart Links
-  </a>
-  <a href="/panel/site-yonetimi" style={{ padding: "10px 16px", border: "1px solid #d0d5dd", borderRadius: "10px", background: "#ffffff", color: "#344054", textDecoration: "none", fontSize: "14px", fontWeight: "800" }}>Site Yönetimi</a>
-</div>
-        <section style={styles.hero}>
+        <section className={panelStyles.responsiveSection} style={styles.hero}>
           <div>
             <p style={styles.eyebrow}>DOKUNUVER PANEL</p>
 
@@ -679,7 +635,7 @@ const visibleProductionBatches = showAllBatches
 />
         </section>
             {productionBatches.length > 0 && (
-  <section style={styles.section}>
+  <section className={panelStyles.responsiveSection} style={styles.section}>
     <div style={styles.sectionHeader}>
       <h2 style={styles.sectionTitle}>
         Üretim Partileri
@@ -694,9 +650,9 @@ const visibleProductionBatches = showAllBatches
       {visibleProductionBatches.map((batch) => (
         <div
           key={batch.batchCode}
-          style={styles.customerCard}
+          className={panelStyles.listCard} style={styles.customerCard}
         >
-          <div style={styles.customerTop}>
+          <div className={panelStyles.row} style={styles.customerTop}>
             <div>
               <div style={styles.customerName}>
                 📦 {batch.batchCode}
@@ -809,7 +765,7 @@ const visibleProductionBatches = showAllBatches
 
         <section
   id="iban-kartlari"
-  style={styles.section}
+  className={panelStyles.responsiveSection} style={styles.section}
 >
   <div style={styles.sectionHeader}>
     <div>
@@ -967,18 +923,22 @@ const visibleProductionBatches = showAllBatches
             <div style={styles.empty}>
               Kartlar yükleniyor...
             </div>
+          ) : loadError ? (
+            <div role="alert" style={styles.empty}><p>{loadError}</p><button type="button" onClick={loadCards}>Tekrar dene</button></div>
           ) : cards.length === 0 ? (
             <div style={styles.empty}>
               Henüz IBAN kartı bulunmuyor.
             </div>
+          ) : filteredCards.length === 0 ? (
+            <div style={styles.empty}>Aramanızla veya seçtiğiniz filtreyle eşleşen IBAN kartı bulunamadı.</div>
           ) : (
             <div style={styles.cardList}>
               {paginatedCards.map((card) => (
                 <div
                   key={card.id}
-                  style={styles.customerCard}
+                  className={panelStyles.listCard} style={styles.customerCard}
                 >
-                  <div style={styles.customerTop}>
+                  <div className={panelStyles.row} style={styles.customerTop}>
                     <div>
                       <div style={styles.customerName}>
                         {card.business_name ||
@@ -1148,7 +1108,7 @@ const visibleProductionBatches = showAllBatches
                     Math.max(page - 1, 1)
                   )
                 }
-                disabled={currentPage === 1}
+                disabled={safeCurrentPage === 1}
                 style={styles.paginationButton}
               >
                 Önceki
@@ -1168,7 +1128,7 @@ const visibleProductionBatches = showAllBatches
                       }
                       style={{
                         ...styles.paginationButton,
-                        ...(currentPage === page
+                        ...(safeCurrentPage === page
                           ? styles.paginationButtonActive
                           : {}),
                       }}
@@ -1190,7 +1150,7 @@ const visibleProductionBatches = showAllBatches
                   )
                 }
                 disabled={
-                  currentPage === totalPages
+                  safeCurrentPage === totalPages
                 }
                 style={styles.paginationButton}
               >
@@ -1200,9 +1160,7 @@ const visibleProductionBatches = showAllBatches
           )}
         </section>
 
-        <footer style={styles.footer}>
-          DOKUNUVER NFC Platform
-        </footer>
+
       </div>
     </main>
   );
@@ -1329,7 +1287,7 @@ const styles = {
   stats: {
   display: "grid",
   gridTemplateColumns:
-  "repeat(auto-fit, minmax(150px, 1fr))",
+  "repeat(auto-fit, minmax(min(100%, 150px), 1fr))",
   gap: "16px",
   marginTop: "20px",
 },

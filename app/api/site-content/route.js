@@ -1,4 +1,5 @@
-import { readSiteContent, serviceHeaders, verifySiteAdmin } from "../../../lib/site-content-server";
+import { requirePanelAdmin } from "../../../lib/admin-auth.mjs";
+import { readSiteContent, serviceHeaders } from "../../../lib/site-content-server";
 import { validateContent } from "../../../lib/site-content.mjs";
 
 export const dynamic = "force-dynamic";
@@ -6,14 +7,16 @@ const reply = (data, status = 200) => Response.json(data, { status, headers: { "
 
 export async function GET(request) {
   try {
-    if (!await verifySiteAdmin(request)) return reply({ error: "Site yönetimi yetkiniz yok." }, 403);
+    const auth = await requirePanelAdmin(request);
+    if (!auth.ok) return reply({ error: auth.error }, auth.status);
     return reply(await readSiteContent());
   } catch { return reply({ error: "Site yönetimi kurulumunu kontrol edin: tablo ve yönetici tanımı gereklidir." }, 503); }
 }
 
 export async function PUT(request) {
   try {
-    if (!await verifySiteAdmin(request)) return reply({ error: "Site yönetimi yetkiniz yok." }, 403);
+    const auth = await requirePanelAdmin(request);
+    if (!auth.ok) return reply({ error: auth.error }, auth.status);
     let body, content;
     try {
       body = await request.json();

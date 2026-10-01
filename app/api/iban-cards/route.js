@@ -1,3 +1,4 @@
+import { requirePanelAdmin as verifyAdmin } from "../../../lib/admin-auth.mjs";
 import { NextResponse } from "next/server";
 
 function generateCode() {
@@ -11,81 +12,7 @@ function generateCode() {
   return code;
 }
 
-async function verifyAdmin(request) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  if (!supabaseUrl || !publishableKey) {
-    return {
-      ok: false,
-      status: 500,
-      error: "Sunucu yapılandırması eksik.",
-    };
-  }
-
-  const authorization = request.headers.get("authorization");
-
-  if (!authorization?.startsWith("Bearer ")) {
-    return {
-      ok: false,
-      status: 401,
-      error: "Yetkisiz erişim.",
-    };
-  }
-
-  const accessToken = authorization.slice(7).trim();
-
-  if (!accessToken) {
-    return {
-      ok: false,
-      status: 401,
-      error: "Yetkisiz erişim.",
-    };
-  }
-
-  try {
-    const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
-      method: "GET",
-      headers: {
-        apikey: publishableKey,
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      return {
-        ok: false,
-        status: 401,
-        error: "Oturum geçersiz veya süresi dolmuş.",
-      };
-    }
-
-    const user = await response.json();
-
-    if (!user?.id) {
-      return {
-        ok: false,
-        status: 401,
-        error: "Yetkisiz erişim.",
-      };
-    }
-
-    return {
-      ok: true,
-      user,
-    };
-  } catch (error) {
-    console.error("Admin verification error:", error);
-
-    return {
-      ok: false,
-      status: 500,
-      error: "Oturum doğrulanamadı.",
-    };
-  }
-}
 
 /* =========================================================
    GET - IBAN KARTLARINI GETİR
@@ -795,3 +722,4 @@ export async function PUT(request) {
     );
   }
 }
+

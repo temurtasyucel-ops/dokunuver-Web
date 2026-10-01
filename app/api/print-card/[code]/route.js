@@ -1,42 +1,11 @@
+import { requirePanelAdmin as verifyAdmin } from "../../../../lib/admin-auth.mjs";
 import QRCode from "qrcode";
 import sharp from "sharp";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-async function verifyAdmin(request) {
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  const publishableKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  const authHeader =
-    request.headers.get("authorization");
-
-  if (
-    !authHeader ||
-    !authHeader.startsWith("Bearer ")
-  ) {
-    return false;
-  }
-
-  const token =
-    authHeader.replace("Bearer ", "");
-
-  const response = await fetch(
-    `${supabaseUrl}/auth/v1/user`,
-    {
-      headers: {
-        apikey: publishableKey,
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    }
-  );
-
-  return response.ok;
-}
 
 const TEMPLATE_CONFIG = {
   google: {
@@ -79,16 +48,15 @@ export async function GET(
 ) {
   try {
     // 1) Admin kontrolü
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -354,3 +322,4 @@ const printBuffer =
     );
   }
 }
+

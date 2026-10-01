@@ -1,52 +1,20 @@
+import { requirePanelAdmin as verifyAdmin } from "../../../lib/admin-auth.mjs";
 export const dynamic = "force-dynamic";
 
-async function verifyAdmin(request) {
-  const supabaseUrl =
-    process.env.NEXT_PUBLIC_SUPABASE_URL;
 
-  const publishableKey =
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  const authHeader =
-    request.headers.get("authorization");
-
-  if (
-    !authHeader ||
-    !authHeader.startsWith("Bearer ")
-  ) {
-    return false;
-  }
-
-  const token =
-    authHeader.replace("Bearer ", "");
-
-  const response = await fetch(
-    `${supabaseUrl}/auth/v1/user`,
-    {
-      headers: {
-        apikey: publishableKey,
-        Authorization: `Bearer ${token}`,
-      },
-      cache: "no-store",
-    }
-  );
-
-  return response.ok;
-}
 
 
 export async function GET(request) {
   try {
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -134,16 +102,15 @@ function generateCode(length = 6) {
 
 export async function POST(request) {
   try {
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -341,16 +308,15 @@ export async function POST(request) {
 
 export async function PATCH(request) {
   try {
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -613,16 +579,15 @@ export async function PATCH(request) {
 
 export async function PUT(request) {
   try {
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -818,16 +783,15 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
-    const isAdmin =
-      await verifyAdmin(request);
+    const auth = await verifyAdmin(request);
 
-    if (!isAdmin) {
+    if (!auth.ok) {
       return Response.json(
         {
-          error: "Yetkisiz erişim.",
+          error: auth.error,
         },
         {
-          status: 401,
+          status: auth.status,
         }
       );
     }
@@ -940,3 +904,4 @@ export async function DELETE(request) {
     );
   }
 }
+
