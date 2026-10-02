@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 import styles from "./panel-shell.module.css";
 const sections = [
+  { href: "/panel/ozet", title: "İşletme Özeti", sub: "Güncel iş ve ödemeler", icon: "settings" },
   { href: "/panel", title: "IBAN Kartları", sub: "Stok ve müşteri kartları", icon: "card" },
   { href: "/panel/smart-links", title: "Smart Links", sub: "Bağlantılar ve üretim", icon: "link" },
   { href: "/panel/siparisler", title: "Siparişler", sub: "Üretim ve teslimat", icon: "card" },
+  { href: "/panel/stok", title: "Malzeme Stoku", sub: "Giriş, çıkış ve kritik stok", icon: "card" },
   { href: "/panel/toplu-islemler", title: "Toplu İşlemler", sub: "Seçim, durum ve baskı", icon: "settings" },
   { href: "/panel/islem-gecmisi", title: "İşlem Geçmişi", sub: "Kayıt değişiklikleri", icon: "link" },
   { href: "/panel/site-yonetimi", title: "Site Yönetimi", sub: "Fiyat, kampanya ve görsel", icon: "settings" },
@@ -18,7 +20,7 @@ function Glyph({ name }) {
 }
 export default function PanelShell({ children }) {
  const pathname = usePathname();
- const active = sections.find(s => s.href !== "/panel" && pathname.startsWith(s.href)) || sections[0];
+ const active = sections.find(s => s.href !== "/panel" && pathname.startsWith(s.href)) || sections.find(s => s.href === "/panel");
  const [warning, setWarning] = useState(false);
  useEffect(() => { const show = () => setWarning(true); window.addEventListener("dokunuver-session-warning", show); return () => window.removeEventListener("dokunuver-session-warning", show); }, []);
  if (pathname === "/panel/login") return children;
