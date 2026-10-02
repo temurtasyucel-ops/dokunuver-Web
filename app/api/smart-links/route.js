@@ -30,6 +30,7 @@ export async function GET(request) {
       {
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
         },
         cache: "no-store",
@@ -220,6 +221,7 @@ export async function POST(request) {
           method: "POST",
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization:
               `Bearer ${secretKey}`,
             "Content-Type":
@@ -427,6 +429,7 @@ export async function PATCH(request) {
         {
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization:
               `Bearer ${secretKey}`,
           },
@@ -496,6 +499,7 @@ export async function PATCH(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization:
             `Bearer ${secretKey}`,
           "Content-Type":
@@ -633,6 +637,7 @@ export async function PUT(request) {
         {
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization:
               `Bearer ${secretKey}`,
           },
@@ -706,6 +711,7 @@ export async function PUT(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization:
             `Bearer ${secretKey}`,
           "Content-Type":
@@ -830,6 +836,7 @@ export async function DELETE(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization:
             `Bearer ${secretKey}`,
           "Content-Type":

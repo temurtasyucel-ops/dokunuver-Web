@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../lib/panel-client.mjs";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -40,7 +41,7 @@ export default function NewIbanCardPage() {
     );
   }
 
-  const response = await fetch("/api/iban-cards", {
+  const response = await panelFetch("/api/iban-cards", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

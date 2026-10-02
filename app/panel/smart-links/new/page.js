@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../../lib/panel-client.mjs";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -27,7 +28,7 @@ export default function NewSmartLinkPage() {
         return;
       }
 
-      const response = await fetch("/api/smart-links", {
+      const response = await panelFetch("/api/smart-links", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -238,3 +239,4 @@ const inputStyle = {
   fontSize: "15px",
   outline: "none",
 };
+

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { panelClient } from "../../../lib/panel-client.mjs";
 import { loginToPanel } from "../../../lib/panel-login.mjs";
 
 export default function LoginPage() {
@@ -26,15 +27,7 @@ export default function LoginPage() {
         password,
       });
 
-      localStorage.setItem(
-        "dokunuver_access_token",
-        data.access_token
-      );
-
-      localStorage.setItem(
-        "dokunuver_refresh_token",
-        data.refresh_token
-      );
+      panelClient().store(data);
 
       router.push("/panel");
     } catch (err) {

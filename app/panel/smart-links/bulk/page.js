@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../../lib/panel-client.mjs";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -37,7 +38,7 @@ export default function BulkSmartLinksPage() {
         return;
       }
 
-      const response = await fetch("/api/smart-links/bulk", {
+      const response = await panelFetch("/api/smart-links/bulk", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -224,3 +225,4 @@ export default function BulkSmartLinksPage() {
     </main>
   );
 }
+

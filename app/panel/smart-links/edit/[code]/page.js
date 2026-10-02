@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../../../lib/panel-client.mjs";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -36,7 +37,7 @@ export default function EditSmartLinkPage() {
         return;
       }
 
-      const response = await fetch("/api/smart-links", {
+      const response = await panelFetch("/api/smart-links", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -175,7 +176,7 @@ if (productType === "instagram") {
     return;
   }
 }
-    const response = await fetch("/api/smart-links", {
+    const response = await panelFetch("/api/smart-links", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -469,3 +470,4 @@ const inputStyle = {
   fontSize: "15px",
   outline: "none",
 };
+

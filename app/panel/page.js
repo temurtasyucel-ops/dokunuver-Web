@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../lib/panel-client.mjs";
 
 import { useEffect, useState } from "react";
 import JSZip from "jszip";
@@ -36,7 +37,7 @@ export default function AdminPanel() {
         return;
       }
 
-      const response = await fetch("/api/iban-cards", {
+      const response = await panelFetch("/api/iban-cards", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -84,7 +85,7 @@ export default function AdminPanel() {
         return;
       }
 
-      const response = await fetch("/api/iban-cards", {
+      const response = await panelFetch("/api/iban-cards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -158,7 +159,7 @@ async function createBulkStockCards() {
       return;
     }
 
-    const response = await fetch("/api/iban-cards", {
+    const response = await panelFetch("/api/iban-cards", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -225,7 +226,7 @@ alert(
     const zip = new JSZip();
 
     for (const card of batch.cards) {
-      const response = await fetch(
+      const response = await panelFetch(
         `/api/print-iban/${encodeURIComponent(card.code)}`,
         {
           headers: {
@@ -320,7 +321,7 @@ alert(
       return;
     }
 
-    const response = await fetch(
+    const response = await panelFetch(
       `/api/print-iban/${encodeURIComponent(card.code)}`,
       {
         headers: {
@@ -418,7 +419,7 @@ alert(
         return;
       }
 
-      const response = await fetch("/api/iban-cards", {
+      const response = await panelFetch("/api/iban-cards", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,6 @@
 "use client";
 
+import { panelClient } from "../../lib/panel-client.mjs";
 import { useRouter } from "next/navigation";
 
 export default function LogoutButton() {
@@ -9,8 +10,9 @@ export default function LogoutButton() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+    const accessToken = localStorage.getItem("dokunuver_access_token");
+    panelClient().clear();
     try {
-      const accessToken = localStorage.getItem("dokunuver_access_token");
 
       if (accessToken) {
         await fetch(`${url}/auth/v1/logout`, {
@@ -24,10 +26,7 @@ export default function LogoutButton() {
     } catch (error) {
       console.error("Çıkış hatası:", error);
     } finally {
-      localStorage.removeItem("dokunuver_access_token");
-      localStorage.removeItem("dokunuver_refresh_token");
-
-      router.replace("/panel/login");
+      if (!localStorage.getItem("dokunuver_access_token")) router.replace("/panel/login");
     }
   }
 
