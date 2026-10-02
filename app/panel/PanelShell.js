@@ -13,6 +13,7 @@ const sections = [
   { href: "/panel/toplu-islemler", title: "Toplu İşlemler", sub: "Seçim, durum ve baskı", icon: "settings" },
   { href: "/panel/islem-gecmisi", title: "İşlem Geçmişi", sub: "Kayıt değişiklikleri", icon: "link" },
   { href: "/panel/site-yonetimi", title: "Site Yönetimi", sub: "Fiyat, kampanya ve görsel", icon: "settings" },
+  { href: "/panel/sifre", title: "Şifre Değiştir", sub: "Yönetici hesabı güvenliği", icon: "settings" },
 ];
 function Glyph({ name }) {
  const paths = { card: <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="M3 10h18M7 15h3" /></>, link: <><path d="m10 14 4-4M8 15l-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0M16 9l1-1a4 4 0 0 1 6 6l-4 4a4 4 0 0 1-6 0" /></>, settings: <><path d="M4 6h16M4 12h16M4 18h16" /><circle cx="8" cy="6" r="2" /><circle cx="16" cy="12" r="2" /><circle cx="10" cy="18" r="2" /></> };

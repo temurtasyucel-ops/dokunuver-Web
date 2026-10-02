@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { panelClient } from "../../../lib/panel-client.mjs";
 import { loginToPanel } from "../../../lib/panel-login.mjs";
@@ -12,6 +12,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('password') === 'changed') {
+      setNotice('Şifre değiştirme işlemi tamamlandı. Yeni şifrenizle giriş yapın.' + (params.get('sessions') === 'check' ? ' Diğer cihazlardaki oturumlar kapatılamadı; bu cihazlardan da çıkış yapın.' : ''));
+      window.history.replaceState(null, '', '/panel/login');
+    }
+  }, []);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -54,6 +62,7 @@ export default function LoginPage() {
             NFC kart yönetim paneline erişmek için giriş yapın.
           </p>
 
+          {notice && <p role="status" style={{ ...styles.error, background: '#ecfdf3', borderColor: '#abefc6', color: '#067647' }}>{notice}</p>}
           <form onSubmit={handleLogin}>
             <label style={styles.label}>
               E-posta
