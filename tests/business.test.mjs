@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildOrder,paymentStatus} from '../lib/orders.mjs';
+import {inventoryItem,stockAmount} from '../lib/inventory.mjs';
+const catalog={products:[{id:'iban',enabled:true,title:'IBAN',stand_ids:[],price:250,campaign:{enabled:false}}],settings:{stands:[]}};
+const input={customer_name:'Test',items:[{product_id:'iban',quantity:1}]};
+test('manual payments compute unpaid, partial and paid',()=>{for(const [paid,status]of [[0,'unpaid'],[50,'partial'],[250,'paid']]){const order=buildOrder({...input,paid_amount:paid},catalog);assert.equal(paymentStatus(order),status);}});
+test('payments cannot exceed updated total or use invalid cents',()=>{for(const paid_amount of [-1,250.01,NaN,1.001,'100'])assert.throws(()=>buildOrder({...input,paid_amount},catalog));});
+test('editing status preserves payment and internal payment note',()=>{const previous=buildOrder({...input,paid_amount:50,payment_note:'Havale'},catalog);const next=buildOrder({status:'ready'},catalog,previous);assert.equal(next.paid_amount,50);assert.equal(next.payment_note,'Havale');});
+test('stock fields and amounts validated; caller cannot set quantity',()=>{assert.deepEqual(inventoryItem({name:' NFC ',category:'nfc',unit:'adet',active:true,low_stock_threshold:5,quantity:999}),{name:'NFC',category:'nfc',unit:'adet',active:true,low_stock_threshold:5});for(const value of [-1,1.001,NaN,'5'])assert.throws(()=>stockAmount(value,false));assert.equal(stockAmount(-5),-5);assert.throws(()=>inventoryItem({name:'',category:'bad',unit:'adet',active:true,low_stock_threshold:5}));});

@@ -12,6 +12,7 @@ export async function GET(request){
   if(q.get('product')&&kind==='smart'){if(!['google','instagram','whatsapp','ilan'].includes(q.get('product')))return reply({error:'Geçersiz ürün.'},400);params.set('product_type',`eq.${q.get('product')}`);}
   if(q.get('batch'))params.set('batch_code',`eq.${q.get('batch').slice(0,100)}`);
   if(q.get('search')){const term=q.get('search').slice(0,100).replace(/[^a-zA-Z0-9ığüşöçİĞÜŞÖÇ .-]/g,'');if(term)params.set('or',`(business_name.ilike.*${term}*,code.ilike.*${term}*)`);}
-  return reply({cards:await database(`${kind==='iban'?'iban_cards':'smart_links'}?${params}`,auth.user),can_write:process.env.VERCEL_ENV!=='preview'});
+  const available=q.get('available')==='true';if(available)params.set('kind',`eq.${kind}`);
+  return reply({cards:await database(`${available?'panel_available_cards':kind==='iban'?'iban_cards':'smart_links'}?${params}`,auth.user),can_write:process.env.VERCEL_ENV!=='preview'});
  }catch(e){return reply({error:e.message},e.status||503);}
 }

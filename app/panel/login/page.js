@@ -29,7 +29,7 @@ export default function LoginPage() {
 
       panelClient().store(data);
 
-      router.push("/panel");
+      router.push("/panel/ozet");
     } catch (err) {
       setError(err.message || "Giriş yapılamadı.");
     } finally {

@@ -8,6 +8,7 @@ export async function GET(request){
  try{const q=new URL(request.url).searchParams;const offset=Math.max(0,Math.min(100000,Number(q.get('offset'))||0));const params=new URLSearchParams({select:'*',order:'order_no.desc',limit:'100',offset:String(Math.floor(offset))});
  if(q.get('status')){if(!['new','preparing','ready','shipped','delivered','cancelled'].includes(q.get('status')))return reply({error:'Geçersiz durum.'},400);params.set('status',`eq.${q.get('status')}`);}
  if(q.get('search'))params.set('customer_name',`ilike.*${q.get('search').slice(0,120).replace(/[*,%]/g,'')}*`);
+ if(q.get('payment')){if(!['unpaid','partial','paid','outstanding'].includes(q.get('payment')))return reply({error:'Geçersiz ödeme durumu.'},400);params.set('payment_status',q.get('payment')==='outstanding'?'in.(unpaid,partial)':`eq.${q.get('payment')}`);if(q.get('payment')==='outstanding')params.set('and','(status.neq.cancelled)');}
  return reply({orders:await database(`panel_orders?${params}`,auth.user),can_write:process.env.VERCEL_ENV!=='preview'});
  }catch(e){return reply({error:e.message},e.status||503);}
 }
