@@ -72,6 +72,7 @@ export async function POST(request) {
         method: "POST",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
         },
@@ -125,6 +126,7 @@ export async function POST(request) {
             method: "POST",
             headers: {
               apikey: secretKey,
+          "x-panel-actor": auth.user.id,
               Authorization: `Bearer ${secretKey}`,
               "Content-Type": "application/json",
               Prefer: "return=representation",

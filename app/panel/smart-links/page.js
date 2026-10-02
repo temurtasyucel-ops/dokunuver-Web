@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../lib/panel-client.mjs";
 
 import { useEffect, useState } from "react";
 import QRCodeButton from "./QRCodeButton";
@@ -46,7 +47,7 @@ export default function SmartLinksPage() {
         return;
       }
 
-      const response = await fetch("/api/smart-links", {
+      const response = await panelFetch("/api/smart-links", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,7 +77,7 @@ async function toggleStatus(link) {
       return;
     }
 
-    const response = await fetch("/api/smart-links", {
+    const response = await panelFetch("/api/smart-links", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -127,7 +128,7 @@ async function cancelStock(link) {
       return;
     }
 
-    const response = await fetch("/api/smart-links", {
+    const response = await panelFetch("/api/smart-links", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -172,7 +173,7 @@ async function downloadPrintCard(link) {
       return;
     }
 
-    const response = await fetch(
+    const response = await panelFetch(
       `/api/print-card/${encodeURIComponent(link.code)}`,
       {
         headers: {
@@ -288,7 +289,7 @@ async function downloadPrintCard(link) {
     const zip = new JSZip();
 
     for (const link of printableLinks) {
-      const response = await fetch(
+      const response = await panelFetch(
         `/api/print-card/${encodeURIComponent(link.code)}`,
         {
           headers: {

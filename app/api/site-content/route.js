@@ -25,7 +25,7 @@ export async function PUT(request) {
       content = validateContent(body.content, process.env.NEXT_PUBLIC_SUPABASE_URL);
     } catch (e) { return reply({ error: e.message || "Geçersiz veri." }, 400); }
     const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/site_content?id=eq.1&revision=eq.${body.revision}`, {
-      method: "PATCH", headers: { ...serviceHeaders(), "Content-Type": "application/json", Prefer: "return=representation" },
+      method: "PATCH", headers: { ...serviceHeaders(), "x-panel-actor": auth.user.id, "Content-Type": "application/json", Prefer: "return=representation" },
       body: JSON.stringify({ content, revision: body.revision + 1, updated_at: new Date().toISOString() }), cache: "no-store" });
     if (!response.ok) return reply({ error: "Değişiklikler kaydedilemedi." }, 500);
     const rows = await response.json();

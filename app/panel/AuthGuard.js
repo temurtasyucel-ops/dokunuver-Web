@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../lib/panel-client.mjs";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import LogoutButton from "./LogoutButton";
@@ -15,7 +16,7 @@ export default function AuthGuard({ children }) {
       const token = localStorage.getItem("dokunuver_access_token");
       if (!token) { router.replace("/panel/login"); return; }
       try {
-        const response = await fetch("/api/panel-session", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+        const response = await panelFetch("/api/panel-session", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
         const data = await response.json();
         if (!alive) return;
         if (response.status === 401) {
@@ -29,6 +30,15 @@ export default function AuthGuard({ children }) {
     checkAuth();
     return () => { alive = false; };
   }, [pathname, router, retry]);
+  useEffect(() => {
+    if (pathname === "/panel/login") return;
+    const ended = () => router.replace("/panel/login");
+    const check = () => { if (document.visibilityState === "visible") panelFetch("/api/panel-session", { cache: "no-store" }).then(r => { if (!r.ok && r.status !== 401) throw new Error('Session unavailable'); }).catch(() => window.dispatchEvent(new Event("dokunuver-session-warning"))); };
+    window.addEventListener("dokunuver-session-ended", ended);
+    window.addEventListener("focus", check);
+    const timer = setInterval(check, 4 * 60 * 1000);
+    return () => { clearInterval(timer); window.removeEventListener("focus", check); window.removeEventListener("dokunuver-session-ended", ended); };
+  }, [pathname, router]);
   if (pathname === "/panel/login") return children;
   if (checking || error) return <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", background: "#f4f6f8", fontFamily: "Arial,sans-serif", padding: 24, boxSizing: "border-box" }}><div style={{ maxWidth: 440, padding: 32, background: "white", border: "1px solid #e1e5eb", borderRadius: 16 }}><strong style={{ fontSize: 24 }}>DOKUNUVER</strong>{error ? <><p role="alert" style={{ lineHeight: 1.6 }}>{error}</p><div style={{ display: "flex", gap: 12 }}><button type="button" onClick={() => setRetry(n => n + 1)}>Tekrar dene</button><LogoutButton /></div></> : <p role="status">Yönetici oturumu kontrol ediliyor…</p>}</div></main>;
   return children;

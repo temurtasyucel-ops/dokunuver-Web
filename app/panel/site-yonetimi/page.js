@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../lib/panel-client.mjs";
 
 import { useEffect, useState } from "react";
 
@@ -20,7 +21,7 @@ export default function SiteManagement() {
 
   useEffect(() => {
     let alive = true;
-    fetch("/api/site-content", { headers: tokenHeaders(), cache: "no-store" }).then(async response => {
+    panelFetch("/api/site-content", { headers: tokenHeaders(), cache: "no-store" }).then(async response => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Ayarlar yüklenemedi.");
       if (alive) { setContent(data.content); setSaved(data.content); setRevision(data.revision); setCanPublish(data.can_publish !== false); }
@@ -76,7 +77,7 @@ export default function SiteManagement() {
     catch (e) { setError(e.message); return; }
     setBusy(true);
     try {
-      const response = await fetch("/api/site-content", { method: "PUT", headers: { ...tokenHeaders(), "Content-Type": "application/json" },
+      const response = await panelFetch("/api/site-content", { method: "PUT", headers: { ...tokenHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ revision, content: validated }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Kaydedilemedi.");
@@ -92,7 +93,7 @@ export default function SiteManagement() {
     setUploading(n => n + 1); setError(""); setNotice("");
     try {
       const form = new FormData(); form.append("file", file);
-      const response = await fetch("/api/site-media", { method: "POST", headers: tokenHeaders(), body: form });
+      const response = await panelFetch("/api/site-media", { method: "POST", headers: tokenHeaders(), body: form });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Görsel yüklenemedi.");
       onSuccess(data.url); setNotice("Görsel yüklendi. Sitede görünmesi için Kaydet ve Yayınla'ya basın.");

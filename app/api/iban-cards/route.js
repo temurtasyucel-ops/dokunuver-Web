@@ -45,6 +45,7 @@ export async function GET(request) {
         method: "GET",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
         },
         cache: "no-store",
@@ -169,6 +170,7 @@ if (mode === "stock_bulk") {
       method: "POST",
       headers: {
         apikey: secretKey,
+          "x-panel-actor": auth.user.id,
         Authorization: `Bearer ${secretKey}`,
         "Content-Type": "application/json",
       },
@@ -226,6 +228,7 @@ if (mode === "stock_bulk") {
           method: "POST",
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization: `Bearer ${secretKey}`,
             "Content-Type": "application/json",
             Prefer: "return=representation",
@@ -310,6 +313,7 @@ if (mode === "stock_bulk") {
             method: "POST",
             headers: {
               apikey: secretKey,
+          "x-panel-actor": auth.user.id,
               Authorization: `Bearer ${secretKey}`,
               "Content-Type": "application/json",
               Prefer: "return=representation",
@@ -372,6 +376,7 @@ if (mode === "stock_bulk") {
           method: "POST",
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization: `Bearer ${secretKey}`,
             "Content-Type": "application/json",
             Prefer: "return=representation",
@@ -491,6 +496,7 @@ export async function PATCH(request) {
         method: "GET",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
         },
         cache: "no-store",
@@ -544,6 +550,7 @@ export async function PATCH(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
           Prefer: "return=representation",
@@ -640,6 +647,7 @@ export async function PUT(request) {
           method: "GET",
           headers: {
             apikey: secretKey,
+          "x-panel-actor": auth.user.id,
             Authorization: `Bearer ${secretKey}`,
           },
           cache: "no-store",
@@ -681,6 +689,7 @@ export async function PUT(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
           Prefer: "return=representation",

@@ -43,6 +43,7 @@ export async function POST(request) {
         method: "GET",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
         },
         cache: "no-store",
@@ -97,6 +98,7 @@ export async function POST(request) {
         method: "PATCH",
         headers: {
           apikey: secretKey,
+          "x-panel-actor": auth.user.id,
           Authorization: `Bearer ${secretKey}`,
           "Content-Type": "application/json",
           Prefer: "return=representation",

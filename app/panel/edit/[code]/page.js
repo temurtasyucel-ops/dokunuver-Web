@@ -1,4 +1,5 @@
 "use client";
+import { panelFetch } from "../../../../lib/panel-client.mjs";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -41,7 +42,7 @@ export default function EditIbanCardPage() {
           return;
         }
 
-        const response = await fetch("/api/iban-cards", {
+        const response = await panelFetch("/api/iban-cards", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -157,7 +158,7 @@ export default function EditIbanCardPage() {
         );
       }
 
-      const response = await fetch("/api/iban-cards", {
+      const response = await panelFetch("/api/iban-cards", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -240,7 +241,7 @@ export default function EditIbanCardPage() {
         );
       }
 
-      const response = await fetch("/api/iban-cards/lock", {
+      const response = await panelFetch("/api/iban-cards/lock", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
