@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import LogoutButton from "./LogoutButton";
 import styles from "./panel-shell.module.css";
 const sections = [
+  { href: "/panel/sadakat", title: "Dijital Sadakat", sub: "Pilot işletme ve kampanya", icon: "card" },
   { href: "/panel/ozet", title: "İşletme Özeti", sub: "Güncel iş ve ödemeler", icon: "settings" },
   { href: "/panel", title: "IBAN Kartları", sub: "Stok ve müşteri kartları", icon: "card" },
   { href: "/panel/smart-links", title: "Smart Links", sub: "Bağlantılar ve üretim", icon: "link" },
@@ -27,3 +28,4 @@ export default function PanelShell({ children }) {
  if (pathname === "/panel/login") return children;
  return <div className={styles.shell}><a className={styles.skip} href="#panel-icerik">İçeriğe geç</a><aside className={styles.sidebar}><Link href="/panel" className={styles.brand}>DOKUNUVER<span>Dokun. Bağlan.</span></Link><div className={styles.label}>YÖNETİM ALANI</div><nav aria-label="Panel bölümleri" className={styles.nav}>{sections.map(s => <Link key={s.href} href={s.href} aria-current={active.href === s.href ? "page" : undefined}><Glyph name={s.icon} /><span>{s.title}<small>{s.sub}</small></span></Link>)}</nav><div className={styles.sidebarBottom}><span>NFC + QR, tek merkezden.</span><Link href="/" target="_blank" rel="noreferrer">Müşteri sitesini aç ↗</Link></div></aside><div className={styles.workspace}><header className={styles.topbar}><div><span>YÖNETİM PANELİ</span><strong>{active.title}</strong></div><div className={styles.topActions}><Link href="/" target="_blank" rel="noreferrer">Siteyi gör ↗</Link><LogoutButton /></div></header>{warning && <div role="status" style={{padding:"12px 24px",background:"#fff8e5"}}>Oturum servisine ulaşılamadı. Düzenlemelerin açık kalıyor; sonraki işlemde tekrar denenecek. <button onClick={() => setWarning(false)}>Kapat</button></div>}<div id="panel-icerik" className={styles.content}>{children}</div><footer className={styles.footer}>DOKUNUVER · Yönetim paneli</footer></div></div>;
 }
+
