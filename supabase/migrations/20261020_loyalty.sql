@@ -1,7 +1,7 @@
 begin;
 
 create table public.loyalty_businesses (
- id uuid primary key default gen_random_uuid(), slug text not null unique check(slug ~ '^[a-z0-9][a-z0-9-]{2,59}$'),
+ id uuid primary key default gen_random_uuid(), slug text not null unique check(slug ~ '^[a-z0-9][a-z0-9-]{2,59}$' and slug not in ('demo','isletme')),
  name text not null check(char_length(name) between 2 and 100), active boolean not null default true, created_at timestamptz not null default now()
 );
 create table public.loyalty_members (

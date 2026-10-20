@@ -15,6 +15,7 @@ for(const [i,user] of [owner,staff,alice,bob,unverified,outsider].entries())awai
 await db.query('insert into site_admins values($1)',[owner]);
 async function as(user,role='authenticated'){await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[user||'']);await db.exec(`set role ${role}`);}
 await as(null,'service_role');
+for(const slug of ['demo','isletme'])await assert.rejects(db.query('select loyalty_provision($1,$2,$3,$4,$5,$6)',[owner,slug,'Reserved','Cookie','1 cookie',2]),/check constraint/);
 const provision=await db.query('select loyalty_provision($1,$2,$3,$4,$5,$6) id',[owner,'pink-rose','Pink Rose','Cookie','1 cookie',2]);
 const b1=provision.rows[0].id;
 const b2=(await db.query('select loyalty_provision($1,$2,$3,$4,$5,$6) id',[owner,'second-cafe','Second Cafe','Coffee','1 coffee',2])).rows[0].id;
