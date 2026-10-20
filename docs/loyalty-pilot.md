@@ -78,3 +78,6 @@ Build sonrası Chromium arayüz testi:
 `PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs CHROMIUM_BIN=/absolute/path/to/chromium node tests/loyalty-browser.mjs`
 
 SQL testi işletme izolasyonu, anonim engeli, doğrudan tablo yazma engeli, telefon doğrulaması, izin geçmişi/geri alma, personel/sahip ayrımı, tekrar onay, ödül devri, süre/gün sınırı, iptal edilen personel erişimi, kampanya şartları/revision kilidi, sahip koruması, 131 müşteriyle tam sayfalama/arama/segmentasyon ve istatistikleri; platform yöneticisi yetkisi, varsayılan paketler, kota doğrulaması, revision çakışması ve kayıtları koruyarak işletme duraklatma/yeniden açmayı doğrular. Canlı Supabase SMS, gerçek NFC cihazı ve SMS sağlayıcısı testi ayrıca yapılmalıdır.
+
+## İki NFC / kasiyer onaysız damga
+Güvenli kart adaptörü ve demo eklendi: `/sadakat/demo/dokun`. Gerçek akış varsayılan kapalıdır; NTAG 424 DNA, fiziksel programlama ve sunucu anahtarları gerektirir. Ayrıntılar, bilinen sınırlar ve devreye alma: [loyalty-secure-nfc.md](loyalty-secure-nfc.md). Önceki üç migration üzerine yalnız `20261020_loyalty_nfc.sql` eklenir. Üçüncü migration uygulanmadıysa önce platform migration'ı uygulanmalıdır. Birleşik export artık dört migration ile yalnız sıfırdan kurulum içindir.

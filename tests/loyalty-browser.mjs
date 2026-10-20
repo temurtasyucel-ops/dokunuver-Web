@@ -13,7 +13,7 @@ try{
  const writes=[];page.on('request',r=>{if(r.method()==='POST')writes.push(r.url());});
  for(const width of [320,390,768,1440]){
   await page.setViewportSize({width,height:900});
-  for(const route of ['/sadakat/demo','/sadakat/isletme/demo','/sadakat/isletme','/sadakat/demo/yonetim']){
+  for(const route of ['/sadakat/demo','/sadakat/isletme/demo','/sadakat/isletme','/sadakat/demo/yonetim','/sadakat/demo/dokun','/sadakat/dokun']){
    await page.goto('http://127.0.0.1:3217'+route);await page.waitForTimeout(150);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${route} overflows at ${width}`);
    if(route==='/sadakat/isletme/demo'){
@@ -76,6 +76,14 @@ try{
  await page.getByRole('button',{name:'İşletme ayarlarını kaydet',exact:true}).click();
  await page.getByLabel('İşletme durumu').selectOption('all');await page.getByText('Aktif · Standart',{exact:true}).waitFor();
  await page.screenshot({path:'tmp/loyalty/platform-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});await page.goto('http://127.0.0.1:3217/sadakat/demo/dokun');
+ await page.getByRole('button',{name:'İkinci NFC’ye dokunmayı dene'}).click();
+ await page.getByText('4 / 6 damga',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Aynı bağlantıyı tekrar aç'}).click();
+ await page.getByText('Demo: aynı okuma tekrar kullanılamaz. Yeni damga eklenmedi.',{exact:true}).waitFor();
+ await page.screenshot({path:'tmp/loyalty/nfc-mobile.png',fullPage:true});
+ await page.goto('http://127.0.0.1:3217/sadakat/dokun?tag=secure-test-tag01&e='+ 'A'.repeat(32)+'&c='+ 'B'.repeat(16));
+ await page.locator('p[role=alert]').waitFor();assert(!page.url().includes('?'));
  assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
  console.log('PASS: 320/390/768/1440 no overflow incl. platform; customer/cashier/campaign/staff flows; platform plan/quota, pause/resume and search/filter; demos make no POST requests.');
 }finally{await browser.close();server.kill('SIGTERM');}

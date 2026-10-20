@@ -145,4 +145,39 @@ await as(owner);assert.equal((await db.query('select loyalty_my_businesses() res
 const restored=await rpc(owner,'loyalty_dashboard',[b1]);assert.equal(restored.stats.customers,131);
 assert.equal(restored.admin_events[0].action,'business_settings_saved');
 console.log('PASS: tenant/consent/transaction and campaign/staff rules; complete customer queries; platform admin-only packages/quotas, default accounts, zero quota, revision conflict, pause/resume preserving records.');
+// Secure NFC functions trust only the service verifier, never caller-provided actor/counter.
+await db.exec('reset role');
+await db.exec(await readFile(new URL('../supabase/migrations/20261020_loyalty_nfc.sql',import.meta.url),'utf8'));
+const tag='secure-test-tag01',uid='04DE5F1EACC040';
+await db.query('insert into loyalty_nfc_tags(id,business_id,campaign_id,uid,key_ref,active,cooldown_seconds) values($1,$2,$3,$4,$5,true,60)',[tag,b1,campaign,uid,'key-1']);
+await db.query('update loyalty_campaigns set active=true,daily_limit=20 where id=$1',[campaign]);
+await db.query("update loyalty_stamps set created_at=now()-interval '2 days' where business_id=$1",[b1]);
+for(const role of ['anon','authenticated']){
+ await as(alice,role);
+ await assert.rejects(db.query('select loyalty_nfc_claim($1,$2,$3,1)',[alice,tag,uid]),/permission denied/);
+ await assert.rejects(db.query('select * from loyalty_nfc_tags'),/permission denied/);
+}
+async function claim(user,counter,t=tag,u=uid){await as(null,'service_role');return (await db.query('select loyalty_nfc_claim($1,$2,$3,$4) result',[user,t,u,counter])).rows[0].result;}
+await assert.rejects(claim(bob,1),/CUSTOMER_REQUIRED/);
+await assert.rejects(claim(alice,1,tag,'04DE5F1EACC041'),/INVALID_NFC/);
+const awarded=await claim(alice,1);assert.equal(awarded.ok,true);
+await assert.rejects(claim(alice,1),/NFC_ALREADY_USED/);
+await assert.rejects(claim(alice,0),/NFC_ALREADY_USED/);
+await assert.rejects(claim(alice,2),/NFC_COOLDOWN/);
+await db.exec('reset role');
+assert.equal((await db.query('select last_counter from loyalty_nfc_tags')).rows[0].last_counter,1);
+assert.equal((await db.query('select count(*)::int n from loyalty_nfc_reads')).rows[0].n,1);
+await db.query("update loyalty_stamps set created_at=now()-interval '2 minutes' where business_id=$1",[b1]);
+await db.query('update loyalty_campaigns set daily_limit=1 where id=$1',[campaign]);
+await assert.rejects(claim(alice,2),/DAILY_LIMIT/);
+await db.exec('reset role');await db.query('update loyalty_campaigns set daily_limit=20 where id=$1',[campaign]);
+await db.query('update loyalty_nfc_tags set active=false');
+await assert.rejects(claim(alice,2),/INVALID_NFC/);
+await db.exec('reset role');await db.query('update loyalty_nfc_tags set active=true');
+await db.query('update loyalty_businesses set active=false where id=$1',[b1]);
+await assert.rejects(claim(alice,2),/BUSINESS_UNAVAILABLE/);
+await db.exec('reset role');await db.query('update loyalty_businesses set active=true where id=$1',[b1]);
+assert.equal((await claim(alice,2)).ok,true);
+await db.exec('reset role');assert.equal((await db.query('select count(*)::int n from loyalty_nfc_reads')).rows[0].n,2);
+console.log('PASS: secure NFC service-only claims, tenant/UID binding, counter replay, cooldown, daily quota, disabled tag/business, rollback and successful awards.');
 await db.close();

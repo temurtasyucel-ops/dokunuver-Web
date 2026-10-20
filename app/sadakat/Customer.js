@@ -39,7 +39,7 @@ export default function Customer({slug,demo=false}){
  }
  return <main className={s.customer}>
   <header className={s.brand}><strong>DOKUNUVER</strong><span>DİJİTAL SADAKAT</span></header>
-  {demo&&<div className={s.demo}>Önizleme · Örnek veriler kullanılır, gerçek damga veya kayıt oluşmaz. <Link href="/sadakat/isletme/demo">İşletme ekranı ↗</Link></div>}
+  {demo&&<div className={s.demo}>Önizleme · Örnek veriler kullanılır, gerçek damga veya kayıt oluşmaz. <Link href="/sadakat/isletme/demo">İşletme ekranı ↗</Link> · <Link href="/sadakat/demo/dokun">İki NFC demosu ↗</Link></div>}
   <section className={s.hero}><span className={s.eyebrow}>HER ZİYARETİN BİR KARŞILIĞI VAR</span><h1>{business?.name||'Sadakat kartın'}</h1><p>Damgaların ve ikramların, her zaman yanında.</p></section>
   {error&&<div role="alert" className={`${s.notice} ${s.error}`}>{error}</div>}
   {notice&&<div role="status" className={s.notice}>{notice}</div>}
