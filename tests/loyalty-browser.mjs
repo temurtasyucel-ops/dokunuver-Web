@@ -13,13 +13,17 @@ try{
  const writes=[];page.on('request',r=>{if(r.method()==='POST')writes.push(r.url());});
  for(const width of [320,390,768,1440]){
   await page.setViewportSize({width,height:900});
-  for(const route of ['/sadakat/demo','/sadakat/isletme/demo','/sadakat/isletme']){
+  for(const route of ['/sadakat/demo','/sadakat/isletme/demo','/sadakat/isletme','/sadakat/demo/yonetim']){
    await page.goto('http://127.0.0.1:3217'+route);await page.waitForTimeout(150);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${route} overflows at ${width}`);
    if(route==='/sadakat/isletme/demo'){
     await page.getByRole('button',{name:'Kampanya & personel',exact:true}).click();
     await page.getByRole('button',{name:'Yeni kampanya',exact:true}).click();
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`settings overflow at ${width}`);
+   }
+   if(route==='/sadakat/demo/yonetim'){
+    await page.getByRole('button',{name:'Ayarlar · Pink Rose Cafe',exact:true}).click();
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`platform settings overflow at ${width}`);
    }
   }
  }
@@ -56,6 +60,22 @@ try{
  await page.getByRole('button',{name:'Erişimi kapat',exact:true}).first().click();await page.getByText('Personel · erişimi kapalı',{exact:true}).waitFor();
  await page.getByText('Son 50 yönetim işlemi',{exact:true}).click();await page.getByText('Personel erişimi güncellendi',{exact:true}).first().waitFor();
  await page.screenshot({path:'tmp/loyalty/settings-desktop.png',fullPage:true});
+ await page.goto('http://127.0.0.1:3217/sadakat/demo/yonetim');
+ await page.getByRole('button',{name:'Ayarlar · Pink Rose Cafe',exact:true}).click();
+ await page.getByLabel('Paket',{exact:true}).selectOption('standard');
+ await page.getByLabel('Aylık doğrulama SMS limiti',{exact:true}).fill('75');
+ await page.getByRole('checkbox',{name:'İşletme aktif',exact:true}).uncheck();
+ await page.getByRole('button',{name:'İşletme ayarlarını kaydet',exact:true}).click();
+ await page.getByText('Duraklatılmış · Standart',{exact:true}).waitFor();
+ await page.getByLabel('İşletme ara').fill('pink');await page.getByText('1 işletme bulundu',{exact:true}).waitFor();
+ await page.getByLabel('İşletme durumu').selectOption('active');await page.getByText('0 işletme bulundu',{exact:true}).waitFor();
+ await page.getByLabel('İşletme durumu').selectOption('paused');await page.getByText('1 işletme bulundu',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Ayarlar · Pink Rose Cafe',exact:true}).click();
+ assert.equal(await page.getByLabel('Aylık doğrulama SMS limiti',{exact:true}).inputValue(),'75');
+ await page.getByRole('checkbox',{name:'İşletme aktif',exact:true}).check();
+ await page.getByRole('button',{name:'İşletme ayarlarını kaydet',exact:true}).click();
+ await page.getByLabel('İşletme durumu').selectOption('all');await page.getByText('Aktif · Standart',{exact:true}).waitFor();
+ await page.screenshot({path:'tmp/loyalty/platform-desktop.png',fullPage:true});
  assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
- console.log('PASS: 320/390/768/1440 no overflow incl. settings; request/consent, approval/reward, groups/history, campaign locks/create/edit, staff add/revoke and audit; demos make no POST requests.');
+ console.log('PASS: 320/390/768/1440 no overflow incl. platform; customer/cashier/campaign/staff flows; platform plan/quota, pause/resume and search/filter; demos make no POST requests.');
 }finally{await browser.close();server.kill('SIGTERM');}
