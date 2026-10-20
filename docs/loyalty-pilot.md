@@ -13,7 +13,7 @@ Bu modül ayrı bir üründür. Mevcut IBAN/Smart Link kayıtları kullanılmaz 
 ## Canlı pilotu açma
 
 1. Değişikliği ve önizlemeyi inceleyin. Bu PR kendi başına veritabanında kurulum yapmaz.
-2. Supabase SQL Editor'da `supabase/migrations/20261020_loyalty.sql` dosyasının tamamını bir kez çalıştırın. İşlem transaction içindedir; başarısızsa tüm değişiklikler geri alınır. Bu ilk kurulum migration'ını tekrar çalıştırmayın.
+2. Supabase SQL Editor'da önce `supabase/migrations/20261020_loyalty.sql`, ardından `supabase/migrations/20261020_loyalty_management.sql` dosyasının tamamını birer kez çalıştırın. Her dosya transaction içindedir. İlk kurulum önceden uygulandıysa yalnız ikinci dosyayı çalıştırın; uygulanmış migration'ı tekrar çalıştırmayın. Sıfırdan kurulum için `node scripts/export-loyalty-setup.mjs` komutu her iki dosyayı tek transaction altında birleştirir.
 3. Supabase Auth'ta Phone sağlayıcısını ve gerçek SMS sağlayıcısını yapılandırın. SMS doğrulaması zorunludur; canlı OTP'nin alınması ve süresinin dolması gerçek cihazla test edilmelidir. Sağlayıcı yoksa müşteri kaydı ilerlemez. OTP gönderim hız sınırı/CAPTCHA ayarları Supabase projesinde yönetilir; deneme numaralarını üretimde kullanmayın.
 4. Mevcut DOKUNUVER yönetici hesabıyla `/panel/sadakat` sayfasından işletmeyi ve ilk kampanyayı oluşturun. Pilot sahibi bu işlemi yapan yöneticidir. Slug benzersizdir, kampanya hedefi 2–30 damgadır; varsayılan günlük sınır 1 damgadır.
 5. İşletme sahibi `/sadakat/isletme` adresinden aynı Supabase e-posta hesabıyla giriş yapar. Sadakat oturumu mevcut yönetim paneli oturumundan ayrı saklanır.
@@ -21,16 +21,15 @@ Bu modül ayrı bir üründür. Mevcut IBAN/Smart Link kayıtları kullanılmaz 
 7. Müşteri telefonunu SMS koduyla doğrular, adını yazar, isteğe bağlı WhatsApp iletişim tercihini belirler. İşaretlemeden sadakat kullanımı mümkündür.
 8. Müşteri alışveriş için damga talep eder. Personel müşteri/alışveriş eşleşmesini kontrol edip 5 dakika içinde kasada onaylar. Hedef tamamlanınca ayrı ödül oluşur; damga sayacı yeni tura geçer. Ödülü yalnız owner rolü kullandırabilir.
 
-### Pilot personel atama
+### Personel yönetimi
 
-Supabase Auth'ta zaten bulunan personel hesabını kullanın. Yeni hesap daveti/gönderimi bu sürümde otomatik değildir. SQL Editor'da gerçek UUID'leri kullanarak üyelik eklenebilir:
+İşletme sahibi `/sadakat/isletme` içindeki **Kampanya & personel** sekmesinde personelin adı ve doğrulanmış Auth hesabının e-posta adresiyle erişim açabilir. Mevcut personelin erişimini kapatıp yeniden açabilir. Bu işlem yeni hesap oluşturmaz, davet/e-posta göndermez veya şifre belirlemez. Yeni personel hesabının Supabase Auth'ta kurulması ayrı adımdır.
 
-```sql
-insert into public.loyalty_members(business_id,user_id,role)
-values ('BUSINESS_UUID', 'EXISTING_AUTH_USER_UUID', 'staff');
-```
+`staff` damga onaylayıp reddedebilir; `owner` ödül kullandırabilir ve ayarları değiştirebilir. İşletme sahibinin üyeliği bu formdan değiştirilemez. Erişimi kapatılan personelin sonraki istekleri veritabanında reddedilir. Aynı kullanıcı birden çok işletmeye üye olabilir; işletme seçici yalnız kendi üyeliklerini listeler. İlk pilotu yöneticiden farklı hesaba devretmeden önce owner üyeliği o mevcut hesaba ayrıca atanmalıdır.
 
-`staff` damga onaylayıp reddedebilir; `owner` bunlara ek olarak ödül kullandırabilir. Üyelikte `active=false` yapıldığında yeni işlemler ve işletme verisine erişim kesilir. Aynı Auth kullanıcısı birden fazla işletmeye üye olabilir; müşteri kayıtları işletme bazında ayrıdır. Gerçek bir işletmeyi yöneticiden farklı hesaba teslim etmeden önce owner üyeliği o mevcut hesaba ayrıca atanmalıdır.
+### Kampanya yönetimi
+
+Aynı sekmeden yeni kampanya açılır, adı/günlük sınırı/aktifliği düzenlenir. İlk damgadan sonra hedef ve ödül açıklaması veritabanında kilitlenir. Pasif kampanyalar yeni damga kabul etmez; önceden kazanılmış ödüller kullanılabilir. Eş zamanlı düzenlemeler revision kontrolüyle korunur. Yönetim işlemleri aktör, zaman ve değişiklik özetiyle kaydedilir.
 
 ## İşlem ve izin kuralları
 
@@ -46,14 +45,13 @@ values ('BUSINESS_UUID', 'EXISTING_AUTH_USER_UUID', 'staff');
 
 ## Bu sürümün kapsamı ve sıradaki işler
 
-Çalışan çekirdek: işletme/üyelik, ilk kampanya kurulumu, doğrulanmış müşteri kaydı, tercih geçmişi, damga talep/onay/ret, ödül oluşturma/kullanma, müşteri grupları, son işlem listeleri, mobil ekranlar.
+Çalışan çekirdek: işletme/üyelik, çoklu kampanya yönetimi, mevcut doğrulanmış personel hesabını yetkilendirme/erişim kapatma, doğrulanmış müşteri kaydı, tercih geçmişi, damga talep/onay/ret, ödül oluşturma/kullanma, sunucu tarafında tüm müşterilerde arama/segmentasyon/sayfalama, toplam istatistikler ve mobil ekranlar.
 
 Pilot sınırları:
 
-- İşletme ekranı son 100 müşteriyi, 100 ödülü ve 100 damgayı yükler; etiketlerde bu sınır belirtilir. Gruplar yüklenen veriler üzerinde çalışır. Ürünleşmeden önce sunucu tarafı sayfalama/arama, tam liste segmentasyonu ve istatistik RPC'leri eklenecek.
-- İlk kampanya oluşturulur; panelden kampanya düzenleme, sezonluk aktif/pasif, günlük sınır düzenleme ve çoklu kampanya oluşturma ekranları sıradadır. Hedef/ödül bu pilot arayüzünden değiştirilmez.
-- İşletme daveti, personel yönetimi, abonelik/paket/faturalama, WhatsApp gönderimi, Excel aktarımı, damga iptali/telafi işlemi, veri silme/retention akışı sonraki geliştirme dilimleridir.
-- Damga ve ödül işlemlerinde kullanıcı UUID'si kaydedilir. Personel adlarının çözülmesi ve kapsamlı olay ekranı sonraki aşamadır.
+- Müşteri listesi sayfa başına 25 kayıt gösterir; arama, gruplar ve toplamlar işletmenin tüm verileri üzerinde hesaplanır. Kasa ilk 100 bekleyen talebi/hazır ödülü, geçmiş son 100 işlemi gösterir. Yönetim geçmişi son 50 işlemdir. Yoğun kasalar için kuyruk/geçmiş sayfalaması sıradadır.
+- İşletme/personel hesabı daveti, abonelik/paket/faturalama, WhatsApp gönderimi, Excel aktarımı, damga iptali/telafi işlemi, veri silme/retention akışı sonraki geliştirme dilimleridir.
+- Damga/ödül kayıtlarında kullanıcı UUID'si saklanır; işlem listesinde mevcut personel adı gösterilir. Kampanya/personel değişikliklerinin ayrı yönetim günlüğü vardır.
 - Müşteri bilgilendirme/aydınlatma bağlantıları, gerçek işletmenin veri işleme metinleri ve iletişim altyapısı canlı müşteri kullanımından önce tamamlanmalıdır.
 
 ## Kontroller
@@ -68,4 +66,4 @@ Build sonrası Chromium arayüz testi:
 
 `PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs CHROMIUM_BIN=/absolute/path/to/chromium node tests/loyalty-browser.mjs`
 
-SQL testi işletme izolasyonu, anonim engeli, doğrudan tablo yazma engeli, telefon doğrulaması, izin geçmişi/geri alma, personel/sahip ayrımı, tekrar onay, ödül devri, süre/gün sınırı ve iptal edilen personel erişimini doğrular. Canlı Supabase SMS, gerçek NFC cihazı ve SMS sağlayıcısı testi ayrıca yapılmalıdır.
+SQL testi işletme izolasyonu, anonim engeli, doğrudan tablo yazma engeli, telefon doğrulaması, izin geçmişi/geri alma, personel/sahip ayrımı, tekrar onay, ödül devri, süre/gün sınırı, iptal edilen personel erişimi, kampanya şartları/revision kilidi, sahip koruması, 131 müşteriyle tam sayfalama/arama/segmentasyon ve istatistikleri doğrular. Canlı Supabase SMS, gerçek NFC cihazı ve SMS sağlayıcısı testi ayrıca yapılmalıdır.

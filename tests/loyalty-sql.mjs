@@ -62,5 +62,59 @@ await assert.rejects(action(staff,b1,'approve',{request_id:r4.id}),/DAILY_LIMIT/
 await db.exec('reset role');await db.query('update loyalty_members set active=false where business_id=$1 and user_id=$2',[b1,staff]);
 await assert.rejects(action(staff,b1,'approve',{request_id:r4.id}),/STAFF_REQUIRED/);
 await as(staff);assert.equal((await db.query('select * from loyalty_customers')).rows.length,0);
-console.log('PASS: tenant isolation, RLS, verified phone, consent history, request expiry, staff/owner separation, replay protection, reward rollover, daily limit, revoked staff.');
+await db.exec('reset role');
+await db.exec('alter table auth.users add column email text;alter table auth.users add column email_confirmed_at timestamptz;');
+for(const [user,email] of [[owner,'owner@example.com'],[staff,'staff@example.com'],[outsider,'new-staff@example.com']])await db.query('update auth.users set email=$2,email_confirmed_at=now() where id=$1',[user,email]);
+await db.exec(await readFile(new URL('../supabase/migrations/20261020_loyalty_management.sql',import.meta.url),'utf8'));
+async function rpc(user,fn,args){await as(user);return (await db.query(`select ${fn}(${args.map((_,i)=>'$'+(i+1)).join(',')}) result`,args)).rows[0].result;}
+await assert.rejects(rpc(alice,'loyalty_dashboard',[b1]),/STAFF_REQUIRED/);
+await assert.rejects(rpc(bob,'loyalty_customer_page',[b1,'','all',1,25]),/STAFF_REQUIRED/);
+const cp=id(50);const terms={name:'Yeni kampanya',reward:'1 kahve',target:3,daily_limit:2,active:true};
+await assert.rejects(rpc(staff,'loyalty_campaign_save',[b1,cp,0,terms]),/OWNER_REQUIRED/);
+await rpc(owner,'loyalty_campaign_save',[b1,cp,0,terms]);
+await rpc(owner,'loyalty_campaign_save',[b1,cp,0,terms]); // Replayed create is one campaign/event.
+await as(owner);assert.equal((await db.query('select * from loyalty_admin_events')).rows.length,1);
+await rpc(owner,'loyalty_campaign_save',[b1,cp,1,{...terms,name:'Güncel kampanya'}]);
+await assert.rejects(rpc(owner,'loyalty_campaign_save',[b1,cp,1,terms]),/REVISION_CONFLICT/);
+await assert.rejects(rpc(owner,'loyalty_campaign_save',[b2,cp,2,terms]),/CAMPAIGN_UNAVAILABLE/);
+await assert.rejects(rpc(owner,'loyalty_campaign_save',[b1,campaign,1,{name:'Cookie',reward:'Başka ödül',target:3,daily_limit:2,active:true}]),/CAMPAIGN_TERMS_LOCKED/);
+await rpc(owner,'loyalty_campaign_save',[b1,campaign,1,{name:'Cookie',reward:'1 cookie',target:2,daily_limit:2,active:false}]);
+await assert.rejects(action(alice,b1,'request_stamp',{campaign_id:campaign}),/CAMPAIGN_UNAVAILABLE/);
+await assert.rejects(rpc(owner,'loyalty_staff_save',[b1,'missing@example.com','Unknown',true]),/STAFF_ACCOUNT_REQUIRED/);
+await assert.rejects(rpc(owner,'loyalty_staff_save',[b1,'owner@example.com','Owner',false]),/OWNER_MEMBERSHIP_PROTECTED/);
+await rpc(owner,'loyalty_staff_save',[b1,' STAFF@example.com ','Kasiyer',true]);
+await rpc(owner,'loyalty_staff_save',[b1,'new-staff@example.com','Yeni personel',true]);
+const my=await rpc(staff,'loyalty_my_businesses',[]);assert.equal(my.length,1);assert.equal(my[0].id,b1);assert.equal(my[0].role,'staff');
+const ownerBusinesses=await rpc(owner,'loyalty_my_businesses',[]);assert.equal(ownerBusinesses.length,2); // No duplicate rows from staff memberships.
+const staffDash=await rpc(staff,'loyalty_dashboard',[b1]);assert.equal(staffDash.members.length,0);assert.equal(staffDash.admin_events.length,0);
+await assert.rejects(rpc(staff,'loyalty_staff_save',[b1,'new-staff@example.com','Hack',false]),/OWNER_REQUIRED/);
+await rpc(owner,'loyalty_staff_save',[b1,'new-staff@example.com','Yeni personel',false]);
+await assert.rejects(rpc(outsider,'loyalty_dashboard',[b1]),/STAFF_REQUIRED/);
+// More than 100 customers, deterministic paging, literal search and global segments.
+await db.exec('reset role');
+for(let i=100;i<230;i++){
+ const uid=id(i);await db.query('insert into auth.users(id,phone,phone_confirmed_at) values($1,$2,now())',[uid,`+90501${String(i).padStart(7,'0')}`]);
+ await db.query("insert into loyalty_customers(business_id,user_id,phone,name,marketing_opt_in,created_at) values($1,$2,$3,$4,$5,now()-interval '40 days')",[b1,uid,`+90501${String(i).padStart(7,'0')}`,i===100?'FindMe 100%':'Paged '+i,i===100]);
+}
+const first=await rpc(owner,'loyalty_customer_page',[b1,'','all',1,25]);const last=await rpc(owner,'loyalty_customer_page',[b1,'','all',6,25]);
+assert.equal(first.total,131);assert.equal(last.customers.length,6);assert.equal(new Set([...first.customers,...last.customers].map(c=>c.id)).size,31);
+const found=await rpc(owner,'loyalty_customer_page',[b1,'FindMe','all',1,25]);assert.equal(found.total,1);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b1,'%','all',1,25])).total,1);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b1,'','inactive',1,25])).total,130);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b1,'','consented',1,25])).total,1);
+assert.equal((await rpc(owner,'loyalty_dashboard',[b1])).stats.customers,131);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b2,'','all',1,25])).total,1);
+await db.exec('reset role');
+const aliceCustomer=(await db.query('select id from loyalty_customers where business_id=$1 and user_id=$2',[b1,alice])).rows[0].id;
+const earnedWhileActive=(await db.query('insert into loyalty_rewards(business_id,customer_id,campaign_id,label) values($1,$2,$3,$4) returning id',[b1,aliceCustomer,campaign,'1 cookie'])).rows[0].id;
+await action(owner,b1,'redeem',{reward_id:earnedWhileActive}); // Paused campaigns still honor earned rewards.
+await db.exec('reset role');
+await db.query('update loyalty_campaigns set active=true where id=$1',[campaign]);
+await db.query('update loyalty_balances set stamps=1 where business_id=$1 and customer_id=$2 and campaign_id=$3',[b1,aliceCustomer,campaign]);
+await db.query('insert into loyalty_rewards(business_id,customer_id,campaign_id,label) values($1,$2,$3,$4)',[b1,aliceCustomer,cp,'1 kahve']);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b1,'','near',1,25])).total,1);
+assert.equal((await rpc(owner,'loyalty_customer_page',[b1,'','reward',1,25])).total,1);
+await assert.rejects(rpc(owner,'loyalty_customer_page',[b1,'','all',0,25]),/INVALID_PAGE/);
+await as(null,'anon');await assert.rejects(db.query('select loyalty_dashboard($1)',[b1]),/permission denied/);
+console.log('PASS: tenant isolation, verified phone, consent history, request/reward replay protection, limits, campaign term/revision locks, personnel revocation, owner protection, audit visibility, complete customer pagination/search/segments and totals.');
 await db.close();

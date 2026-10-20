@@ -16,6 +16,11 @@ try{
   for(const route of ['/sadakat/demo','/sadakat/isletme/demo','/sadakat/isletme']){
    await page.goto('http://127.0.0.1:3217'+route);await page.waitForTimeout(150);
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${route} overflows at ${width}`);
+   if(route==='/sadakat/isletme/demo'){
+    await page.getByRole('button',{name:'Kampanya & personel',exact:true}).click();
+    await page.getByRole('button',{name:'Yeni kampanya',exact:true}).click();
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`settings overflow at ${width}`);
+   }
   }
  }
  await page.setViewportSize({width:390,height:844});await page.goto('http://127.0.0.1:3217/sadakat/demo');
@@ -37,6 +42,20 @@ try{
  assert.equal(await page.getByText('Ece Örnek',{exact:true}).count(),0);
  await page.screenshot({path:'tmp/loyalty/business-desktop.png',fullPage:true});
  await page.getByRole('button',{name:'İşlem geçmişi',exact:true}).click();await page.getByText('Demo işletme sahibi',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Kampanya & personel',exact:true}).click();
+ await page.getByRole('button',{name:'Düzenle · Cookie molası',exact:true}).click();
+ assert(await page.getByLabel('Ödül açıklaması').isDisabled());assert(await page.getByLabel('Hedef damga sayısı').isDisabled());
+ await page.getByLabel('Günlük damga sınırı').fill('2');await page.getByRole('button',{name:'Kampanyayı kaydet',exact:true}).click();
+ await page.getByText('Günde en fazla 2 damga',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Yeni kampanya',exact:true}).click();
+ await page.getByLabel('Kampanya adı',{exact:true}).fill('Kahve molası');await page.getByLabel('Ödül açıklaması').fill('1 filtre kahve');
+ await page.getByLabel('Hedef damga sayısı').fill('7');await page.getByRole('button',{name:'Kampanyayı kaydet',exact:true}).click();
+ await page.getByRole('button',{name:'Düzenle · Kahve molası',exact:true}).waitFor();
+ await page.getByLabel('Personelin adı').fill('Yeni kasiyer');await page.getByLabel('Hesabın e-posta adresi').fill('kasiyer@example.com');
+ await page.getByRole('button',{name:'Personeli yetkilendir',exact:true}).click();await page.getByText('Yeni kasiyer',{exact:true}).waitFor();
+ await page.getByRole('button',{name:'Erişimi kapat',exact:true}).first().click();await page.getByText('Personel · erişimi kapalı',{exact:true}).waitFor();
+ await page.getByText('Son 50 yönetim işlemi',{exact:true}).click();await page.getByText('Personel erişimi güncellendi',{exact:true}).first().waitFor();
+ await page.screenshot({path:'tmp/loyalty/settings-desktop.png',fullPage:true});
  assert.deepEqual(errors,[]);assert.deepEqual(writes,[]);
- console.log('PASS: 320/390/768/1440 no overflow; demo customer request, consent toggle, staff approval, reward rollover/redemption, customer segment, history; demos make no POST requests.');
+ console.log('PASS: 320/390/768/1440 no overflow incl. settings; request/consent, approval/reward, groups/history, campaign locks/create/edit, staff add/revoke and audit; demos make no POST requests.');
 }finally{await browser.close();server.kill('SIGTERM');}

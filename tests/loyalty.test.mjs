@@ -17,7 +17,7 @@ test('customer groups match outstanding rewards, near target and real elapsed da
  assert.deepEqual(segmentCustomers(customers,[],[],'inactive',now).map(c=>c.id),['b']);
 });
 test('database failures show actionable messages without exposing internals',()=>{
- assert.match(loyaltyError({message:'OWNER_REQUIRED'}),/yalnız işletme sahibi/);
+ assert.match(loyaltyError({message:'OWNER_REQUIRED'}),/işletme sahibi yetkisi/);
  assert.match(loyaltyError({code:'PGRST202'}),/kurulumu/);
  assert.doesNotMatch(loyaltyError({message:'secret sql query'}),/secret/);
 });
