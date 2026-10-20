@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {blankMenu,publishMenu} from '../lib/menu.mjs';
+const {PGlite}=await import(process.env.PGLITE_MODULE||'@electric-sql/pglite');const db=new PGlite();
+await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz);create table public.site_admins(user_id uuid primary key);`);
+await db.exec(await readFile(new URL('../supabase/migrations/20261020_menu_portal.sql',import.meta.url),'utf8'));
+const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;const [admin,owner,other,unverified]=[1,2,3,4].map(id);
+for(const [i,user] of [admin,owner,other,unverified].entries())await db.query('insert into auth.users values($1,$2,$3)',[user,`user${i}@example.test`,user===unverified?null:new Date().toISOString()]);
+await db.query('insert into site_admins values($1)',[admin]);
+async function role(r){await db.exec('reset role');await db.exec(`set role ${r}`);}
+async function rpc(name,args){return (await db.query(`select ${name}(${args.map((_,i)=>'$'+(i+1)).join(',')}) result`,args)).rows[0].result;}
+await role('service_role');
+await assert.rejects(rpc('menu_provision',[owner,'cafe-one','Cafe One','user1@example.test',blankMenu()]),/ADMIN_REQUIRED/);
+await assert.rejects(rpc('menu_provision',[admin,'cafe-one','Cafe One','user3@example.test',blankMenu()]),/VERIFIED_OWNER_REQUIRED/);
+const business=await rpc('menu_provision',[admin,'cafe-one','Cafe One','user1@example.test',blankMenu('Cafe One')]);
+const b2=await rpc('menu_provision',[admin,'cafe-two','Cafe Two','user2@example.test',blankMenu('Cafe Two')]);
+assert.equal((await rpc('menu_owned',[owner,null])).length,1);
+await assert.rejects(rpc('menu_owned',[other,business]),/MENU_ACCESS_REQUIRED/);
+assert.equal((await rpc('menu_owned',[owner,business])).revision,1);
+await assert.rejects(rpc('menu_admin_list',[owner]),/ADMIN_REQUIRED/);
+await role('anon');assert.equal(await rpc('menu_public',['cafe-one']),null);
+for(const r of ['anon','authenticated']){await role(r);await assert.rejects(db.query('select * from menu_documents'),/permission denied/);await assert.rejects(rpc('menu_owned',[owner,business]),/permission denied/);await assert.rejects(rpc('menu_save',[owner,business,1,blankMenu(),null]),/permission denied/);}
+const d={...blankMenu('Cafe One'),categories:[{id:'one',name:'Kahve',visible:true},{id:'two',name:'Gizli',visible:false}],items:[{id:'latte',category:'one',name:'Latte',price:14500,visible:true},{id:'secret',category:'two',name:'Private',price:1,visible:true}]};
+await role('service_role');
+await assert.rejects(rpc('menu_save',[other,business,1,d,null]),/MENU_ACCESS_REQUIRED/);
+const saved=await rpc('menu_save',[owner,business,1,d,null]);assert.equal(saved.revision,2);
+await role('anon');assert.equal(await rpc('menu_public',['cafe-one']),null);
+await role('service_role');await assert.rejects(rpc('menu_save',[owner,business,1,d,null]),/REVISION_CONFLICT/);
+const published=await rpc('menu_save',[owner,business,2,d,publishMenu(d)]);assert.equal(published.revision,3);
+await role('anon');const publicMenu=await rpc('menu_public',['cafe-one']);assert.deepEqual(Object.keys(publicMenu).sort(),['document','published_at','slug']);assert.equal(publicMenu.document.items.length,1);assert.equal(publicMenu.document.items[0].name,'Latte');assert(!JSON.stringify(publicMenu).includes('Private'));
+await role('service_role');const changed=structuredClone(d);changed.items[0].price=25000;await rpc('menu_save',[owner,business,3,changed,null]);
+await role('anon');assert.equal((await rpc('menu_public',['cafe-one'])).document.items[0].price,14500);
+await role('service_role');await rpc('menu_set_active',[admin,business,false]);
+await role('anon');assert.equal(await rpc('menu_public',['cafe-one']),null);
+await role('service_role');await assert.rejects(rpc('menu_save',[owner,business,4,changed,null]),/BUSINESS_PAUSED/);
+await rpc('menu_set_active',[admin,business,true]);await rpc('menu_save',[owner,business,4,changed,publishMenu(changed)]);
+await role('anon');assert.equal((await rpc('menu_public',['cafe-one'])).document.items[0].price,25000);assert.equal(await rpc('menu_public',['cafe-two']),null);
+await role('service_role');assert.equal((await rpc('menu_owned',[other,b2])).draft.profile.name,'Cafe Two');
+await db.exec('reset role');assert.equal((await db.query('select count(*)::int n from menu_events')).rows[0].n,8);
+console.log('PASS: verified owner provisioning, tenant isolation, service-only writes, private drafts, filtered publications, revision conflict, draft/live separation, pause/resume and audit.');await db.close();
